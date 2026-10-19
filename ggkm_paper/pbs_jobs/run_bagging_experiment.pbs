@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#PBS -N bagging_pcm
+#PBS -o logs/
+#PBS -e logs/
+
+#PBS -J 0-23
+
+#PBS -l select=1:ncpus=4:mem=16gb
+#PBS -l walltime=336:00:00
+
+
+cd "$PBS_O_WORKDIR" || exit 1
+
+START_TIME=$(date +%s)
+
+echo "================================="
+echo "Bagging experiment started"
+echo "Job ID: $PBS_JOBID"
+echo "Array index: $PBS_ARRAY_INDEX"
+echo "Host: $(hostname)"
+echo "Start time: $(date)"
+echo "================================="
+
+
+module purge
+
+module load gcc/14.2.0
+module load python/3.12.8
+module load pcre2/10.44
+
+
+export R_HOME=$HOME/master_thesis/ggkm/utils/R-4.4.3
+export LD_LIBRARY_PATH=$R_HOME/lib:$LD_LIBRARY_PATH
+
+
+source ~/venvs/master_thesis/bin/activate
+
+
+echo "Python:"
+which python
+python --version
+
+
+echo "Running experiment..."
+
+python -u -m ggkm.scripts.run_bagging_experiment
+
+
+END_TIME=$(date +%s)
+
+ELAPSED_SECONDS=$((END_TIME - START_TIME))
+ELAPSED_MINUTES=$(awk "BEGIN {printf \"%.2f\", $ELAPSED_SECONDS/60}")
+
+
+echo "================================="
+echo "Bagging experiment finished"
+echo "End time: $(date)"
+echo "Elapsed seconds: $ELAPSED_SECONDS"
+echo "Elapsed minutes: $ELAPSED_MINUTES"
+echo "================================="

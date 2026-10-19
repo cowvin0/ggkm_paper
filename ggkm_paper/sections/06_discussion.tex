@@ -1,0 +1,101 @@
+% Discussion, limitations, and proportionate conclusions.
+\section{Discussion}\label{sec:discussion}
+
+The generalized gamma kernel-machine promotion-time cure model extends the promotion-time
+framework by placing the latent-cause log-intensity in a reproducing-kernel Hilbert space
+while retaining a flexible generalized gamma latency and both Poisson and negative-binomial
+latent counts. The primary and secondary simulations and the melanoma and breast-cancer
+applications evaluate this construction against simpler predictors under a shared protocol.
+Their interpretation is limited to the evaluated designs. Kernel families were compared
+within prespecified grids, although robustness to broader kernel and hyperparameter choices
+remains for future work.
+
+The principal simulation pattern was consistent across the two latent-count laws. On the
+quadratic surface, the RBF GG-KM lowered the paired IPCW integrated Brier score against the
+linear-kernel GG-KM by about 0.007 to 0.012 and the paired cure root mean squared error by
+about 0.04 to 0.07, while its differences from the spline were much smaller and
+scenario-dependent. On the periodic surface, the RBF GG-KM improved substantially on the
+linear-kernel GG-KM yet trailed the spline by a small margin, and on the linear surface it
+paid a small resolved penalty against the correctly specified linear-kernel GG-KM. Within
+the original three-surface design, the count law was a secondary factor, since Poisson and
+negative-binomial variants within a predictor family differed by at most 0.02 in integrated
+Brier score and 0.01 in cure root mean squared error. The melanoma cohort produced overlapping
+score distributions in which the linear-kernel Poisson model had the lowest mean integrated
+Brier score and GG-KM was competitive with the smallest split-to-split variation. The
+breast-cancer cohort showed a complementary pattern: the spline models achieved the lowest
+mean integrated Brier score, 0.0877, whereas the mixture-cure model attained the
+highest mean cure AUC, 0.7851. Among the GG-KM specifications, the negative-binomial
+linear kernel had the lowest mean integrated Brier score, 0.0897, while the exponential
+kernel attained the highest mean cure AUC, 0.7124, under both latent-count laws. Together,
+the two empirical applications reinforce the simulation message that no
+single predictor is uniformly best and that the preferred predictor and
+kernel depend on the predictive target and data structure.
+
+Several features of the cure-model setting limit how far these results can be interpreted. Cure fractions are
+only weakly identified from right-censored data with finite follow-up, because a long plateau of censored
+survivors is consistent with a range of cure probabilities. The melanoma follow-up ends in 1977 and the
+estimated cure fractions between 0.577 and 0.648 are model-based extrapolations, not quantities read directly
+from the data. The comparison of split-averaged predicted survival with the Kaplan-Meier curve is a
+calibration check on the population survival function and does not identify which individuals are cured. The
+analysis therefore makes no claim to identify individual cure status, and simulation calibration slopes near
+identity do not change that limitation.
+
+Kernel choice and its hyperparameters shape the estimated intensity because they define which subjects are similar
+and how rapidly the fitted surface may change. In the primary three-surface comparisons, multiple GG-KM kernel
+families were evaluated, with their hyperparameters selected from prespecified grids by leakage-free inner tuning;
+the high-dimensional analysis likewise compared multiple kernel families. Bandwidths that are too small can track
+idiosyncratic training variation, whereas overly large bandwidths approach a much smoother response; both effects
+depend on the training-fold scaling used to measure distance. The high-dimensional results further illustrate that
+kernel family can materially affect performance, with polynomial GG-KM performing particularly well on the
+interaction surface. A different kernel family or hyperparameter range could therefore shift the balance between
+GG-KM and the spline, particularly on surfaces whose geometry does not align well with a given kernel, as the
+periodic surface illustrates. Kernel and penalty selection are model-selection steps, and uncertainty from that
+selection is not represented by the fitted curve alone. The comparisons fixed a common tuning budget and evaluation
+protocol for all methods, so the reported differences describe performance at a shared and modest search intensity
+rather than each method's best attainable configuration.
+
+The kernel-machine estimator also carries a computational cost that grows with sample size. An
+$n_{\mathrm{train}}\times n_{\mathrm{train}}$ Gram matrix requires quadratic storage, and dense
+factorization can require cubic time; nested tuning repeats those operations across candidate kernels and
+inner folds. Reusing a Gram matrix within a candidate and retained eigenspace avoids unnecessary work, but
+matrices cannot be shared across folds whose preprocessing and training subjects differ. In the primary
+simulation experiment, these costs remained manageable at the sample sizes studied, with mean per-fit
+runtimes across methods ranging from 1.13 to 40.32 seconds. The richer breast-cancer application was
+substantially more computationally demanding, particularly for several nonlinear GG-KM kernels and the
+spline models, underscoring that computational burden can increase sharply with a larger and more complex
+predictor representation; these timings do not establish scalability to substantially larger cohorts.
+Low-rank, Nystr\"om, random-feature, or inducing-point approximations could reduce the burden, although each
+changes the effective penalty and out-of-sample predictor and would require separate numerical validation.
+Sample size affected the strength of the conclusions as well as runtime: increasing the sample from 300 to
+600 reduced Monte Carlo uncertainty and resolved the quadratic and periodic contrasts more clearly.
+
+Censoring and the event definition further bound the interpretation. The evaluation used
+inverse-probability-of-censoring weighting with a horizon confined to the region of reliable censoring
+support, which controls bias from dependent censoring only to the extent that the censoring model is
+adequate. In the melanoma cohort, deaths from other causes were treated as censored. In the breast-cancer
+cohort, death from breast cancer was treated as the event, while observations without a recorded
+breast-cancer death were censored. Accordingly, both empirical analyses are cause specific in their event
+definition and are not competing-risks analyses. Within these latent cause-specific processes,
+$p_c(\bm{x})$ describes the probability of no disease-specific death from the modelled process; it is
+neither an all-cause survival probability nor a competing-risks cumulative incidence. The interpretation
+relies on the corresponding independent-censoring assumption. The negative-binomial dispersion was only
+weakly identified from cure and latency information: under Poisson generation the estimated dispersion
+correctly stayed near zero, but under true dispersion of 1.00 it was systematically underestimated, ranging
+from 0.053 to 0.239. This weak identifiability explains the frequent contact of the dispersion estimate with
+its lower bound and cautions against interpreting the fitted dispersion as a precise measure of
+overdispersion.
+
+Both empirical applications are observational, and no causal interpretation is attached to the covariate effects
+or to the predicted cure fractions. The reported associations describe out-of-sample predictive behaviour under
+a fixed analysis protocol, not the effect of intervening on any covariate.
+
+Future work could extend the estimator in directions that were deliberately left outside the present scope.
+A controlled comparison against reproducible support-vector or deep cure models would sharpen the
+positioning of kernel machines among nonlinear approaches, but a fair comparison requires public
+implementations of the same promotion-time model with common generalized gamma latency, which were not
+available, so such comparators are noted as open rather than completed. Covariate-dependent latency,
+low-rank Gram approximations for larger cohorts, adaptive or multiple-kernel methods, broader kernel
+hyperparameter searches, and joint modelling of the censoring mechanism are natural extensions. The current
+contribution is the validated combination of an RKHS latent-cause intensity, generalized gamma latency,
+Poisson and negative-binomial latent counts, penalized EM and ECME estimation, and reproducible
+leakage-free evaluation with paired Monte Carlo uncertainty.

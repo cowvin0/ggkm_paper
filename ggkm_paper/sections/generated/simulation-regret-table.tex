@@ -1,0 +1,108 @@
+% Generated from the Poisson/NB regret results,
+% restricted to spline models and GG-KM with the RBF kernel.
+\begin{table*}[tbp]
+\caption{
+Paired regret and descriptive rank summaries over the 18 primary simulation
+scenarios for the Poisson and negative-binomial models.
+The comparison is restricted to spline models and GG-KM models using the RBF
+kernel. Within each scenario and metric, the reference is the retained method
+with the best finite mean. For IPCW integrated Brier score and cure RMSE,
+regret is the method value minus the reference value; for cure AUC, regret is
+the reference value minus the method value, so that smaller regret is better
+for all metrics. Regret uses only replication pairs for which both methods are
+finite. The worst regret identifies its scenario and reports a 95\% Monte Carlo
+half-width; mean regret weights scenarios equally and propagates their Monte
+Carlo standard errors. Mean rank is based on scenario means and is descriptive.
+}
+\label{tab:simulation-regret}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccc}
+\hline
+Metric
+& Method
+& Worst paired regret ($\pm$95\%; scenario)
+& Mean paired regret ($\pm$95\%)
+& Mean rank \\
+\hline
+
+IPCW integrated Brier score
+& Spline Negative binomial
+& 0.00067 $\pm$ 0.00056 (Quadratic, P, $n=600$)
+& 0.00012 $\pm$ 0.00010
+& 2.06 \\
+
+IPCW integrated Brier score
+& Spline Poisson
+& 0.00065 $\pm$ 0.00056 (Quadratic, P, $n=600$)
+& 0.00013 $\pm$ 0.00010
+& 2.06 \\
+
+IPCW integrated Brier score
+& GG-KM Poisson (RBF)
+& 0.00348 $\pm$ 0.00119 (Periodic, NB(1.00), $n=300$)
+& 0.00108 $\pm$ 0.00017
+& 3.22 \\
+
+IPCW integrated Brier score
+& GG-KM Negative binomial (RBF)
+& 0.00359 $\pm$ 0.00120 (Periodic, NB(1.00), $n=300$)
+& 0.00108 $\pm$ 0.00017
+& 2.67 \\
+
+\hline
+
+Cure RMSE
+& Spline Negative binomial
+& 0.00464 $\pm$ 0.00210 (Quadratic, NB(1.00), $n=600$)
+& 0.00073 $\pm$ 0.00025
+& 1.94 \\
+
+Cure RMSE
+& Spline Poisson
+& 0.00464 $\pm$ 0.00210 (Quadratic, NB(1.00), $n=600$)
+& 0.00076 $\pm$ 0.00025
+& 1.94 \\
+
+Cure RMSE
+& GG-KM Poisson (RBF)
+& 0.01651 $\pm$ 0.00268 (Periodic, NB(1.00), $n=300$)
+& 0.00631 $\pm$ 0.00054
+& 3.17 \\
+
+Cure RMSE
+& GG-KM Negative binomial (RBF)
+& 0.01627 $\pm$ 0.00272 (Periodic, NB(1.00), $n=300$)
+& 0.00632 $\pm$ 0.00053
+& 2.94 \\
+
+\hline
+
+Cure AUC
+& Spline Negative binomial
+& 0.00768 $\pm$ 0.00529 (Quadratic, P, $n=300$)
+& 0.00208 $\pm$ 0.00069
+& 2.61 \\
+
+Cure AUC
+& Spline Poisson
+& 0.00693 $\pm$ 0.00538 (Quadratic, P, $n=300$)
+& 0.00224 $\pm$ 0.00070
+& 2.94 \\
+
+Cure AUC
+& GG-KM Poisson (RBF)
+& 0.00795 $\pm$ 0.00464 (Periodic, P, $n=300$)
+& 0.00157 $\pm$ 0.00061
+& 2.39 \\
+
+Cure AUC
+& GG-KM Negative binomial (RBF)
+& 0.00687 $\pm$ 0.00464 (Periodic, P, $n=300$)
+& 0.00144 $\pm$ 0.00060
+& 2.06 \\
+
+\hline
+\end{tabular}%
+}
+\end{table*}

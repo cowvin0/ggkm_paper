@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#PBS -N pcm_array_boost
+
+# 4 models × 2 sample sizes × 3 methods × 7 kernels = 168 tasks
+#PBS -J 0-23
+
+#PBS -l select=1:ncpus=4:mem=16gb
+#PBS -l walltime=336:00:00
+
+
+cd "$PBS_O_WORKDIR" || exit 1
+
+mkdir -p logs
+
+exec > logs/pcm_${PBS_JOBID}_${PBS_ARRAY_INDEX}_boost.out
+exec 2> logs/pcm_${PBS_JOBID}_${PBS_ARRAY_INDEX}_boost.err
+
+
+echo "=================================="
+echo "Job ID: $PBS_JOBID"
+echo "Task ID: $PBS_ARRAY_INDEX"
+echo "Host: $(hostname)"
+echo "Start: $(date)"
+echo "=================================="
+
+
+TASK_START=$(date +%s)
+
+
+module purge
+module load gcc/14.2.0
+module load python/3.12.8
+module load pcre2/10.44
+
+
+export R_HOME=$HOME/master_thesis/ggkm/utils/R-4.4.3
+export LD_LIBRARY_PATH=$R_HOME/lib:$LD_LIBRARY_PATH
+
+
+source ~/venvs/master_thesis/bin/activate
+
+
+python -u -m ggkm.scripts.run_pcm_experiment_boost
+
+
+TASK_END=$(date +%s)
+
+ELAPSED=$((TASK_END - TASK_START))
+
+echo ""
+echo "=================================="
+echo "Finished: $(date)"
+echo "Elapsed seconds: $ELAPSED"
+echo "Elapsed minutes: $(awk "BEGIN {printf \"%.2f\", $ELAPSED/60}")"
+echo "=================================="

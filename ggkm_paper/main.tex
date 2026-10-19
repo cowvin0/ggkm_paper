@@ -1,0 +1,221 @@
+\documentclass[AMA,twocolumn]{USG}
+
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{rotating}
+\usepackage{url}
+\usepackage{placeins}
+\def\UrlBreaks{\do\/\do-\do.\do:\do_\do\~}
+
+\graphicspath{{./images/}{./figures/review/}}
+\newif\ifggkmsubmission
+\ifdefined\GGKMSubmissionLayout
+  \ggkmsubmissiontrue
+\else
+  \ggkmsubmissionfalse
+\fi
+\ifggkmsubmission
+  \newcounter{submissionfigure}
+\fi
+
+\newcommand{\GGKMTable}[1]{%
+  \ifggkmsubmission\else\input{#1}\fi}
+\newcommand{\GGKMWideFigure}[4]{%
+  \ifggkmsubmission
+    \begin{figure*}[tbp]
+      \noindent\textit{[Figure~\ref{#3} near here]}\par
+      \caption{#2}\label{#3}
+    \end{figure*}%
+  \else
+    \begin{figure*}[tbp]
+      \centerline{\includegraphics[width=\linewidth]{#1}}%
+      \caption{#2}\label{#3}
+    \end{figure*}%
+  \fi}
+
+\articletype{RESEARCH ARTICLE}
+\journal{Statistics in Medicine}
+\volume{}
+\startpage{1}
+\articledoi{}
+
+\begin{document}
+\title{A generalized gamma kernel-machine promotion-time cure model}
+\titlemark{Kernel-machine promotion-time cure model}
+\shrttitle{Kernel-machine promotion-time cure model}
+\author[1]{Gabriel de Jesus Pereira}[https://orcid.org/0009-0003-3254-4854]
+\author[1]{Vera L. D. Tomazella}[https://orcid.org/0000-0002-6780-2089]
+\author[2]{Pedro R. D. Marinho}[https://orcid.org/0000-0003-1591-8300]
+\author[2]{Marcelo Rodrigo Portela Ferreira}[https://orcid.org/0000-0003-0242-0255]
+\author[2]{Agatha S. Rodrigues}[https://orcid.org/0000-0003-1112-8264]
+\authormark{PEREIRA \textsc{et al.}}
+\address[1]{\orgdiv{Department of Statistics, }\orgname{Universidade Federal de S\~ao Carlos, }\orgaddress{\state{S\~ao Carlos, }\country{Brazil}}}
+\address[2]{\orgdiv{Department of Statistics, }\orgname{Universidade Federal da Para\'iba, }\orgaddress{\state{Jo\~ao Pessoa, }\country{Brazil}}}
+\corres{Vera L. D. Tomazella, Department of Statistics, Universidade Federal de S\~ao Carlos, S\~ao Carlos, Brazil. \textbf{AUTHOR CONFIRMATION REQUIRED:} corresponding-author email.}
+\keywords{cure model | generalized gamma | kernel machine | promotion time | survival analysis}
+  \abstract[ABSTRACT]{Cure models make the long-term event-free fraction an explicit quantity, but
+promotion-time cure models usually take the mean number of latent causes to be
+log-linear in the covariates, which cannot represent nonlinear, threshold, or
+interaction effects and can bias both the covariate effects and the estimated
+cured fraction. We propose a generalized gamma kernel-machine promotion-time
+cure model (GG-KM) that places the log-intensity of the latent-cause process in
+a reproducing-kernel Hilbert space, retains a flexible parametric generalized
+gamma latency distribution, and allows the latent number of causes to be Poisson
+or negative binomial, thereby accommodating both equidispersion and
+overdispersion. Estimation uses penalized expectation-maximization for the
+Poisson model and expectation/conditional maximization either for the
+negative-binomial model, followed by bounded observed-likelihood refinement and
+explicit convergence diagnostics. We evaluate the framework through simulation
+experiments with linear, quadratic, and periodic covariate effects and a
+four-covariate mechanism design, and through applications to melanoma and
+breast-cancer cohorts, using event-stratified training and test splits,
+training-only tuning, and inverse-probability-of-censoring weighted integrated
+Brier scores together with calibration and cure-fraction accuracy. No single
+predictor is uniformly best: a correctly specified simpler predictor performs
+best when the covariate structure matches its form, whereas GG-KM is competitive
+across mechanisms, is the most accurate predictor for the radial four-covariate
+mechanism, and improves on the log-linear and additive-spline predictors for the
+interaction mechanism, although the correctly aligned quadratic model remains
+best in that setting. In the breast-cancer cohort, the spline models attained
+the lowest mean integrated Brier score, whereas the mixture-cure model attained
+the highest mean cure AUC. These findings support GG-KM as a flexible and robust
+alternative when the functional form of the latent-cause mechanism is unknown,
+and the melanoma and breast-cancer applications illustrate its use for
+reproducible out-of-sample prediction.}
+
+%{Cure models estimate the fraction of individuals who never experience the event of interest, but linear promotion-time predictors can misrepresent nonlinear covariate effects on the latent-cause mechanism. The generalized gamma kernel-machine promotion-time cure model places the log latent-cause intensity in a reproducing-kernel Hilbert space with an explicit unpenalized intercept, retains a common Stacy generalized gamma latency, and accommodates Poisson and negative-binomial latent counts. Estimation uses safeguarded penalized expectation-maximization or expectation/conditional maximization either, followed by bounded observed-likelihood refinement and explicit convergence diagnostics. Prediction for unseen covariates uses training-only preprocessing and the fitted kernel expansion. Evaluation uses common event-stratified 70/30 splits, inner tuning confined to training data, inverse-probability-of-censoring weighted Brier scores, paired uncertainty, retained failures, and versioned simulation and melanoma outputs. The comparison includes log-linear, additive spline, quadratic, and radial-basis kernel predictors under both count laws, together with separate primary and mechanism designs. Quantitative conclusions are restricted to reproduced outputs from the declared implementation and do not assert universal superiority, causal effects, or identification of individual cure status.}
+
+\maketitle
+
+\input{sections/01_introduction}
+\input{sections/02_methods}
+\input{sections/03_simulation}
+\input{sections/04_melanoma_application}
+\input{sections/05_breast_cancer_application}
+\input{sections/06_discussion}
+\input{sections/07_declarations}
+
+\bibliography{references}
+
+\ifggkmsubmission
+\clearpage
+\input{sections/generated/melanoma-performance-table}%
+\input{sections/generated/breast-cancer-performance-table}%
+\input{sections/generated/simulation-best-table}%
+\input{sections/generated/simulation-regret-table}%
+\input{sections/generated/highdim-best-table}%
+\clearpage
+% USG records the post-\clearpage counter as the last page; restore the last physical page.
+\addtocounter{page}{-1}
+\fi
+
+\end{document}
+
+% \documentclass[AMA,twocolumn]{USG}
+
+% \usepackage{float}
+% \usepackage{bm}
+% \usepackage{booktabs}
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+% \usepackage{rotating}
+% \usepackage{url}
+% \def\UrlBreaks{\do\/\do-\do.\do:\do_\do\~}
+
+% \graphicspath{{./images/}{./figures/review/}}
+% \newif\ifggkmsubmission
+% \ifdefined\GGKMSubmissionLayout
+%   \ggkmsubmissiontrue
+% \else
+%   \ggkmsubmissionfalse
+% \fi
+% \ifggkmsubmission
+%   \newcounter{submissionfigure}
+% \fi
+
+% \newcommand{\GGKMTable}[1]{%
+%   \ifggkmsubmission\else\input{#1}\fi}
+% \newcommand{\GGKMWideFigure}[4]{%
+%   \ifggkmsubmission
+%     \begin{figure*}[tbp]
+%       \noindent\textit{[Figure~\ref{#3} near here]}\par
+%       \caption{#2}\label{#3}
+%     \end{figure*}%
+%   \else
+%     \begin{figure*}[tbp]
+%       \centerline{\includegraphics[width=\linewidth]{#1}}%
+%       \caption{#2}\label{#3}
+%     \end{figure*}%
+%   \fi}
+
+% \articletype{RESEARCH ARTICLE}
+% \journal{Statistics in Medicine}
+% \volume{}
+% \startpage{1}
+% \articledoi{}
+
+% \begin{document}
+% \title{A generalized gamma kernel-machine promotion-time cure model}
+% \titlemark{Kernel-machine promotion-time cure model}
+% \shrttitle{Kernel-machine promotion-time cure model}
+% \author[1]{Gabriel de Jesus Pereira}[https://orcid.org/0009-0003-3254-4854]
+% \author[1]{Vera L. D. Tomazella}[https://orcid.org/0000-0002-6780-2089]
+% \author[2]{Pedro R. D. Marinho}[https://orcid.org/0000-0003-1591-8300]
+% \author[2]{Marcelo Rodrigo Portela Ferreira}[https://orcid.org/0000-0003-0242-0255]
+% \author[2]{Agatha S. Rodrigues}[https://orcid.org/0000-0003-1112-8264]
+% \authormark{PEREIRA \textsc{et al.}}
+% \address[1]{\orgdiv{Department of Statistics, }\orgname{Universidade Federal de S\~ao Carlos, }\orgaddress{\state{S\~ao Carlos, }\country{Brazil}}}
+% \address[2]{\orgdiv{Department of Statistics, }\orgname{Universidade Federal da Para\'iba, }\orgaddress{\state{Jo\~ao Pessoa, }\country{Brazil}}}
+% \corres{Vera L. D. Tomazella, Department of Statistics, Universidade Federal de S\~ao Carlos, S\~ao Carlos, Brazil. \textbf{AUTHOR CONFIRMATION REQUIRED:} corresponding-author email.}
+% \keywords{cure model | generalized gamma | kernel machine | promotion time | survival analysis}
+% \abstract[ABSTRACT]{{\color{red}Cure models allow the long-term event-free fraction to be modelled explicitly,
+% but the commonly used log-linear predictor in promotion-time cure models may
+% be inadequate when covariate effects on the latent-cause mechanism are nonlinear
+% or involve interactions. We propose a generalized gamma kernel-machine
+% promotion-time cure model (GG-KM) that combines a flexible nonlinear predictor
+% for the latent-cause intensity with a parametric generalized gamma latency
+% distribution. The latent-cause intensity is represented in a reproducing-kernel
+% Hilbert space, while Poisson and Negative-Binomial specifications allow the
+% latent number of causes to accommodate both equidispersion and overdispersion.
+% Estimation is performed using penalized expectation-maximization or
+% expectation/conditional maximization either, followed by bounded
+% observed-likelihood refinement and explicit convergence diagnostics. We evaluate the proposed framework through simulation experiments involving
+% linear, quadratic, and periodic covariate effects, as well as a four-covariate
+% mechanism design, and through an application to a melanoma cohort. Predictive
+% performance is assessed using event-stratified training/test splits,
+% training-only tuning, and inverse-probability-of-censoring weighted integrated
+% Brier scores, together with calibration and cure-fraction accuracy. The results
+% show that no single predictor is uniformly superior: simpler parametric
+% predictors perform best when the underlying covariate structure is correctly
+% specified, whereas the GG-KM provides competitive performance across different
+% nonlinear mechanisms and performs particularly well for interaction and
+% radial structures. These findings support the GG-KM as a flexible and robust
+% alternative when the functional form of the latent-cause mechanism is unknown.
+% The melanoma application illustrates the practical use of the proposed framework
+% for out-of-sample prediction.}}
+
+% \maketitle
+
+% \input{sections/01_introduction}
+% \input{sections/02_methods}
+% \input{sections/03_simulation}
+% \input{sections/04_melanoma_application}
+% \input{sections/05_discussion}
+% \input{sections/06_declarations}
+
+% \bibliography{references}
+
+% \ifggkmsubmission
+% \clearpage
+% \input{sections/generated/melanoma-performance-table}%
+% \input{sections/generated/simulation-best-table}%
+% \input{sections/generated/simulation-regret-table}%
+% \input{sections/generated/highdim-best-table}%
+% \clearpage
+% % USG records the post-\clearpage counter as the last page; restore the last physical page.
+% \addtocounter{page}{-1}
+% \fi
+
+% \end{document}

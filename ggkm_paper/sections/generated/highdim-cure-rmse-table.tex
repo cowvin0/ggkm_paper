@@ -1,0 +1,402 @@
+\begin{table*}[p]
+\caption{
+Mean cure-probability root mean squared errors across the high-dimensional
+Monte Carlo experiment, with Monte Carlo standard errors in parentheses. Means
+and Monte Carlo standard errors are computed over successful replications with
+finite metric values, out of 250 planned replications per scenario-method
+configuration. Lower values indicate more accurate estimation of the known
+individual cure probabilities. This table includes all Poisson GG-KM kernel
+specifications, the Poisson spline, the promotion-time model, and the
+mixture-cure model. GG, P, Spl, PT, and Mix denote GG-KM, Poisson, spline,
+promotion time, and mixture cure, respectively; lin, RBF, lap, exp, cau, poly,
+and wav denote the linear, radial-basis, Laplacian, exponential, Cauchy,
+polynomial, and wavelet kernels.
+}
+\label{tab:supp-highdim-cure-rmse}
+\label{tab:supp-highdim-cure-rmse-poisson}
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllrrrrrrrrrr}
+\hline
+True surface
+& Generating law
+& $n$
+& GG-P lin
+& GG-P RBF
+& GG-P lap
+& GG-P exp
+& GG-P cau
+& GG-P poly
+& GG-P wav
+& Spl-P
+& PT
+& Mix \\
+\hline
+
+Interaction & P & 300
+& 0.1689 (0.0011)
+& 0.1435 (0.0021)
+& 0.1576 (0.0017)
+& 0.1506 (0.0015)
+& 0.1450 (0.0017)
+& 0.1300 (0.0023)
+& 0.1586 (0.0018)
+& 0.1728 (0.0012)
+& 0.1701 (0.0012)
+& 0.1738 (0.0013) \\
+
+Interaction & NB(0.25) & 300
+& 0.1709 (0.0013)
+& 0.1388 (0.0018)
+& 0.1561 (0.0016)
+& 0.1497 (0.0014)
+& 0.1439 (0.0016)
+& 0.1285 (0.0022)
+& 0.1557 (0.0020)
+& 0.1755 (0.0015)
+& 0.1719 (0.0013)
+& 0.1787 (0.0018) \\
+
+Interaction & NB(1.00) & 300
+& 0.1700 (0.0012)
+& 0.1312 (0.0018)
+& 0.1541 (0.0017)
+& 0.1455 (0.0015)
+& 0.1367 (0.0016)
+& 0.1238 (0.0023)
+& 0.1500 (0.0020)
+& 0.1724 (0.0012)
+& 0.1713 (0.0012)
+& 0.1737 (0.0015) \\
+
+Interaction & P & 600
+& 0.1586 (0.0008)
+& 0.1116 (0.0013)
+& 0.1329 (0.0012)
+& 0.1286 (0.0012)
+& 0.1161 (0.0013)
+& 0.0980 (0.0018)
+& 0.1343 (0.0016)
+& 0.1640 (0.0009)
+& 0.1589 (0.0008)
+& 0.1613 (0.0009) \\
+
+Interaction & NB(0.25) & 600
+& 0.1591 (0.0007)
+& 0.1086 (0.0014)
+& 0.1318 (0.0014)
+& 0.1253 (0.0011)
+& 0.1124 (0.0013)
+& 0.0914 (0.0014)
+& 0.1314 (0.0016)
+& 0.1628 (0.0007)
+& 0.1594 (0.0007)
+& 0.1607 (0.0007) \\
+
+Interaction & NB(1.00) & 600
+& 0.1598 (0.0007)
+& 0.1015 (0.0012)
+& 0.1267 (0.0014)
+& 0.1228 (0.0011)
+& 0.1082 (0.0012)
+& 0.0870 (0.0012)
+& 0.1230 (0.0013)
+& 0.1635 (0.0008)
+& 0.1604 (0.0007)
+& 0.1601 (0.0008) \\
+
+\hline
+
+Radial & P & 300
+& 0.1528 (0.0013)
+& 0.1234 (0.0020)
+& 0.1245 (0.0021)
+& 0.1259 (0.0018)
+& 0.1218 (0.0019)
+& 0.1497 (0.0022)
+& 0.1374 (0.0020)
+& 0.1168 (0.0017)
+& 0.1544 (0.0014)
+& 0.1575 (0.0015) \\
+
+Radial & NB(0.25) & 300
+& 0.1527 (0.0013)
+& 0.1194 (0.0017)
+& 0.1204 (0.0019)
+& 0.1244 (0.0019)
+& 0.1197 (0.0019)
+& 0.1530 (0.0022)
+& 0.1350 (0.0019)
+& 0.1150 (0.0016)
+& 0.1542 (0.0014)
+& 0.1567 (0.0014) \\
+
+Radial & NB(1.00) & 300
+& 0.1532 (0.0012)
+& 0.1170 (0.0018)
+& 0.1182 (0.0018)
+& 0.1212 (0.0016)
+& 0.1168 (0.0017)
+& 0.1476 (0.0018)
+& 0.1339 (0.0017)
+& 0.1119 (0.0015)
+& 0.1547 (0.0013)
+& 0.1564 (0.0014) \\
+
+Radial & P & 600
+& 0.1400 (0.0008)
+& 0.1018 (0.0013)
+& 0.1005 (0.0013)
+& 0.1054 (0.0011)
+& 0.1001 (0.0012)
+& 0.1208 (0.0024)
+& 0.1229 (0.0014)
+& 0.0927 (0.0011)
+& 0.1404 (0.0008)
+& 0.1413 (0.0008) \\
+
+Radial & NB(0.25) & 600
+& 0.1394 (0.0006)
+& 0.1001 (0.0013)
+& 0.0977 (0.0012)
+& 0.1043 (0.0012)
+& 0.0982 (0.0012)
+& 0.1178 (0.0021)
+& 0.1200 (0.0013)
+& 0.0897 (0.0010)
+& 0.1399 (0.0007)
+& 0.1413 (0.0007) \\
+
+Radial & NB(1.00) & 600
+& 0.1388 (0.0007)
+& 0.0958 (0.0012)
+& 0.0949 (0.0012)
+& 0.0998 (0.0012)
+& 0.0937 (0.0012)
+& 0.1165 (0.0021)
+& 0.1176 (0.0012)
+& 0.0881 (0.0010)
+& 0.1392 (0.0007)
+& 0.1399 (0.0007) \\
+
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+
+\begin{table*}[p]
+\caption{
+Mean cure-probability root mean squared errors across the high-dimensional
+Monte Carlo experiment, with Monte Carlo standard errors in parentheses. Means
+and Monte Carlo standard errors are computed over successful replications with
+finite metric values, out of 250 planned replications per scenario-method
+configuration. Lower values indicate more accurate estimation of the known
+individual cure probabilities. This table includes all negative-binomial GG-KM
+kernel specifications and the negative-binomial spline. GG, NB, and Spl denote
+GG-KM, negative binomial, and spline, respectively; lin, RBF, lap, exp, cau,
+poly, and wav denote the linear, radial-basis, Laplacian, exponential, Cauchy,
+polynomial, and wavelet kernels.
+}
+\label{tab:supp-highdim-cure-rmse-negative-binomial}
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllrrrrrrrr}
+\hline
+True surface
+& Generating law
+& $n$
+& GG-NB lin
+& GG-NB RBF
+& GG-NB lap
+& GG-NB exp
+& GG-NB cau
+& GG-NB poly
+& GG-NB wav
+& Spl-NB \\
+\hline
+
+Interaction & P & 300
+& 0.1688 (0.0011)
+& 0.1431 (0.0021)
+& 0.1577 (0.0017)
+& 0.1507 (0.0015)
+& 0.1446 (0.0016)
+& 0.1250 (0.0017)
+& 0.1593 (0.0019)
+& 0.1727 (0.0012) \\
+
+Interaction & NB(0.25) & 300
+& 0.1707 (0.0013)
+& 0.1383 (0.0018)
+& 0.1565 (0.0016)
+& 0.1495 (0.0014)
+& 0.1434 (0.0017)
+& 0.1254 (0.0017)
+& 0.1561 (0.0020)
+& 0.1753 (0.0015) \\
+
+Interaction & NB(1.00) & 300
+& 0.1697 (0.0012)
+& 0.1317 (0.0018)
+& 0.1536 (0.0016)
+& 0.1443 (0.0014)
+& 0.1362 (0.0016)
+& 0.1179 (0.0018)
+& 0.1496 (0.0020)
+& 0.1720 (0.0012) \\
+
+Interaction & P & 600
+& 0.1586 (0.0008)
+& 0.1116 (0.0013)
+& 0.1328 (0.0012)
+& 0.1288 (0.0012)
+& 0.1160 (0.0012)
+& 0.0961 (0.0014)
+& 0.1338 (0.0016)
+& 0.1641 (0.0009) \\
+
+Interaction & NB(0.25) & 600
+& 0.1591 (0.0007)
+& 0.1088 (0.0014)
+& 0.1318 (0.0013)
+& 0.1253 (0.0011)
+& 0.1126 (0.0013)
+& 0.0912 (0.0013)
+& 0.1314 (0.0016)
+& 0.1628 (0.0007) \\
+
+Interaction & NB(1.00) & 600
+& 0.1598 (0.0007)
+& 0.1016 (0.0012)
+& 0.1267 (0.0014)
+& 0.1228 (0.0011)
+& 0.1080 (0.0012)
+& 0.0869 (0.0012)
+& 0.1227 (0.0013)
+& 0.1634 (0.0008) \\
+
+\hline
+
+Radial & P & 300
+& 0.1529 (0.0013)
+& 0.1235 (0.0020)
+& 0.1242 (0.0020)
+& 0.1259 (0.0018)
+& 0.1218 (0.0019)
+& 0.1405 (0.0017)
+& 0.1375 (0.0020)
+& 0.1172 (0.0017) \\
+
+Radial & NB(0.25) & 300
+& 0.1527 (0.0013)
+& 0.1198 (0.0018)
+& 0.1202 (0.0019)
+& 0.1246 (0.0019)
+& 0.1196 (0.0018)
+& 0.1433 (0.0018)
+& 0.1338 (0.0018)
+& 0.1152 (0.0017) \\
+
+Radial & NB(1.00) & 300
+& 0.1530 (0.0012)
+& 0.1174 (0.0018)
+& 0.1182 (0.0018)
+& 0.1209 (0.0016)
+& 0.1163 (0.0016)
+& 0.1395 (0.0016)
+& 0.1337 (0.0017)
+& 0.1117 (0.0015) \\
+
+Radial & P & 600
+& 0.1400 (0.0008)
+& 0.1015 (0.0013)
+& 0.1004 (0.0013)
+& 0.1055 (0.0012)
+& 0.1001 (0.0012)
+& 0.1087 (0.0013)
+& 0.1228 (0.0014)
+& 0.0926 (0.0011) \\
+
+Radial & NB(0.25) & 600
+& 0.1394 (0.0006)
+& 0.1003 (0.0013)
+& 0.0978 (0.0012)
+& 0.1046 (0.0013)
+& 0.0982 (0.0011)
+& 0.1094 (0.0012)
+& 0.1201 (0.0013)
+& 0.0897 (0.0010) \\
+
+Radial & NB(1.00) & 600
+& 0.1388 (0.0007)
+& 0.0958 (0.0012)
+& 0.0949 (0.0012)
+& 0.0998 (0.0012)
+& 0.0937 (0.0012)
+& 0.1052 (0.0013)
+& 0.1176 (0.0012)
+& 0.0881 (0.0010) \\
+
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+% % Generated from results/simulation-highdim/metric-summary-84332eb72406d20c.csv
+% \begin{table*}[p]
+% \caption{Mean cure-probability root mean squared errors across 150 Monte Carlo replications for high-dimensional scenarios, with Monte Carlo standard errors in parentheses. Fitted count law: Poisson.}
+% \label{tab:supp-highdim-cure-rmse}
+% \label{tab:supp-highdim-cure-rmse-poisson}
+% \centering
+% \scriptsize
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{lllrrrr}
+% \hline
+% True surface & Generating law & $n$ & Log-linear & Spline & Quadratic & GG-KM \\
+% \hline
+% Interaction & P & 300 & 0.1665 (0.0014) & 0.2000 (0.0020) & 0.1289 (0.0021) & 0.1374 (0.0020) \\
+% Interaction & NB(0.25) & 300 & 0.1696 (0.0017) & 0.2053 (0.0021) & 0.1308 (0.0026) & 0.1419 (0.0024) \\
+% Interaction & NB(1.00) & 300 & 0.1664 (0.0014) & 0.1991 (0.0021) & 0.1231 (0.0020) & 0.1321 (0.0024) \\
+% Interaction & P & 600 & 0.1569 (0.0009) & 0.1806 (0.0014) & 0.0988 (0.0016) & 0.1110 (0.0017) \\
+% Interaction & NB(0.25) & 600 & 0.1592 (0.0008) & 0.1800 (0.0013) & 0.0950 (0.0015) & 0.1111 (0.0018) \\
+% Interaction & NB(1.00) & 600 & 0.1582 (0.0008) & 0.1790 (0.0012) & 0.0906 (0.0013) & 0.1032 (0.0015) \\
+% Radial & P & 300 & 0.1512 (0.0015) & 0.1461 (0.0024) & 0.1429 (0.0023) & 0.1224 (0.0023) \\
+% Radial & NB(0.25) & 300 & 0.1461 (0.0014) & 0.1403 (0.0024) & 0.1355 (0.0018) & 0.1170 (0.0020) \\
+% Radial & NB(1.00) & 300 & 0.1501 (0.0014) & 0.1424 (0.0025) & 0.1345 (0.0021) & 0.1138 (0.0021) \\
+% Radial & P & 600 & 0.1392 (0.0009) & 0.1092 (0.0017) & 0.1077 (0.0014) & 0.1010 (0.0018) \\
+% Radial & NB(0.25) & 600 & 0.1370 (0.0008) & 0.1027 (0.0015) & 0.1035 (0.0014) & 0.0997 (0.0016) \\
+% Radial & NB(1.00) & 600 & 0.1388 (0.0009) & 0.1056 (0.0014) & 0.1041 (0.0014) & 0.0973 (0.0015) \\
+% \hline
+% \end{tabular}%
+% }
+% \end{table*}
+
+% \begin{table*}[p]
+% \caption{Mean cure-probability root mean squared errors across 150 Monte Carlo replications for high-dimensional scenarios, with Monte Carlo standard errors in parentheses. Fitted count law: Negative binomial.}
+% \label{tab:supp-highdim-cure-rmse-negative-binomial}
+% \centering
+% \scriptsize
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{lllrrrr}
+% \hline
+% True surface & Generating law & $n$ & Log-linear & Spline & Quadratic & GG-KM \\
+% \hline
+% Interaction & P & 300 & 0.1688 (0.0024) & 0.1974 (0.0019) & 0.1292 (0.0021) & 0.1374 (0.0020) \\
+% Interaction & NB(0.25) & 300 & 0.1689 (0.0017) & 0.2037 (0.0034) & 0.1305 (0.0026) & 0.1419 (0.0024) \\
+% Interaction & NB(1.00) & 300 & 0.1659 (0.0014) & 0.1933 (0.0022) & 0.1217 (0.0020) & 0.1321 (0.0024) \\
+% Interaction & P & 600 & 0.1567 (0.0009) & 0.1785 (0.0014) & 0.0985 (0.0016) & 0.1110 (0.0017) \\
+% Interaction & NB(0.25) & 600 & 0.1588 (0.0008) & 0.1778 (0.0013) & 0.0945 (0.0015) & 0.1111 (0.0018) \\
+% Interaction & NB(1.00) & 600 & 0.1574 (0.0008) & 0.1743 (0.0012) & 0.0865 (0.0013) & 0.1032 (0.0015) \\
+% Radial & P & 300 & 0.1499 (0.0015) & 0.1449 (0.0034) & 0.1420 (0.0023) & 0.1224 (0.0023) \\
+% Radial & NB(0.25) & 300 & 0.1447 (0.0013) & 0.1358 (0.0025) & 0.1340 (0.0019) & 0.1170 (0.0020) \\
+% Radial & NB(1.00) & 300 & 0.1491 (0.0015) & 0.1355 (0.0029) & 0.1327 (0.0022) & 0.1139 (0.0021) \\
+% Radial & P & 600 & 0.1381 (0.0008) & 0.1068 (0.0018) & 0.1062 (0.0014) & 0.1010 (0.0018) \\
+% Radial & NB(0.25) & 600 & 0.1378 (0.0019) & 0.0998 (0.0016) & 0.1011 (0.0014) & 0.0996 (0.0016) \\
+% Radial & NB(1.00) & 600 & 0.1383 (0.0009) & 0.0990 (0.0016) & 0.0994 (0.0016) & 0.0973 (0.0015) \\
+% \hline
+% \end{tabular}%
+% }
+% \end{table*}

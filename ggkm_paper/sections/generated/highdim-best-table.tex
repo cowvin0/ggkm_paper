@@ -1,0 +1,116 @@
+% Generated from highdim_best_poisson_nb_parametric_updated.csv
+\begin{table*}[tbp]
+\caption{
+Best observed mean predictive performance in each high-dimensional simulation
+scenario. For IPCW IBS and cure RMSE, smaller values are better, whereas for
+cure AUC, larger values are better. Parenthesized values are Monte Carlo
+standard errors. The comparison includes Poisson and negative-binomial GG-KM
+models, Poisson and negative-binomial spline models, the mixture-cure model,
+and the promotion-time model. Int and Rad denote Interaction and Radial
+surfaces, respectively. GG, Spl, P, and NB denote generalized-gamma kernel
+machine, spline, Poisson, and negative binomial, respectively. For GG-KM fits,
+the selected kernel is shown in parentheses.
+}
+\label{tab:highdim-best}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllccc}
+\hline
+True surface
+& Generating law
+& $n$
+& Lowest mean IPCW IBS
+& Lowest mean cure RMSE
+& Highest mean cure AUC \\
+\hline
+
+Interaction
+& P
+& 300
+& GG-NB (polynomial): 0.2045 (0.0017)
+& GG-NB (polynomial): 0.1250 (0.0017)
+& GG-NB (polynomial): 0.7052 (0.0024) \\
+
+Interaction
+& NB(0.25)
+& 300
+& GG-NB (polynomial): 0.2075 (0.0015)
+& GG-NB (polynomial): 0.1254 (0.0017)
+& GG-NB (polynomial): 0.7179 (0.0024) \\
+
+Interaction
+& NB(1.00)
+& 300
+& GG-NB (polynomial): 0.2093 (0.0017)
+& GG-NB (polynomial): 0.1179 (0.0018)
+& GG-NB (polynomial): 0.7289 (0.0023) \\
+
+Interaction
+& P
+& 600
+& GG-NB (polynomial): 0.2018 (0.0011)
+& GG-NB (polynomial): 0.0961 (0.0014)
+& GG-NB (polynomial): 0.7043 (0.0017) \\
+
+Interaction
+& NB(0.25)
+& 600
+& GG-NB (polynomial): 0.2027 (0.0011)
+& GG-NB (polynomial): 0.0912 (0.0013)
+& GG-NB (polynomial): 0.7091 (0.0017) \\
+
+Interaction
+& NB(1.00)
+& 600
+& GG-NB (polynomial): 0.2027 (0.0011)
+& GG-NB (polynomial): 0.0869 (0.0012)
+& GG-P (polynomial): 0.7250 (0.0017) \\
+
+\hline
+
+Radial
+& P
+& 300
+& Spl-P: 0.2138 (0.0014)
+& Spl-P: 0.1168 (0.0017)
+& GG-NB (polynomial): 0.6521 (0.0023) \\
+
+Radial
+& NB(0.25)
+& 300
+& Spl-P: 0.2167 (0.0014)
+& Spl-P: 0.1150 (0.0016)
+& GG-NB (polynomial): 0.6602 (0.0023) \\
+
+Radial
+& NB(1.00)
+& 300
+& Spl-NB: 0.2226 (0.0015)
+& Spl-NB: 0.1117 (0.0015)
+& GG-NB (polynomial): 0.6633 (0.0024) \\
+
+Radial
+& P
+& 600
+& Spl-P: 0.2138 (0.0009)
+& Spl-NB: 0.0926 (0.0011)
+& GG-NB (polynomial): 0.6426 (0.0019) \\
+
+Radial
+& NB(0.25)
+& 600
+& Spl-P: 0.2136 (0.0009)
+& Spl-NB: 0.0897 (0.0010)
+& GG-NB (polynomial): 0.6480 (0.0018) \\
+
+Radial
+& NB(1.00)
+& 600
+& Spl-P: 0.2174 (0.0010)
+& Spl-P: 0.0881 (0.0010)
+& GG-NB (polynomial): 0.6492 (0.0018) \\
+
+\hline
+\end{tabular}%
+}
+\end{table*}

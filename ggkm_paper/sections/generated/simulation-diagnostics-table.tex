@@ -1,0 +1,114 @@
+\begin{table*}[p]
+\caption{
+Numerical diagnostics aggregated over all 18 primary simulation scenarios.
+Converged fits are successful fits satisfying the explicit convergence
+criterion; successful nonconverged fits completed without failure but did not
+satisfy that criterion. Failed denotes fits with \texttt{status = failed}.
+Latency-bound contacts count final successful fits with at least one of the
+generalized-gamma parameters $a$, $d$, or $p$ at the lower optimization bound
+of $10^{-5}$. The $\phi$-bound column counts contacts with the
+negative-binomial dispersion lower bound of $10^{-8}$; a dash indicates that
+the dispersion parameter is not applicable. Runtime is the mean with the
+maximum in parentheses, in seconds.
+}
+\label{tab:supp-simulation-diagnostics}
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\hline
+Method
+& Converged
+& Successful nonconverged
+& Failed
+& Latency bound
+& $\phi$ low
+& Runtime (s) \\
+\hline
+
+GG-KM Poisson -- linear
+& 4496/4500 & 0 & 4 & 204 & -- & 6.47 (52.80) \\
+
+GG-KM Poisson -- RBF
+& 4490/4500 & 0 & 10 & 190 & -- & 22.22 (107.10) \\
+
+GG-KM Poisson -- Laplacian
+& 4490/4500 & 0 & 10 & 185 & -- & 29.97 (105.47) \\
+
+GG-KM Poisson -- exponential
+& 4491/4500 & 1 & 8 & 188 & -- & 28.90 (112.76) \\
+
+GG-KM Poisson -- Cauchy
+& 4490/4500 & 0 & 10 & 187 & -- & 25.38 (113.14) \\
+
+GG-KM Poisson -- polynomial
+& 4495/4500 & 0 & 5 & 180 & -- & 28.49 (202.23) \\
+
+GG-KM Poisson -- wavelet
+& 4493/4500 & 0 & 7 & 190 & -- & 40.32 (215.16) \\
+
+\hline
+
+GG-KM Negative binomial -- linear
+& 4493/4500 & 0 & 7 & 198 & 0 & 6.88 (107.05) \\
+
+GG-KM Negative binomial -- RBF
+& 4491/4500 & 0 & 9 & 189 & 0 & 26.25 (520.48) \\
+
+GG-KM Negative binomial -- Laplacian
+& 4492/4500 & 0 & 8 & 184 & 0 & 29.81 (253.82) \\
+
+GG-KM Negative binomial -- exponential
+& 4492/4500 & 0 & 8 & 178 & 0 & 27.83 (239.66) \\
+
+GG-KM Negative binomial -- Cauchy
+& 4492/4500 & 0 & 8 & 194 & 0 & 23.66 (208.77) \\
+
+GG-KM Negative binomial -- polynomial
+& 4491/4500 & 0 & 9 & 193 & 0 & 31.18 (316.56) \\
+
+GG-KM Negative binomial -- wavelet
+& 4491/4500 & 0 & 9 & 185 & 0 & 35.54 (309.27) \\
+
+\hline
+
+Spline Poisson
+& 4494/4500 & 0 & 6 & 197 & -- & 12.35 (107.71) \\
+
+Spline Negative binomial
+& 4498/4500 & 0 & 2 & 199 & 0 & 12.44 (274.59) \\
+
+Promotion time
+& 4464/4500 & 3 & 33 & 66 & -- & 1.29 (14.39) \\
+
+Mixture cure
+& 4489/4500 & 6 & 5 & 131 & -- & 1.13 (15.78) \\
+
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+% % Generated from results/simulation-final/status-summary-796f88e3cd8a027c.csv and results/simulation-final/diagnostic-summary-796f88e3cd8a027c.csv
+% \begin{table*}[p]
+% \caption{Numerical diagnostics aggregated over all 18 simulation scenarios. Runtime is the mean with the maximum in parentheses. Latency-bound contacts count final fits with at least one of $a$, $d$, or $p$ at a declared optimization bound; dispersion contacts are shown separately by lower and upper bound. Safeguard counts indicate final fits that accepted a fractional block step. Inner nonconvergence counts candidate-fold fits and therefore has a larger denominator than the number of final fits.}
+% \label{tab:supp-simulation-diagnostics}
+% \centering
+% \scriptsize
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{lcccccccc}
+% \hline
+% Method & Converged & Failed & Latency bound & $\phi$ low & $\phi$ high & Safeguard & Inner nonconverged & Runtime (s) \\
+% \hline
+% Log-linear Poisson & 4489/4500 & 0 & 501 & 0 & 0 & 0 & 224/36000 & 5.90 (24.59) \\
+% Log-linear Negative binomial & 4475/4500 & 0 & 558 & 2165 & 2 & 0 & 500/36000 & 7.68 (30.03) \\
+% Spline Poisson & 4491/4500 & 0 & 473 & 0 & 0 & 0 & 183/36000 & 7.27 (14.84) \\
+% Spline Negative binomial & 4478/4500 & 0 & 509 & 1974 & 1 & 0 & 407/36000 & 9.10 (34.62) \\
+% Quadratic Poisson & 4485/4500 & 0 & 482 & 0 & 0 & 0 & 227/36000 & 6.50 (14.12) \\
+% Quadratic Negative binomial & 4484/4500 & 0 & 516 & 2550 & 1 & 0 & 425/36000 & 8.14 (28.98) \\
+% GG-KM Poisson & 4486/4500 & 0 & 481 & 0 & 0 & 0 & 220/36000 & 6.99 (15.57) \\
+% GG-KM Negative binomial & 4493/4500 & 0 & 492 & 4022 & 0 & 0 & 236/36000 & 7.36 (24.07) \\
+% \hline
+% \end{tabular}%
+% }
+% \end{table*}

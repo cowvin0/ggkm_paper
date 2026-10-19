@@ -1,0 +1,159 @@
+\begin{table*}[tbp]
+\caption{
+Best observed mean predictive performance in each simulation scenario
+among Poisson and negative-binomial models.
+For IPCW IBS and cure RMSE, smaller values are better, whereas for cure AUC,
+larger values are better. Parenthesized values are Monte Carlo standard errors.
+The displayed optimum is a descriptive comparison and is not a claim of
+superiority when paired uncertainty includes zero.
+GG, Spl, P, and NB denote generalized-gamma kernel machine, spline,
+Poisson, and negative binomial, respectively.
+For GG-KM fits, the selected kernel is shown in parentheses.
+}
+\label{tab:simulation-best}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllccc}
+\hline
+True surface
+& Generating law
+& $n$
+& Lowest mean IPCW IBS
+& Lowest mean cure RMSE
+& Highest mean cure AUC \\
+\hline
+
+Linear
+& P
+& 300
+& GG-NB (linear): 0.1929 (0.0013)
+& GG-P (linear): 0.0630 (0.0019)
+& GG-NB (poly): 0.6845 (0.0025) \\
+
+Linear
+& NB(0.25)
+& 300
+& GG-NB (linear): 0.1965 (0.0015)
+& GG-NB (linear): 0.0602 (0.0017)
+& GG-NB (poly): 0.6930 (0.0025) \\
+
+Linear
+& NB(1.00)
+& 300
+& GG-NB (linear): 0.1975 (0.0014)
+& GG-P (linear): 0.0606 (0.0017)
+& GG-NB (poly): 0.7032 (0.0025) \\
+
+Linear
+& P
+& 600
+& GG-NB (linear): 0.1937 (0.0010)
+& GG-P (linear): 0.0458 (0.0011)
+& GG-NB (poly): 0.6875 (0.0020) \\
+
+Linear
+& NB(0.25)
+& 600
+& GG-NB (linear): 0.1944 (0.0010)
+& GG-P (linear): 0.0448 (0.0011)
+& GG-NB (poly): 0.6910 (0.0019) \\
+
+Linear
+& NB(1.00)
+& 600
+& GG-NB (linear): 0.1968 (0.0011)
+& GG-NB (linear): 0.0453 (0.0012)
+& GG-NB (poly): 0.7045 (0.0018) \\
+
+\hline
+
+Quadratic
+& P
+& 300
+& GG-NB (poly): 0.2097 (0.0014)
+& GG-NB (poly): 0.0990 (0.0018)
+& GG-NB (poly): 0.6411 (0.0029) \\
+
+Quadratic
+& NB(0.25)
+& 300
+& GG-P (rbf): 0.2128 (0.0014)
+& GG-NB (poly): 0.0962 (0.0016)
+& GG-P (poly): 0.6443 (0.0031) \\
+
+Quadratic
+& NB(1.00)
+& 300
+& GG-P (poly): 0.2145 (0.0016)
+& GG-NB (poly): 0.0933 (0.0018)
+& GG-P (poly): 0.6586 (0.0031) \\
+
+Quadratic
+& P
+& 600
+& GG-NB (poly): 0.2079 (0.0010)
+& GG-NB (poly): 0.0720 (0.0013)
+& GG-P (wavelet): 0.6422 (0.0018) \\
+
+Quadratic
+& NB(0.25)
+& 600
+& GG-NB (poly): 0.2096 (0.0009)
+& GG-NB (poly): 0.0687 (0.0013)
+& GG-P (wavelet): 0.6452 (0.0018) \\
+
+Quadratic
+& NB(1.00)
+& 600
+& GG-NB (poly): 0.2128 (0.0010)
+& GG-NB (poly): 0.0646 (0.0012)
+& GG-NB (poly): 0.6555 (0.0019) \\
+
+\hline
+
+Periodic
+& P
+& 300
+& Spl-NB: 0.1913 (0.0017)
+& Spl-NB: 0.1091 (0.0017)
+& GG-NB (poly): 0.7237 (0.0034) \\
+
+Periodic
+& NB(0.25)
+& 300
+& Spl-NB: 0.1906 (0.0015)
+& Spl-NB: 0.1050 (0.0017)
+& GG-NB (poly): 0.7216 (0.0033) \\
+
+Periodic
+& NB(1.00)
+& 300
+& Spl-NB: 0.1905 (0.0016)
+& Spl-NB: 0.1005 (0.0016)
+& GG-NB (poly): 0.7345 (0.0033) \\
+
+Periodic
+& P
+& 600
+& Spl-NB: 0.1851 (0.0010)
+& Spl-P: 0.0794 (0.0012)
+& GG-NB (poly): 0.7301 (0.0023) \\
+
+Periodic
+& NB(0.25)
+& 600
+& Spl-NB: 0.1858 (0.0011)
+& Spl-NB: 0.0778 (0.0012)
+& GG-NB (poly): 0.7361 (0.0022) \\
+
+Periodic
+& NB(1.00)
+& 600
+& Spl-P: 0.1878 (0.0012)
+& Spl-P: 0.0728 (0.0013)
+& GG-NB (poly): 0.7501 (0.0020) \\
+
+\hline
+\end{tabular}
+\end{table*}

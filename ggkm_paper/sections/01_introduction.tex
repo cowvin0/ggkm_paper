@@ -1,0 +1,118 @@
+\section{Introduction}\label{sec:introduction}
+
+Standard survival models assign vanishing probability to remaining event
+free as follow-up grows arbitrarily long. That limit is inappropriate
+when a clinically meaningful subgroup will never experience the event of
+interest, a situation indicated by a sustained plateau in the survival
+curve under mature follow-up. Cure models describe this setting by
+separating the long-term event-free probability from the timing of
+events among individuals who remain susceptible, which makes the cured
+proportion an interpretable quantity in oncology and other long-term-survivor
+studies \cite{berkson1952,tsodikov2003}.
+
+{
+Accommodating this plateau requires a model that allows a positive
+limiting survival probability, and three main constructions are available
+in the literature for this purpose, differing in the mechanism by which
+they generate the cure mass. The first, the mixture cure model,
+introduces a latent binary indicator that separates long-term event-free
+individuals from those who remain susceptible, so that the cured
+proportion and the survival of the susceptible subpopulation are
+specified as separate components, typically a regression model for
+incidence together with a proper distribution for the latency
+\cite{boag1949,berkson1952,farewell1982,sy2000}. The second, the
+defective-distribution model, does not represent the cured fraction
+through a separate component; instead, the cured fraction arises
+intrinsically from the parameter space of a single parametric survival
+distribution. For most parameter values the distribution is proper and
+the survival function decays to zero, as in conventional survival models;
+over a distinct region of the same parameter space the distribution
+becomes improper and the survival function instead converges to a
+strictly positive limit, which is the cured fraction. A single family
+then governs both the failure times of the susceptible individuals and
+the size of the cured group, with no separate incidence model and with
+covariates entering through its parameters
+\cite{balka2009,rocha2017,scudilio2019}. The third, based on latent
+competing risks, generates the cure mass from an unobserved count of
+competing causes, so that the cured fraction is The probability that this
+count is zero \cite{yakovlev1996,chen1999,tsodikov2003,rodrigues2009unif}.
+} %This construction can be re-expressed as a mixture whose cured proportion equals that zero-count probability and whose susceptible latency is induced by the count law, so it is a structured special case of the mixture model in which the incidence and latency components are linked through shared parameters rather than specified separately \cite{rodrigues2009}.
+{
+This mechanism admits a two-stage description. An initiation stage sets
+the unobserved number $N$ of latent causes carried by an individual, and
+a maturation stage assigns each cause an activation time; the earliest
+activation produces the event, so $N=0$ describes an individual who never
+fails and identifies the cure mass \cite{rodrigues2025}. Encoding the
+count law through its probability-generating function links the latency
+distribution to both the population survival and the cure fraction, and
+it is this representation on which the model developed here is built.
+}
+
+{
+In the promotion-time construction the mean number of latent causes is
+almost always taken to be log-linear in the covariates
+\cite{chen1999,rodrigues2009}. This specification is convenient and
+keeps the cure fraction in closed form, but it forces every covariate
+to act monotonically on the latent-cause intensity, so threshold effects,
+interactions, and periodic or otherwise nonlinear associations cannot be
+represented. Because the intensity governs the cure fraction, a
+misspecified incidence model biases both the estimated covariate effects
+and the cured proportion \cite{amico2018}. The activation-time component
+carries another issue: fixing the latency to a restrictive family can be
+equally misspecified, and in a cure model this error propagates to the
+covariate effects and to the cure fraction. A flexible parametric family
+mitigates this while preserving interpretability and a tractable
+likelihood, and the generalized gamma is a natural choice, since it
+nests the exponential, Weibull, gamma, and log-normal distributions and
+spans a wide range of hazard shapes
+\cite{stacy1962,prentice1974,cox2007}. Together, these concerns motivate
+treating both components flexibly, through a flexible latent-intensity
+predictor for the incidence and a sufficiently general parametric latency
+for the activation times.
+}
+
+{
+Flexible predictors have been proposed in cure modelling: smoothers,
+support-vector machines, neural networks, and deep architectures have all
+been used to relax the usual linear specification. In the promotion-time
+setting, Pal and Aselisewine\cite{pal2023} introduced a support-vector
+formulation for the incidence component, and Xie and Yu\cite{xie2021}
+used a neural network for an unstructured promotion-time component,
+while deep promotion-time models and structured nonlinear cure models
+further broaden the available high-dimensional architectures\cite{medina2024,feng2026}.
+These methods make the covariate effect on the latent-cause intensity
+nonlinear, but they differ substantially in how they treat that
+intensity, the latency distribution, and the count structure. To our
+knowledge, no existing promotion-time approach combines all three within
+a single likelihood-based estimation and prediction framework: a
+flexible nonlinear predictor for the latent-cause intensity, which shapes
+both the cured fraction and the timing of events; a transparent and
+sufficiently general parametric latency; and an explicit count-family
+treatment of overdispersion.
+}
+
+To address this gap, we develop a generalized gamma kernel-machine
+promotion-time cure model (GG-KM) that places the log-intensity of
+the latent-cause process in a reproducing-kernel Hilbert space (RKHS)
+\cite{kimeldorf1971}, while retaining a flexible parametric
+generalized gamma latency distribution \cite{stacy1962} and allowing
+either Poisson or negative-binomial latent counts. This formulation
+separates two sources of modelling flexibility: the kernel predictor
+captures potentially complex nonlinear and interaction effects of
+covariates on the latent-cause mechanism, whereas the generalized
+gamma distribution provides a flexible parametric representation of
+the activation-time process.
+
+
+The remainder of this article is organized as follows. Section~\ref{sec:methods}
+presents the proposed generalized gamma kernel-machine promotion-time cure
+model, covering the general promotion-time construction, the generalized gamma
+latency distribution, the kernel-based latent-cause predictor, and the penalized
+EM and ECME estimation procedures with their observed-likelihood refinement and
+convergence assessment. Section~\ref{sec:simulation} describes the simulation
+study and evaluates the predictive performance of the proposed model against
+log-linear, additive-spline, and quadratic alternatives under different
+covariate structures and latent-count distributions. Section~\ref{sec:melanoma}
+applies the model to the melanoma data and reports its predictive behaviour.
+Section~\ref{sec:discussion} discusses the main findings, limitations, and
+directions for future research.

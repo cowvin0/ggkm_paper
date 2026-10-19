@@ -1,0 +1,1300 @@
+\section{Methods}\label{sec:methods}
+
+This section first recalls, as background, the general promotion-time cure construction that the model builds on, and then develops the proposed GG-KM model: a generalized gamma latency, a regularized reproducing-kernel Hilbert space predictor for the latent-cause intensity, and Poisson or negative-binomial latent counts. The remaining subsections give the penalized estimation algorithms and the prediction and evaluation protocol. Observed likelihoods and conditional objective functions are stated in the main text, while lengthy derivations and analytical gradients are deferred to the Supporting Information.
+
+%{ Figure~\ref{fig:ggkm-workflow} provides an overview of the GG-KM model and its estimation and evaluation framework. Panel A illustrates the kernel-based latent-cause intensity $\theta(\bm{x})=\exp\{f(\bm{x})\}$ and its link to the Poisson and negative-binomial latent-count distributions. Panel B depicts the promotion-time mechanism, in which individuals with $N_i=0$ are cured, whereas for $N_i\geq1$ the event time is the minimum of the latent activation times. Panel C shows the resulting population survival curves and the cure plateau $p_c(\bm{x})$. Panel D summarizes the estimation and prediction pipeline, including the event-stratified data split, training-only preprocessing, penalized EM or ECME estimation, out-of-sample prediction, and IPCW integrated Brier evaluation.}
+
+ %Figure~\ref{fig:ggkm-workflow} lays out the GG-KM model and its estimation and evaluation path. Panel A shows the latent-cause intensity $\theta(\bm{x})=\exp\{f(\bm{x})\}$ built by a radial-basis kernel expansion over $(x_1,x_2)\in[-1,1]^2$, with the six kernel centres $\bm{x}_j$ marked and the count law named beneath the surface. Panel B plots four parallel time axes for two cured individuals ($N_i=0$) and two susceptible ones ($N_i\ge1$). Its key maps every glyph to a quantity: an open circle is an activation time $Z_{ij}$ from the generalized gamma latency, a filled circle is the event time $T_i=\min_jZ_{ij}$, and a vertical bar is the censoring time $C_i$; the resulting pair $(Y_i,\delta_i)$ is printed at the right of each axis. Panel C draws the matched Poisson and negative-binomial population survival curves, the cure plateau $p_c(\bm{x})$, and the shaded interval at or below the scoring horizon $\tau$. Panel D traces the leakage-controlled pipeline: event-stratified 70/30 split, Gram matrix construction, penalized EM or ECME with bounded refinement, kernel-coefficient prediction, and IPCW Brier evaluation. The dashed arc in Panel D is the only feedback path and marks the single iterative update that revises the kernel coefficients, the latency parameters, and the negative-binomial dispersion when applicable.
+
+%\GGKMWideFigure{ggkm-method-diagram.pdf}{Structure of the GG-KM model and of its estimation and evaluation. Panel A shows the generative mechanism: a kernel predictor $f(\bm{x})=\beta_0+\sum_j\alpha_jK(\bm{x},\bm{x}_j)$ over the marked kernel centres $\bm{x}_j$ determines the positive latent-cause intensity $\theta(\bm{x})=\exp\{f(\bm{x})\}$, which indexes the Poisson or negative-binomial count $N_i$ named beneath the surface. Panel B shows the observation mechanism. Given $N_i\ge1$ the promotion times $Z_{ij}$ are independent generalized gamma variables and $T_i=\min_jZ_{ij}$, whereas $N_i=0$ gives $T_i=\infty$, so only $Y_i=\min(T_i,C_i)$, $\delta_i=I(T_i\leq C_i)$ and $\bm{x}_i$ are observed; the key maps the open circle, the filled circle and the vertical bar to $Z_{ij}$, $T_i$ and $C_i$, and the realized pair $(Y_i,\delta_i)$ is printed at the right of each time axis. Panel C shows the population survival curves, where P denotes Poisson and NB negative-binomial counts. They use the simulation latency $(a,d,p)=(1.6,1.3,1.1)$, a matched cure fraction of $0.45$ and dispersion $\phi=1$; they are illustrative rather than fitted, and line style with markers distinguishes them in addition to colour. Shading marks times at or below the frozen horizon $\tau$ within which predictions are scored, so the approach of $S_{\mathrm{pop}}(t\mid\bm{x})$ to $p_c(\bm{x})$ is extrapolated rather than evaluated. Panel D shows the estimation and evaluation path: one event-stratified 70/30 split with training-only preprocessing, the validated Gram matrix, penalized EM or ECME with an ascent safeguard, out-of-sample prediction, and IPCW integrated Brier scoring with paired differences. The dashed arc in Panel D is the only feedback path and marks the iterative update of $(\beta_0,\bm{\alpha})$, $(a,d,p)$ and $\phi$.}{fig:ggkm-workflow}{Four-panel schematic. Panel A: a kernel predictor with marked centres gives the latent-cause intensity that indexes a Poisson or negative-binomial latent count. Panel B: four time axes for two susceptible and two cured individuals, with a key mapping open circles to activation times, filled circles to event times and vertical bars to censoring times, and the observed time and event indicator printed at the right of each axis. Panel C: population survival curves for both count laws approach a common cure plateau beyond the shaded scored horizon. Panel D: event-stratified split with training-only preprocessing, validated Gram matrix, penalized EM or ECME with ascent safeguard, out-of-sample prediction, and IPCW integrated Brier evaluation, with one dashed feedback path.}
+
+\subsection{General promotion-time cure construction}\label{sec:promotion-time}
+
+{
+	%Let $\mathcal{D}_n=\{(Y_i,\delta_i,\bm{x}_i):i=1,\dots,n\}$ denote an independent sample of size $n$, where $T_i$ is the event time, $C_i$ the right-censoring time, $Y_i=\min(T_i,C_i)$, $\delta_i=I(T_i\leq C_i)$, and $\bm{x}_i$ a covariate vector. Censoring is assumed conditionally independent, $T_i\perp C_i\mid\bm{x}_i$. The latent variable $N_i$ counts the potential causes of the event, and $N_i=0$ identifies a cured individual.
+
+Let $T_i$ denote the event time and $C_i$ the right-censoring time. The observed time is the random variable $Y_i=\min(T_i,C_i)$, whose realized value is written $t_i$, and $\delta_i=I(T_i\leq C_i)$ is the event indicator, with $\bm{x}_i$ a covariate vector, for $i=1,\ldots,n$. The observed data are therefore $\mathcal{D}_{\text{obs}}=\{(t_i,\delta_i,\bm{x}_i)\}^{n}_{i=1}$. Censoring is assumed conditionally independent, $T_i\perp C_i\mid\bm{x}_i$. The latent variable $N_i$ counts the potential causes of the event, and $N_i=0$ identifies a cured individual.
+
+Conditional on the covariates, $N_i\mid\bm{x}_i$ has probability mass function $\pi_k(\bm{x}_i)=P(N_i=k\mid\bm{x}_i)$, $k=0,1,2,\dots$, and probability-generating function $A_i(u)=\mathbb{E}\left(u^{N_i}\mid\bm{x}_i\right)=\sum_{k\ge0}\pi_k(\bm{x}_i)u^k$. Given $N_i=k\ge1$, the activation times $Z_{i1},\dots,Z_{ik}$ are independent and identically distributed with a proper distribution function $F_0$, survival function $S_0=1-F_0$, and density $f_0$; conditional on $\bm{x}_i$ they are independent of $N_i$, and their distribution does not depend on $N_i$. In the formulation considered here the covariates act on the latent-count distribution but not on the latency $F_0$. The event time is the earliest activation, $T_i=\min_{1\le j\le N_i}Z_{ij}$ when $N_i\ge1$, whereas $T_i=\infty$ when $N_i=0$.
+
+Conditional on $N_i=k$, the event exceeds $t$ only if all $k$ activation times do, so $P(T_i>t\mid N_i=k,\bm{x}_i)=S_0(t)^k$. Averaging over the latent-count distribution gives the population survival function and, as $t\to\infty$ with $S_0(t)\to0$, the cure fraction,
+\begin{equation}
+\begin{aligned}
+S_{\mathrm{pop}}(t\mid\bm{x}_i)
+&=P(T_i>t\mid\bm{x}_i)
+=\sum_{k\ge0}\pi_k(\bm{x}_i)S_0(t)^k
+=A_i\{S_0(t)\},\\
+p_c(\bm{x}_i)
+&=\lim_{t\to\infty}S_{\mathrm{pop}}(t\mid\bm{x}_i)
+=A_i(0)=P(N_i=0\mid\bm{x}_i).
+\end{aligned}
+\label{eq:promotion-population}
+\end{equation}
+The population survival is the generating function evaluated at the latency survival, and the cure fraction is its value at zero, equal to the probability of no latent cause. Differentiating with respect to time, and using $S_0'=-f_0$, gives the population density and hazard,
+\begin{equation}
+\begin{aligned}
+f_{\mathrm{pop}}(t\mid\bm{x}_i)
+&=f_0(t)\,A_i'\{S_0(t)\},\\
+h_{\mathrm{pop}}(t\mid\bm{x}_i)
+&=\frac{f_{\mathrm{pop}}(t\mid\bm{x}_i)}
+        {S_{\mathrm{pop}}(t\mid\bm{x}_i)},
+\end{aligned}
+\label{eq:promotion-density-hazard}
+\end{equation}
+where $A_i'$ denotes differentiation with respect to its argument. When $p_c(\bm{x}_i)>0$, $f_{\mathrm{pop}}$ is an improper subdensity that integrates to $1-p_c(\bm{x}_i)$ rather than to one. The construction satisfies the required boundary behaviour: $S_{\mathrm{pop}}(0\mid\bm{x})=1$, $S_{\mathrm{pop}}(t\mid\bm{x})$ is non-increasing in $t$, and $\lim_{t\to\infty}S_{\mathrm{pop}}(t\mid\bm{x})=p_c(\bm{x})$. % A degenerate cure fraction $p_c(\bm{x})=1$ corresponds to the latent-count mass concentrating entirely on $N_i=0$, that is $\pi_0(\bm{x})=1$, which is a limiting boundary case rather than a value attained at interior count parameters.
+
+Equations~\eqref{eq:promotion-population} and \eqref{eq:promotion-density-hazard} give the standard promotion-time construction for a generic activation-time distribution. The proposed GG-KM model, developed in the following subsection, specializes the latency $F_0$ to the Stacy generalized gamma distribution and models the latent-count mean $\theta_i=\theta(\bm{x}_i)$ through a reproducing-kernel Hilbert space predictor, with the count taken to be Poisson or negative binomial.}
+
+\subsection{The proposed GG-KM model}\label{sec:model-specification}
+
+%{The proposed GG-KM model specializes the general construction of Section~\ref{sec:promotion-time} in three linked components: the activation-time distribution, the latent-cause intensity, and the latent-count law. The activation times follow a Stacy generalized gamma latency with parameters $(a,d,p)$ shared across individuals; the latent-cause intensity is $\theta(\bm{x})=\exp\{f(\bm{x})\}$, where $f$ is a regularized reproducing-kernel Hilbert space predictor; and the latent count $N_i\mid\bm{x}_i$ is Poisson or negative binomial with mean $\theta_i=\theta(\bm{x}_i)$. Covariates act on the model only through the intensity $\theta(\bm{x})$, and hence only through $f$. The parameters satisfy $a,d,p>0$ and $\theta_i>0$, and the negative-binomial count adds a dispersion parameter $\phi>0$. The three components are specified in turn below.}
+
+The activation time of each latent cause follows the Stacy generalized gamma distribution with scale $a>0$ and shape parameters $d>0$ and $p>0$.\cite{stacy1962} Its density, distribution function, and survival function are
+\begin{equation}
+	\begin{aligned}
+		f_{GG}\left(t;a,d,p\right)
+		&=\frac{p t^{d-1}\exp\{-(t/a)^p\}}
+		{a^d\Gamma(d/p)},\\
+		F_{GG}\left(t;a,d,p\right)
+		&=P\{d/p,(t/a)^p\},\\
+		S_{GG}\left(t;a,d,p\right)
+		&=Q\{d/p,(t/a)^p\},
+	\end{aligned}
+	\label{eq:gg-distribution}
+\end{equation}
+where $P$ and $Q$ are the regularized lower and upper incomplete gamma
+functions. This parameterization contains Weibull models when $d=p$,
+gamma models when $p=1$, and the exponential model when $d=p=1$. The
+lognormal distribution is not a special case or limit of the Stacy
+parameterization at fixed $(a,d,p)$; obtaining it requires a separate
+reparameterized limit and is therefore not claimed here. The
+implementation verifies numerically that the density integrates to one
+and that the derivative of the distribution function equals the density,
+so $F_{GG}$, $f_{GG}$, and $S_{GG}$ remain mutually consistent. Figure~\ref{fig:gg-latency-flexibility} illustrates how the verified special cases and a general parameter setting produce distinct density and hazard shapes.
+
+\GGKMWideFigure{gg-latency-flexibility.pdf}{Generalized gamma latency flexibility under the Stacy parameterization. Panel A shows the density $f_{GG}\left(t; a,d,p\right)$ and Panel B the corresponding hazard $h_{GG}\left(t;a,d,p\right)=f_{GG}\left(t;a,d,p\right)/S_{GG}\left(t;a,d,p\right)$ for the exponential case $(a,d,p)=(1.6,1,1)$, Weibull case $(1.6,0.7,0.7)$, gamma case $(1.6,2,1)$, and the general generalized gamma setting $(1.6,1.3,1.1)$ used in the simulation study. Line type and markers distinguish the four cases in addition to colour.}{fig:gg-latency-flexibility}{Two panels compare four generalized gamma latency distributions. The left panel shows their densities over time and the right panel shows their hazards. Exponential, Weibull, gamma, and general generalized gamma curves use distinct line types and markers.}
+
+
+{
+
+	The GG-KM model relaxes the usual log-linear specification of the latent-cause
+	intensity by representing
+	$
+	    \eta(\bm{x})
+	    =
+	    \log\{\theta(\bm{x})\}
+	$
+	through a reproducing kernel Hilbert space (RKHS). Here,
+	$\theta(\bm{x})>0$ denotes the conditional mean of the latent number of causes,
+	\begin{equation}
+	    \theta(\bm{x})
+	    =
+	    \mathbb{E}(N\mid\bm{x}),
+	\end{equation}
+	under both the Poisson and negative-binomial parameterizations considered in
+	this work. Modelling $\eta(\bm{x})$ in an RKHS allows the association between
+	the covariates and the latent-cause mechanism to be nonlinear without requiring
+	a prespecified finite-dimensional functional form.
+
+	% The covariate effects enter the model through the mean parameter of the
+	% latent number of competing causes. Let
+	% $\mathcal{X}\subseteq\mathbb{R}^{r}$ denote the covariate space and $\bm{x},\bm{x}'\in\mathcal{X}$ two covariate vectors, and let $K:\mathcal{X}\times\mathcal{X}\to\mathbb{R}$ be a kernel measuring their similarity. The
+	% nonlinear component of the predictor is modelled through a reproducing
+	% kernel selected from the following family:
+	% \begin{equation}
+	% 	\begin{aligned}
+	% 		K_{\mathrm{lin}}(\bm{x},\bm{x}')
+	% 		&=\bm{x}^{\mathsf T}\bm{x}',\\
+	% 		K_{\mathrm{poly}}(\bm{x},\bm{x}')
+	% 		&=(\gamma\,\bm{x}^{\mathsf T}\bm{x}'+c_0)^{q},\\
+	% 		K_{\mathrm{rbf}}(\bm{x},\bm{x}')
+	% 		&=\exp\{-\gamma\|\bm{x}-\bm{x}'\|_2^2\},\\
+	% 		K_{\mathrm{exp}}(\bm{x},\bm{x}')
+	% 		&=\exp\{-\gamma\|\bm{x}-\bm{x}'\|_2\},\\
+	% 		K_{\mathrm{lap}}(\bm{x},\bm{x}')
+	% 		&=\exp\{-\gamma\|\bm{x}-\bm{x}'\|_1\},\\
+	% 		K_{\mathrm{cau}}(\bm{x},\bm{x}')
+	% 		&=\{1+\gamma\|\bm{x}-\bm{x}'\|_2^2\}^{-1},\\
+	% 		K_{\mathrm{wav}}(\bm{x},\bm{x}')
+	% 		&=
+	% 		\prod_{j=1}^{r}
+	% 		\left[
+	% 		\cos\!\left(
+	% 		1.75\,\frac{x_j-x'_j}{A}
+	% 		\right)
+	% 		\exp\!\left\{
+	% 		-\frac{1}{2}
+	% 		\left(
+	% 		\frac{x_j-x'_j}{A}
+	% 		\right)^2
+	% 		\right\}
+	% 		\right].
+	% 	\end{aligned}
+	% 	\label{eq:kernels}
+	% \end{equation}
+	% Here $\gamma>0$ is a scale parameter, $q\geq1$ is an integer polynomial
+	% degree, $c_0\geq0$ is an offset, and $A>0$ is the scale parameter of the
+	% wavelet kernel. The RBF kernel corresponds to the Gaussian kernel. The
+	% exponential and Laplacian kernels differ in the distance used in their
+	% construction: the former uses the Euclidean ($L_2$) norm, whereas the
+	% latter uses the $L_1$ norm.
+
+	% Each kernel in Equation~\eqref{eq:kernels} is positive semidefinite and
+	% therefore defines an associated reproducing-kernel Hilbert space
+	% $\mathcal H_K$. In particular, the wavelet kernel is constructed as a
+	% product across coordinates of cosine-modulated Gaussian kernels;
+	% positive semidefiniteness is preserved under products of
+	% positive-semidefinite kernels.
+
+	% The semiparametric version of the generalized representer theorem
+	% \cite{scholkopf2001generalized} allows the RKHS component to be
+	% augmented by a finite-dimensional, unpenalized parametric component.
+	% Let
+	% $
+	% \{\psi_\ell\}_{\ell=1}^{M}
+	% $
+	% be a collection of real-valued functions on the covariate space
+	% $\mathcal X$, and suppose that the $n\times M$ matrix
+	% $
+	% \bm\Psi
+	% =
+	% \bigl(\psi_\ell(\bm{x}_i)\bigr)_
+	% {\substack{i\in\left[n\right]\\\ell\in\left[M\right]}}
+	% $
+	% has rank $M$. Consider a predictor of the form
+	% \begin{equation*}
+	% 	\widetilde f=f+h,
+	% 	\qquad
+	% 	f\in\mathcal H_K,
+	% 	\qquad
+	% 	h\in\operatorname{span}\{\psi_1,\ldots,\psi_M\},
+	% \end{equation*}
+	% obtained by minimizing a regularized criterion of the form
+	% \begin{equation*}
+	% 	\mathcal C
+	% 	\left(
+	% 	(\bm{x}_1,y_1,\widetilde f(\bm{x}_1)),
+	% 	\ldots,
+	% 	(\bm{x}_n,y_n,\widetilde f(\bm{x}_n))
+	% 	\right)
+	% 	+
+	% 	G\!\left(\|f\|_{\mathcal H_K}\right),
+	% \end{equation*}
+	% where $G$ is strictly increasing. Under these conditions, the
+	% semiparametric representer theorem implies that any minimizer admits
+	% the representation
+	% \begin{equation}
+	% 	\widetilde f^{\,\star}(\bm{x})
+	% 	=
+	% 	\sum_{j=1}^{n}
+	% 	\alpha_j K(\bm{x},\bm{x}_j)
+	% 	+
+	% 	\sum_{\ell=1}^{M}
+	% 	\beta_\ell\psi_\ell(\bm{x}).
+	% 	\label{eq:semiparametric-representer}
+	% \end{equation}
+	% Thus, only the component belonging to $\mathcal H_K$ is regularized,
+	% whereas the finite-dimensional component spanned by the functions
+	% $\psi_\ell$ remains unpenalized.
+
+	A semiparametric extension of the generalized representer theorem
+	\cite{scholkopf2001generalized} allows an RKHS component to be combined with
+	an unpenalized finite-dimensional parametric component. Let
+	$
+	    \mathcal H_0
+	    =
+	    \operatorname{span}\{\psi_1,\ldots,\psi_M\},
+	$
+	where $\psi_1,\ldots,\psi_M:\mathcal X\to\mathbb R$, and define
+	\begin{equation*}
+	    \Psi_{i\ell}
+	    =
+	    \psi_\ell(\bm{x}_i),
+	    \qquad
+	    i\in \left[n\right],
+	    \quad
+	    \ell\in\left[M\right].
+	\end{equation*}
+	Assume that the resulting $n\times M$ matrix $\bm\Psi$ has full column rank
+	$M$, so that the coefficients of the finite-dimensional component are
+	identifiable on the observed sample.
+
+	Consider predictors of the form
+	\begin{equation*}
+	    \widetilde f
+	    =
+	    f+h,
+	    \qquad
+	    f\in\mathcal H_K,
+	    \qquad
+	    h\in\mathcal H_0,
+	\end{equation*}
+	and suppose that estimation is based on minimizing a criterion of the form
+	\begin{equation*}
+	    \mathcal C
+	    \left(
+	        \widetilde f(\bm{x}_1),
+	        \ldots,
+	        \widetilde f(\bm{x}_n)
+	    \right)
+	    +
+	    G\!\left(\|f\|_{\mathcal H_K}\right),
+	\end{equation*}
+	where the data are regarded as fixed arguments of $\mathcal C$ and
+	$G:[0,\infty)\to\mathbb R$ is strictly increasing. Under these conditions,
+	the generalized representer theorem implies that the RKHS component of any
+	minimizer can be represented using only kernel sections evaluated at the
+	training observations. Consequently, a minimizer admits the representation
+	\begin{equation}
+	    \widetilde f^{\,\star}(\bm{x})
+	    =
+	    \sum_{j=1}^{n}
+	        \alpha_j K(\bm{x},\bm{x}_j)
+	    +
+	    \sum_{\ell=1}^{M}
+	        \beta_\ell\psi_\ell(\bm{x}).
+	    \label{eq:semiparametric-representer}
+	\end{equation}
+	Thus, regularization is applied only to the RKHS component, whereas the
+	finite-dimensional component remains unpenalized.
+
+	For the GG-KM model, estimation is formulated as the minimization of a
+	penalized negative log-likelihood over the latent-cause predictor
+	$\eta$. Let
+	$\ell(\eta;\mathcal D_{\text{obs}})$ denote the corresponding observed-data
+	log-likelihood. The corresponding penalized estimation problem is
+	\begin{equation}
+	    \min_{\eta}
+	    \left\{
+	        -\ell(\eta;\mathcal D_{\text{obs}})
+	        +
+	        \frac{\lambda}{2}
+	        \|f\|_{\mathcal H_K}^{2}
+	    \right\},
+	    \qquad
+	    \lambda>0,
+	    \label{eq:ggkm-functional-objective}
+	\end{equation}
+	where the penalization is applied only to the RKHS component of
+	$\eta$.
+
+	To place this optimization problem within the semiparametric
+	representer-theorem framework, the unpenalized finite-dimensional
+	space is chosen to contain only an intercept. Specifically, setting
+	$
+	    M=1,
+		\text{ }
+	    \psi_1(\bm{x})=1,
+	$
+	so that
+	$
+	    \mathcal H_0
+	    =
+	    \operatorname{span}\{1\}.
+	$
+	Consequently, the class of predictors over which
+	Equation~\eqref{eq:ggkm-functional-objective} is minimized is
+	\begin{equation}
+	    \eta(\bm{x})
+	    =
+	    \beta_0+f(\bm{x}),
+	    \qquad
+	    \beta_0\in\mathbb R,
+	    \qquad
+	    f\in\mathcal H_K.
+	    \label{eq:ggkm-semiparametric-predictor}
+	\end{equation}
+	Thus, the intercept constitutes the unpenalized finite-dimensional
+	component, whereas $f$ contains the possibly nonlinear covariate
+	effect represented in the RKHS. In this case, the matrix
+	$\bm\Psi$ reduces to the $n$-vector of ones and has rank one for
+	every nonempty sample.
+
+	Substituting
+	Equation~\eqref{eq:ggkm-semiparametric-predictor} into the likelihood,
+	the estimation problem can be written explicitly as
+	\begin{equation}
+	    (\widehat{\beta}_0,\widehat f)
+	    =
+	    \arg\min_{
+	        \beta_0\in\mathbb R,\,
+	        f\in\mathcal H_K
+	    }
+	    \left\{
+	        -\ell(\beta_0,f;\mathcal D_{\text{obs}})
+	        +
+	        \frac{\lambda}{2}
+	        \|f\|_{\mathcal H_K}^{2}
+	    \right\}.
+	    \label{eq:ggkm-penalized-objective}
+	\end{equation}
+	Here, $\ell(\beta_0,f;\mathcal D_{\text{obs}})$ denotes the same observed-data
+	log-likelihood evaluated through the predictor
+	$\eta(\bm{x})=\beta_0+f(\bm{x})$.
+
+	The regularization term in
+	Equation~\eqref{eq:ggkm-penalized-objective} is of the form required by
+	the representer theorem. Indeed, for
+	\begin{equation*}
+	    G(\|f\|_{\mathcal H_K})
+	    =
+	    \frac{\lambda}{2}\|f\|_{\mathcal H_K}^{2},
+	    \qquad
+	    \|f\|_{\mathcal H_K}\geq 0,
+	\end{equation*}
+	$G$ is strictly increasing when $\lambda>0$. Therefore, the
+	semiparametric representer theorem applies to the minimization problem
+	in Equation~\eqref{eq:ggkm-penalized-objective}. It follows that the
+	RKHS component of any minimizer can be expressed as
+	$
+	    \widehat f(\bm{x})
+	    =
+	    \sum_{j=1}^{n}
+	        \widehat{\alpha}_j
+	        K(\bm{x},\bm{x}_j).
+	$
+	Hence, although
+	Equation~\eqref{eq:ggkm-penalized-objective} is initially posed as an
+	optimization problem over the infinite-dimensional space
+	$\mathcal H_K$, its solution can be sought within the finite-dimensional
+	family
+	\begin{equation}
+	    \widehat{\eta}(\bm{x})
+	    =
+	    \widehat{\beta}_0
+	    +
+	    \sum_{j=1}^{n}
+	        \widehat{\alpha}_j
+	        K(\bm{x},\bm{x}_j).
+	    \label{eq:rkhs-predictor}
+	\end{equation}
+
+	Let $\bm K$ denote the $n\times n$ training Gram matrix, with entries
+	$
+	    K_{ij}
+	    =
+	    K(\bm{x}_i,\bm{x}_j).
+	$
+	For
+	$
+	    f(\cdot)
+	    =
+	    \sum_{j=1}^{n}
+	        \alpha_j K(\cdot,\bm{x}_j),
+	$
+	the squared RKHS norm satisfies
+	$
+	    \|f\|_{\mathcal H_K}^{2}
+	    =
+	    \bm{\alpha}^{\mathsf T}
+	    \bm K
+	    \bm{\alpha}.
+	$
+	Accordingly, the penalized estimation problem reduces to the
+	finite-dimensional optimization
+	\begin{equation}
+	    \min_{\beta_0\in\mathbb R,\,
+	         \bm{\alpha}\in\mathbb R^n}
+	    \left\{
+	        -\ell(\beta_0,\bm{\alpha};\mathcal D_{\text{obs}})
+	        +
+	        \frac{\lambda}{2}
+	        \bm{\alpha}^{\mathsf T}
+	        \bm K
+	        \bm{\alpha}
+	    \right\}.
+	    \label{eq:ggkm-finite-objective}
+	\end{equation}
+	Thus, increasing $\lambda$ imposes stronger regularization on the
+	nonparametric RKHS component of the predictor, while the intercept
+	$\beta_0$ remains unpenalized.
+
+	Finally, the GG-KM predictor is linked to the conditional mean of the
+	latent number of causes through
+	\begin{equation}
+	    \theta(\bm{x})
+	    =
+	    \exp\{\eta(\bm{x})\}.
+	    \label{eq:theta-link}
+	\end{equation}
+	Therefore, $\eta(\bm{x})$ is unrestricted on $\mathbb R$, whereas the
+	exponential link guarantees $\theta(\bm{x})>0$ without requiring an
+	explicit positivity constraint.
+
+
+	% The estimation of $\eta\left(\bm{x}\right) = \log\left(\theta\left(\bm{x}\right)\right)$
+	% is formulated through the minimization of a penalized negative log-likelihood function:
+
+	% \begin{equation}
+	% 	\min \left\{- \ell\left(\bm{x}; \beta_0, f\right) + \frac{\lambda}{2} \|f\|_{\mathcal H_K}^{2}\right\},
+	% \end{equation}
+
+	% For the GG-KM model, the finite-dimensional component consists only of
+	% an intercept. Setting
+	% $M=1,
+	% \text{ }
+	% \psi_1(\bm{x})=1,
+	% $
+	% gives
+	% $
+	% h(\bm{x})=\beta_0.
+	% $
+	% The corresponding matrix $\bm\Psi$ is the $n$-vector of ones and has
+	% rank one for any nonempty sample, so the rank condition of the
+	% semiparametric representer theorem is satisfied.
+
+	% Identifying the complete predictor $\widetilde f$ with the GG-KM
+	% predictor $\eta$, therefore
+	% \begin{equation*}
+	% 	\eta(\bm{x})
+	% 	=
+	% 	\widetilde f(\bm{x})
+	% 	=
+	% 	f(\bm{x})+\beta_0,
+	% 	\qquad
+	% 	f\in\mathcal H_K.
+	% \end{equation*}
+	% The corresponding penalized objective is
+	% \begin{equation*}
+	% 	\mathcal J(\beta_0,f)
+	% 	=
+	% 	\mathcal L\!\left(
+	% 	\beta_0+f(\bm{x}_1),\ldots,
+	% 	\beta_0+f(\bm{x}_n)
+	% 	\right)
+	% 	+
+	% 	\frac{\lambda}{2}
+	% 	\|f\|_{\mathcal H_K}^{2},
+	% 	\qquad
+	% 	\lambda>0.
+	% \end{equation*}
+	% Since the penalty depends only on the RKHS component $f$, the intercept
+	% $\beta_0$ is not regularized. By
+	% Equation~\eqref{eq:semiparametric-representer}, the RKHS component of
+	% the minimizer has the finite-dimensional representation
+	% \begin{equation*}
+	% 	f^\star(\bm{x})
+	% 	=
+	% 	\sum_{j=1}^{n}
+	% 	\alpha_jK(\bm{x},\bm{x}_j),
+	% \end{equation*}
+	% and consequently the GG-KM predictor takes the form
+	% \begin{equation}
+	% 	\eta(\bm{x})
+	% 	=
+	% 	\beta_0
+	% 	+
+	% 	\sum_{j=1}^{n}
+	% 	\alpha_jK(\bm{x},\bm{x}_j).
+	% 	\label{eq:rkhs-predictor}
+	% \end{equation}
+
+	% If $\bm K$ denotes the training Gram matrix, with
+	% $
+	% K_{ij}=K(\bm{x}_i,\bm{x}_j),
+	% $
+	% then
+	% \begin{equation*}
+	% 	\|f\|_{\mathcal H_K}^{2}
+	% 	=
+	% 	\bm{\alpha}^{\mathsf T}
+	% 	\bm K
+	% 	\bm{\alpha},
+	% \end{equation*}
+	% and the regularization term becomes
+	% $
+	% \frac{\lambda}{2}
+	% \bm{\alpha}^{\mathsf T}
+	% \bm K
+	% \bm{\alpha}.
+	% $
+	% Hence, increasing $\lambda$ imposes stronger regularization on the
+	% RKHS component of the predictor while leaving the intercept
+	% $\beta_0$ unpenalized.
+
+	% For $\lambda>0$, the quadratic penalty is a strictly increasing
+	% function of $\|f\|_{\mathcal H_K}$ and therefore satisfies the
+	% condition required by the representer theorem.
+
+	% Finally, the mean parameter of the latent number of competing causes
+	% is related to the predictor through
+	% \begin{equation*}
+	% 	\theta(\bm{x})
+	% 	=
+	% 	\exp\{\eta(\bm{x})\},
+	% \end{equation*}
+	% or equivalently, $\eta(\bm{x})=\log\theta(\bm{x})$.
+	% Thus, $\eta(\bm{x})$ is unrestricted on the real line, while the
+	% exponential link guarantees
+	% $\theta(\bm{x})>0$ without requiring an additional positivity
+	% constraint.
+}
+
+{The count law converts the intensity into a population survival function and a cure fraction through its generating function. Writing $\theta_i=\theta(\bm{x}_i)$, Poisson counts have generating function
+\begin{equation*}
+A_i(u)=\exp\{\theta_i(u-1)\},
+\end{equation*}
+so that substituting $u=S_{GG}(t)$ in Equation~\eqref{eq:promotion-population} for the population survival and $u=0$ for the cure fraction gives
+\begin{equation}
+\begin{aligned}
+S_{\mathrm{P}}(t\mid\bm{x})
+&=\exp\{-\theta(\bm{x})F_{GG}(t)\},\\
+p_{c,\mathrm{P}}(\bm{x})
+&=\exp\{-\theta(\bm{x})\},
+\end{aligned}
+\label{eq:poisson-survival-cure}
+\end{equation}
+with population density and hazard
+\begin{equation*}
+\begin{aligned}
+f_{\mathrm{pop}}(t\mid\bm{x})
+&=\theta(\bm{x})f_{GG}(t)\exp\{-\theta(\bm{x})F_{GG}(t)\},\\
+h_{\mathrm{pop}}(t\mid\bm{x})
+&=\theta(\bm{x})f_{GG}(t),
+\end{aligned}
+\end{equation*}
+so the Poisson population hazard is the latency density scaled by the intensity, and $\mathrm{Var}(N_i\mid\bm{x}_i)=\theta_i$. Negative-binomial counts with dispersion $\phi>0$ have generating function
+\begin{equation*}
+A_i(u)=\{1+\phi\theta_i(1-u)\}^{-1/\phi},
+\end{equation*}
+with mean $\theta_i$ and variance $\theta_i(1+\phi\theta_i)$, so $\phi$ controls overdispersion relative to the Poisson case; the same substitutions give
+\begin{equation}
+\begin{aligned}
+S_{\mathrm{NB}}(t\mid\bm{x})
+&=\{1+\phi\theta(\bm{x})F_{GG}(t)\}^{-1/\phi},\\
+p_{c,\mathrm{NB}}(\bm{x})
+&=\{1+\phi\theta(\bm{x})\}^{-1/\phi},
+\end{aligned}
+\label{eq:nb-survival-cure}
+\end{equation}
+with population density and hazard
+\begin{equation*}
+\begin{aligned}
+f_{\mathrm{pop}}(t\mid\bm{x})
+&=\theta(\bm{x})f_{GG}(t)\{1+\phi\theta(\bm{x})F_{GG}(t)\}^{-1/\phi-1},\\
+h_{\mathrm{pop}}(t\mid\bm{x})
+&=\frac{\theta(\bm{x})f_{GG}(t)}{1+\phi\theta(\bm{x})F_{GG}(t)}.
+\end{aligned}
+\end{equation*}
+The negative-binomial law reduces to the Poisson law as $\phi\to0$, so that $S_{\mathrm{NB}}\to S_{\mathrm{P}}$ and $p_{c,\mathrm{NB}}\to p_{c,\mathrm{P}}$, giving a direct check on the two count models. The cure fraction is strictly positive at every finite $\theta(\bm{x})$ and approaches one only as $\theta(\bm{x})\to0$.}
+
+\subsection{Estimation Procedures}\label{sec:penalized-estimation}
+
+Estimation of the GG-KM model is based on the EM algorithm, with
+regularization incorporated through a penalized EM procedure. The
+Poisson specification is estimated using penalized EM, whereas the
+negative-binomial specification is estimated using the
+Expectation/Conditional Maximization Either (ECME) algorithm
+\cite{mclachlan2008algorithm}. The latter is particularly useful for
+the negative-binomial model because the additional dispersion parameter
+$\phi$ leads to a more complicated complete-data maximization step.
+
+Let
+$
+    \mathcal D_{\mathrm{comp}}
+    =
+    \{(t_i,\delta_i,N_i,\bm{x}_i)\}_{i=1}^{n}
+$
+denote the corresponding complete data obtained by augmenting the
+observations with the latent number of causes $N_i$. The parameter
+vectors for the Poisson and negative-binomial models are respectively
+$
+    \bm\Theta_{\mathrm P}
+    =
+    (\beta_0,\bm{\alpha},a,d,p)
+$
+and
+$
+    \bm\Theta_{\mathrm{NB}}
+    =
+    (\beta_0,\bm{\alpha},a,d,p,\phi).
+$
+For both specifications,
+$
+    \eta_i=
+    \eta(\bm{x}_i)
+    =
+    \beta_0+\bm K_i^{\mathsf T}\bm{\alpha},
+    \text{ }
+    \theta_i=\exp(\eta_i),
+$
+where
+$
+    \bm K_i
+    =
+    \bigl(
+        K(\bm{x}_i,\bm{x}_1),
+        \ldots,
+        K(\bm{x}_i,\bm{x}_n)
+    \bigr)^{\mathsf T}.
+$
+
+The target criterion is the observed penalized log-likelihood, obtained
+by combining the count distribution, the generalized gamma latency
+distribution in Equation~\eqref{eq:gg-distribution}, the kernel
+predictor in Equation~\eqref{eq:rkhs-predictor}, and the RKHS penalty.
+For the Poisson model,
+\begin{equation}
+    \ell^{\mathrm{pen}}_{\mathrm P}
+    (\bm\Theta_{\mathrm P})
+    =
+    \sum_{i=1}^{n}
+    \left[
+        \delta_i
+        \{\eta_i+\log f_{GG}(t_i)\}
+        -
+        \theta_iF_{GG}(t_i)
+    \right]
+    -
+    \frac{\lambda}{2}
+    \bm{\alpha}^{\mathsf T}
+    \bm K
+    \bm{\alpha}.
+    \label{eq:poisson-observed-likelihood}
+\end{equation}
+For the negative-binomial model,
+\begin{equation}
+    \begin{aligned}
+        \ell^{\mathrm{pen}}_{\mathrm{NB}}
+        (\bm\Theta_{\mathrm{NB}})
+        ={}&
+        \sum_{i=1}^{n}
+        \left[
+            \delta_i
+            \{\eta_i+\log f_{GG}(t_i)\}
+        \right.\\
+        &\left.
+            \qquad-
+            \left(
+                \frac{1}{\phi}+\delta_i
+            \right)
+            \log
+            \{1+\phi\theta_iF_{GG}(t_i)\}
+        \right]
+        -
+        \frac{\lambda}{2}
+        \bm{\alpha}^{\mathsf T}
+        \bm K
+        \bm{\alpha},
+    \end{aligned}
+    \label{eq:nb-observed-likelihood}
+\end{equation}
+with $\phi>0$. Here and throughout this subsection,
+$f_{GG}(t_i)$, $F_{GG}(t_i)$, and $S_{GG}(t_i)$ are evaluated at the
+current generalized gamma parameters $(a,d,p)$.
+
+Direct optimization of these observed-data criteria is complicated by
+the latent counts $N_i$. The EM construction instead uses the
+conditional expectation of the complete-data log-likelihood. Given the
+current parameter estimate $\bm\Theta^{(r)}$, define
+\begin{equation}
+    Q_{\lambda}
+    \left(
+        \bm\Theta
+        \mid
+        \bm\Theta^{(r)}
+    \right)
+    =
+    \mathbb E_{\bm\Theta^{(r)}}
+    \left[
+        \ell_c
+        \left(
+            \bm\Theta;
+            \mathcal D_{\mathrm{comp}}
+        \right)
+        \,\middle|\,
+        \mathcal D_{\mathrm{obs}}
+    \right]
+    -
+    \frac{\lambda}{2}
+    \bm{\alpha}^{\mathsf T}
+    \bm K
+    \bm{\alpha}.
+    \label{eq:penalized-Q-function}
+\end{equation}
+The E-step therefore replaces functions of the unobserved $N_i$ by
+their conditional expectations under the current parameter values.
+
+For the Poisson specification, the complete-data log-likelihood,
+up to terms that do not depend on the model parameters, is
+\begin{equation}
+    \begin{aligned}
+        \ell_{c,\mathrm P}
+        ={}&
+        \sum_{i=1}^{n}
+        \left\{
+            N_i\eta_i-\theta_i
+        \right\}\\
+        &+
+        \sum_{i=1}^{n}
+        \left\{
+            \delta_i\log f_{GG}(t_i)
+            +
+            (N_i-\delta_i)
+            \log S_{GG}(t_i)
+        \right\}.
+    \end{aligned}
+    \label{eq:poisson-complete-data}
+\end{equation}
+The omitted terms, such as those involving the factorial of $N_i$,
+are constant with respect to $\bm\Theta_{\mathrm P}$ when the complete
+data are held fixed.
+
+At iteration $r$, the conditional expectation of the latent count for
+the Poisson model is
+\begin{equation}
+    \widehat N_{i,\mathrm P}^{(r)}
+    =
+    \mathbb E
+    \left[
+        N_i
+        \mid
+        t_i,\delta_i,\bm{x}_i;
+        \bm\Theta_{\mathrm P}^{(r)}
+    \right]
+    =
+    \delta_i
+    +
+    \theta_i^{(r)}
+    S_{GG}^{(r)}(t_i).
+    \label{eq:poisson-estep}
+\end{equation}
+For the negative-binomial specification, the corresponding conditional
+expectation is
+\begin{equation}
+    \widehat N_{i,\mathrm{NB}}^{(r)}
+    =
+    \delta_i
+    +
+    \frac{
+        \bigl(1+\phi^{(r)}\delta_i\bigr)
+        \theta_i^{(r)}
+        S_{GG}^{(r)}(t_i)
+    }{
+        1+
+        \phi^{(r)}
+        \theta_i^{(r)}
+        F_{GG}^{(r)}(t_i)
+    }.
+    \label{eq:nb-estep}
+\end{equation}
+
+Once the conditional counts have been computed, the expected
+complete-data objective separates naturally into a predictor block and
+a generalized gamma latency block. For notational simplicity, the
+iteration index on $\widehat N_i$ is suppressed in the following
+expressions.
+
+For the Poisson model, the terms depending on
+$(\beta_0,\bm{\alpha})$ are
+\begin{equation}
+    Q_{\eta,\mathrm P}
+    =
+    \sum_{i=1}^{n}
+    \left\{
+        \widehat N_i\eta_i
+        -
+        \exp(\eta_i)
+    \right\}
+    -
+    \frac{\lambda}{2}
+    \bm{\alpha}^{\mathsf T}
+    \bm K
+    \bm{\alpha}.
+    \label{eq:poisson-predictor-block}
+\end{equation}
+For the negative-binomial model, conditional on the current value of
+$\phi$, the corresponding predictor block is
+\begin{equation}
+    Q_{\eta,\mathrm{NB}}
+    =
+    \sum_{i=1}^{n}
+    \left[
+        \widehat N_i\eta_i
+        -
+        \left(
+            \widehat N_i+\frac{1}{\phi}
+        \right)
+        \log\{1+\phi\exp(\eta_i)\}
+    \right]
+    -
+    \frac{\lambda}{2}
+    \bm{\alpha}^{\mathsf T}
+    \bm K
+    \bm{\alpha},
+    \label{eq:nb-predictor-block}
+\end{equation}
+up to terms that do not depend on $(\beta_0,\bm{\alpha})$.
+
+For fixed conditional counts, both count models share the same
+generalized gamma latency block,
+\begin{equation}
+    Q_{GG}
+    =
+    \sum_{i=1}^{n}
+    \left\{
+        \delta_i\log f_{GG}(t_i)
+        +
+        (\widehat N_i-\delta_i)
+        \log S_{GG}(t_i)
+    \right\}.
+    \label{eq:latency-block}
+\end{equation}
+Consequently, $(\beta_0,\bm{\alpha})$ appears only in the corresponding
+predictor block, whereas $(a,d,p)$ appears only in
+Equation~\eqref{eq:latency-block} once $\widehat N_i$ is held fixed.
+This separation permits the predictor and latency parameters to be
+updated in distinct maximization blocks without altering the underlying
+penalized EM objective.
+
+For the Poisson specification, these conditional maximizations
+constitute the penalized EM update. The negative-binomial specification
+contains the additional dispersion parameter $\phi$. Its complete-data
+count contribution contains terms involving $\phi$ and gamma functions
+of the latent count, which makes direct maximization of the expected
+complete-data criterion with respect to $\phi$ considerably less
+convenient. The ECME algorithm avoids this additional expectation by
+updating $\phi$ through the observed-data log-likelihood rather than
+through the corresponding expected complete-data block.
+
+Specifically, after updating
+$(\beta_0,\bm{\alpha})$ and $(a,d,p)$ conditionally on the current
+dispersion, the ECME update is
+\begin{equation}
+    \phi^{(r+1)}
+    =
+    \underset{\phi>0}{\arg\max}
+    \;
+    \ell^{\mathrm{pen}}_{\mathrm{NB}}
+    \left(
+        \beta_0^{(r+1)},
+        \bm{\alpha}^{(r+1)},
+        a^{(r+1)},
+        d^{(r+1)},
+        p^{(r+1)},
+        \phi
+    \right).
+    \label{eq:nb-ecme-phi-update}
+\end{equation}
+Because the RKHS penalty does not depend on $\phi$, this update is
+equivalent to maximizing the unpenalized observed-data log-likelihood
+with respect to $\phi$ while all remaining parameters are held fixed.
+
+The Supporting Information provides the complete-data derivations,
+the conditional expectations in
+Equations~\eqref{eq:poisson-estep}--\eqref{eq:nb-estep}, and the
+analytical gradients used to optimize the predictor and latency
+blocks.
+
+\begin{algorithm*}[tbp]
+	\caption{Penalized EM algorithm for the Poisson GG-KM model}
+	\label{alg:poisson-em}
+	\begin{algorithmic}[1]
+
+		\Require Training data $(\bm X,\bm t,\bm\delta)$, kernel configuration,
+		$\lambda>0$, tolerance $\varepsilon>0$, and maximum number of
+		iterations $k_{\max}$
+
+		\State Construct $\bm K$ and initialize
+		$(\beta_0^{(0)},\bm\alpha^{(0)},\bm\xi^{(0)})$, with
+		$\bm\xi=(\log a,\log d,\log p)^\top$; evaluate
+		$\ell_{\mathrm P}^{\mathrm{pen},(0)}$.
+
+		\For{$k=0,\ldots,k_{\max}-1$}
+
+			\State Set
+			$\eta_i^{(k)}
+			=\beta_0^{(k)}+\bm K_i^\top\bm\alpha^{(k)}$ and
+			$(a^{(k)},d^{(k)},p^{(k)})=\exp\{\bm\xi^{(k)}\}$.
+
+			\State \textbf{E-step:} for $i=1,\ldots,n$, compute
+			\[
+			\widehat N_i^{(k+1)}
+			=
+			\delta_i+
+			\exp\{\eta_i^{(k)}\}
+			S_{GG}\!\left(
+				t_i;a^{(k)},d^{(k)},p^{(k)}
+			\right).
+			\]
+
+			\State \textbf{M-step:} with $\widehat N_i^{(k+1)}$ fixed, update
+			\[
+			(\beta_0^{(k+1)},\bm\alpha^{(k+1)})
+			=
+			\arg\max_{\beta_0,\bm\alpha}
+			\left\{
+			\sum_{i=1}^{n}
+			\left[
+				\widehat N_i^{(k+1)}\eta_i-e^{\eta_i}
+			\right]
+			-
+			\frac{\lambda}{2}
+			\bm\alpha^\top\bm K\bm\alpha
+			\right\}.
+			% \qquad
+			% \eta_i=\beta_0+\bm K_i^\top\bm\alpha.
+			\]
+
+			\State Update the latency parameters on the log scale:
+			\[
+			\bm\xi^{(k+1)}
+			=
+			\arg\max_{\bm\xi}
+			\sum_{i=1}^{n}
+			\left[
+				\delta_i
+				\log f_{GG}\!\left(t_i;e^{\xi_a},e^{\xi_d},e^{\xi_p}\right)
+				+
+				(\widehat N_i^{(k+1)}-\delta_i)
+				\log S_{GG}\!\left(t_i;e^{\xi_a},e^{\xi_d},e^{\xi_p}\right)
+			\right].
+			\]
+
+			\State Set
+			$(a^{(k+1)},d^{(k+1)},p^{(k+1)})
+			=\exp\{\bm\xi^{(k+1)}\}$ and evaluate
+			$\ell_{\mathrm P}^{\mathrm{pen},(k+1)}$.
+
+			\If{
+			$\left|
+			\ell_{\mathrm P}^{\mathrm{pen},(k+1)}
+			-
+			\ell_{\mathrm P}^{\mathrm{pen},(k)}
+			\right|
+			\leq\varepsilon$
+			}
+				\State \textbf{break}
+			\EndIf
+
+		\EndFor
+
+		\State \Return
+		$(\widehat\beta_0,\widehat{\bm\alpha},
+		\widehat a,\widehat d,\widehat p)$.
+
+	\end{algorithmic}
+\end{algorithm*}
+
+\begin{algorithm*}[tbp]
+	\caption{Penalized ECME algorithm for the negative-binomial GG-KM model}
+	\label{alg:nb-ecme}
+	\begin{algorithmic}[1]
+
+		\Require Training data $(\bm X,\bm t,\bm\delta)$, kernel configuration,
+		$\lambda>0$, tolerance $\varepsilon>0$, and maximum number of
+		iterations $k_{\max}$
+
+		\State Construct $\bm K$ and initialize
+		$(\beta_0^{(0)},\bm\alpha^{(0)},\bm\xi^{(0)},\zeta^{(0)})$, with
+		$\bm\xi=(\log a,\log d,\log p)^\top$ and $\zeta=\log\phi$;
+		evaluate $\ell_{\mathrm{NB}}^{\mathrm{pen},(0)}$.
+
+		\For{$k=0,\ldots,k_{\max}-1$}
+
+			\State Set
+			$\eta_i^{(k)}
+			=\beta_0^{(k)}+\bm K_i^\top\bm\alpha^{(k)}$,
+			$(a^{(k)},d^{(k)},p^{(k)})=\exp\{\bm\xi^{(k)}\}$, and
+			$\phi^{(k)}=e^{\zeta^{(k)}}$.
+
+			\State \textbf{E-step:} for $i=1,\ldots,n$, compute
+			\[
+			\widehat N_i^{(k+1)}
+			=
+			\delta_i+
+			\frac{
+				(1+\phi^{(k)}\delta_i)
+				e^{\eta_i^{(k)}}
+				S_{GG}(t_i;a^{(k)},d^{(k)},p^{(k)})
+			}{
+				1+\phi^{(k)}
+				e^{\eta_i^{(k)}}
+				F_{GG}(t_i;a^{(k)},d^{(k)},p^{(k)})
+			}.
+			\]
+
+			\State \textbf{M-step:} with $\widehat N_i^{(k+1)}$ and
+			$\phi^{(k)}$ fixed, update
+			\[
+			(\beta_0^{(k+1)},\bm\alpha^{(k+1)})
+			=
+			\arg\max_{\beta_0,\bm\alpha}
+			\left\{
+			\sum_{i=1}^{n}
+			\left[
+				\widehat N_i^{(k+1)}\eta_i
+				-
+				\left(
+					\widehat N_i^{(k+1)}
+					+\frac{1}{\phi^{(k)}}
+				\right)
+				\log\{1+\phi^{(k)}e^{\eta_i}\}
+			\right]
+			-
+			\frac{\lambda}{2}
+			\bm\alpha^\top\bm K\bm\alpha
+			\right\}.
+			% \qquad
+			% \eta_i=\beta_0+\bm K_i^\top\bm\alpha.
+			\]
+
+			\State Update the latency parameters on the log scale:
+			\[
+			\bm\xi^{(k+1)}
+			=
+			\arg\max_{\bm\xi}
+			\sum_{i=1}^{n}
+			\left[
+				\delta_i
+				\log f_{GG}(t_i;e^{\xi_a},e^{\xi_d},e^{\xi_p})
+				+
+				(\widehat N_i^{(k+1)}-\delta_i)
+				\log S_{GG}(t_i;e^{\xi_a},e^{\xi_d},e^{\xi_p})
+			\right].
+			\]
+
+			\State \textbf{ECME-step:} update the dispersion on the log scale
+			by maximizing the observed penalized log-likelihood:
+			\[
+			\zeta^{(k+1)}
+			=
+			\arg\max_{\zeta\in\mathbb R}
+			\ell_{\mathrm{NB}}^{\mathrm{pen}}
+			\left(
+			    \beta_0^{(k+1)},
+			    \bm\alpha^{(k+1)},
+			    e^{\bm\xi^{(k+1)}},
+			    e^\zeta
+			\right).
+			\]
+
+			\State Set
+			$(a^{(k+1)},d^{(k+1)},p^{(k+1)})
+			=\exp\{\bm\xi^{(k+1)}\}$ and
+			$\phi^{(k+1)}=e^{\zeta^{(k+1)}}$;
+			evaluate $\ell_{\mathrm{NB}}^{\mathrm{pen},(k+1)}$.
+
+			\If{
+			$\left|
+			\ell_{\mathrm{NB}}^{\mathrm{pen},(k+1)}
+			-
+			\ell_{\mathrm{NB}}^{\mathrm{pen},(k)}
+			\right|
+			\leq\varepsilon$
+			}
+				\State \textbf{break}
+			\EndIf
+
+		\EndFor
+
+		\State \Return
+		$(\widehat\beta_0,\widehat{\bm\alpha},
+		\widehat a,\widehat d,\widehat p,\widehat\phi)$.
+
+	\end{algorithmic}
+\end{algorithm*}
+
+Algorithms~\ref{alg:poisson-em} and \ref{alg:nb-ecme} summarize the
+penalized EM and ECME procedures for the Poisson and negative-binomial
+GG-KM models, respectively.
+
+The simulations and application developed throughout this work use different
+families of kernels to represent distinct forms of similarity between
+covariate vectors. Let $\bm{x},\bm{x}'\in\mathcal X\subseteq\mathbb R^r$.
+The kernel families considered are
+\begin{equation}
+	\begin{aligned}
+		K_{\mathrm{lin}}(\bm{x},\bm{x}')
+		&=\bm{x}^{\mathsf T}\bm{x}',\\
+		K_{\mathrm{poly}}(\bm{x},\bm{x}')
+		&=(\gamma\,\bm{x}^{\mathsf T}\bm{x}'+c_0)^q,\\
+		K_{\mathrm{rbf}}(\bm{x},\bm{x}')
+		&=\exp\{-\gamma\|\bm{x}-\bm{x}'\|_2^2\},\\
+		K_{\mathrm{exp}}(\bm{x},\bm{x}')
+		&=\exp\{-\gamma\|\bm{x}-\bm{x}'\|_2\},\\
+		K_{\mathrm{lap}}(\bm{x},\bm{x}')
+		&=\exp\{-\gamma\|\bm{x}-\bm{x}'\|_1\},\\
+		K_{\mathrm{cau}}(\bm{x},\bm{x}')
+		&=\{1+\gamma\|\bm{x}-\bm{x}'\|_2^2\}^{-1},\\
+		K_{\mathrm{wav}}(\bm{x},\bm{x}')
+		&=
+		\prod_{j=1}^{r}
+		\left[
+		\cos\!\left(
+		1.75\,\frac{x_j-x_j'}{A}
+		\right)
+		\exp\!\left\{
+		-\frac{1}{2}
+		\left(
+		\frac{x_j-x_j'}{A}
+		\right)^2
+		\right\}
+		\right].
+	\end{aligned}
+	\label{eq:kernels}
+\end{equation}
+Here, $\gamma>0$ is a kernel scale parameter, $q$ is the polynomial degree,
+$c_0$ is the polynomial offset, and $A>0$ controls the scale of the
+wavelet kernel. The RBF kernel corresponds to the Gaussian kernel and
+depends on the squared Euclidean distance, whereas the exponential and
+Laplacian kernels use the Euclidean and $L_1$ distances, respectively.
+Kernel-specific hyperparameters are selected within the corresponding
+tuning procedure.
+
+The GG-KM model is implemented in the open-source Python package \texttt{scikit-cure},
+available at \href{https://github.com/cowvin0/scikit-cure}{GitHub}.
+
+\subsection{Prediction, tuning, and evaluation}
+\label{sec:prediction-evaluation}
+
+Prediction for an unseen covariate vector uses the training expansion
+$
+\eta(\bm{x}_{\mathrm{new}})
+=
+\widehat\beta_0
++
+K(\bm{x}_{\mathrm{new}},\bm{X}_{\mathrm{train}})
+\widehat{\bm{\alpha}}.
+$
+Equations~\eqref{eq:poisson-survival-cure} and
+\eqref{eq:nb-survival-cure} then produce the individual cure fraction
+and population survival curve. Covariate preprocessing is estimated
+from the training data and applied unchanged to validation and test
+data.
+
+Predictive evaluation uses common event-stratified outer splits with
+$70\%$ of observations for training and $30\%$ for testing. Kernel
+parameters, the penalty, model variants, and all preprocessing choices
+are selected inside the outer training set by a shared inner tuning
+protocol and comparable search budget. The same outer test observations
+and evaluation grid are used for every paired method comparison.
+
+Let $\widehat G$ be the Kaplan--Meier estimate of the censoring survival
+distribution fitted from the outer training data, with censoring treated
+as the event. The weighting convention follows the prediction-error
+construction of Graf and colleagues.\cite{graf1999} For a test set of
+size $m$, the inverse-probability-of-censoring weighted Brier score is
+\begin{equation}
+	\begin{aligned}
+		\widehat{\mathrm{BS}}(t)
+		=
+		\frac{1}{m}\sum_{i=1}^{m}
+		\Biggl\{
+		&\frac{I(t_i\leq t,\delta_i=1)}
+		{\widehat G(t_i-)}
+		\widehat S_i(t)^2\\
+		+{}&
+		\frac{I(t_i>t)}
+		{\widehat G(t)}
+		[1-\widehat S_i(t)]^2
+		\Biggr\}.
+	\end{aligned}
+	\label{eq:ipcw-brier}
+\end{equation}
+The integration horizon is selected from the outer training data and
+restricted to times with reliable censoring support. The integrated
+Brier score is the time average obtained by trapezoidal integration of
+Equation~\eqref{eq:ipcw-brier} over the frozen grid and division by the
+horizon length, without renormalizing by the realized sum of weights.
+
+Discrimination with respect to long-term cure status is additionally
+assessed using an imputation-based area under the receiver operating
+characteristic curve for cure models, denoted by
+$\mathrm{AUC}_{\mathrm{cure}}$ \cite{medina2024}. Let
+\begin{equation}
+	\widehat\pi_i
+	=
+	\lim_{t\to\infty}
+	\widehat S_i(t)
+\end{equation}
+denote the estimated cure probability for subject $i$. For the Poisson
+GG-KM model,
+$
+\widehat\pi_i
+=
+\exp\{-\exp(\widehat\eta_i)\},
+$
+whereas for the negative-binomial GG-KM model,
+$
+\widehat\pi_i
+=
+\left(
+1+\widehat\phi\exp(\widehat\eta_i)
+\right)^{-1/\widehat\phi}
+$.
+Because cure status is not directly observed for censored individuals,
+$\widehat\pi_i$ and $1-\widehat\pi_i$ are used as imputation weights for
+the cured and susceptible states, respectively. For a cut-off
+$c\in[0,1]$, the estimated true-positive and false-positive rates are
+\begin{equation}
+	\widehat{\mathrm{TPR}}(c)
+	=
+	\frac{
+		\displaystyle
+		\sum_{i=1}^{m}
+		I(\widehat\pi_i\leq c)
+		(1-\widehat\pi_i)
+	}{
+		\displaystyle
+		\sum_{i=1}^{m}
+		(1-\widehat\pi_i)
+	},
+	\label{eq:auc-cure-tpr}
+\end{equation}
+\begin{equation}
+	\widehat{\mathrm{FPR}}(c)
+	=
+	\frac{
+		\displaystyle
+		\sum_{i=1}^{m}
+		I(\widehat\pi_i\leq c)
+		\widehat\pi_i
+	}{
+		\displaystyle
+		\sum_{i=1}^{m}
+		\widehat\pi_i
+	}.
+	\label{eq:auc-cure-fpr}
+\end{equation}
+Here, lower values of $\widehat\pi_i$ correspond to stronger evidence
+that an individual is susceptible, so susceptibility is treated as the
+positive class. The $\mathrm{AUC}_{\mathrm{cure}}$ is obtained by
+trapezoidal integration of the receiver operating characteristic curve
+formed by Equations~\eqref{eq:auc-cure-tpr} and \eqref{eq:auc-cure-fpr}, that is
+		$\{\widehat{\mathrm{FPR}}(c),\widehat{\mathrm{TPR}}(c)\}$
+over $c\in[0,1]$. Larger values indicate better discrimination between
+individuals with higher and lower probabilities of belonging to the
+susceptible subpopulation.
+
+Evaluation summaries retain paired score differences, cure-fraction
+error in simulations, $\mathrm{AUC}_{\mathrm{cure}}$, calibration,
+convergence, failures, and runtime. A common generalized gamma latency
+is used throughout the reported simulation so that the generating
+latency matches the fitted latency structure and predictor-shape
+contrasts are not confounded with unmodelled latency heterogeneity.
+Covariate-dependent latency was not evaluated in the reported scenarios
+and remains a future misspecification stress test.
+
+% \subsection{Prediction, tuning, and evaluation}\label{sec:prediction-evaluation}
+
+% Prediction for an unseen covariate vector uses the training expansion $\eta(\bm{x}_{\mathrm{new}})=\widehat\beta_0+K(\bm{x}_{\mathrm{new}},\bm{X}_{\mathrm{train}})\widehat{\bm{\alpha}}$. Equations~\eqref{eq:poisson-survival-cure} and \eqref{eq:nb-survival-cure} then produce the individual cure fraction and population survival curve. Covariate preprocessing is estimated from the training data and applied unchanged to validation and test data.
+
+% Predictive evaluation uses common event-stratified outer splits with $70\%$ of observations for training and $30\%$ for testing. Kernel parameters, the penalty, model variants, and all preprocessing choices are selected inside the outer training set by a shared inner tuning protocol and comparable search budget. The same outer test observations and evaluation grid are used for every paired method comparison.
+
+% Let $\widehat G$ be the Kaplan--Meier estimate of the censoring survival distribution fitted from the outer training data, with censoring treated as the event. The weighting convention follows the prediction-error construction of Graf and colleagues.\cite{graf1999} For a test set of size $m$, the inverse-probability-of-censoring weighted Brier score is
+% \begin{equation}
+	% \begin{aligned}
+		% \widehat{\mathrm{BS}}(t)=\frac{1}{m}\sum_{i=1}^{m}
+		% \Biggl\{
+		% &\frac{I(t_i\leq t,\delta_i=1)}{\widehat G(t_i-)}
+		% \widehat S_i(t)^2\\
+		% +{}&\frac{I(t_i>t)}{\widehat G(t)}
+		% [1-\widehat S_i(t)]^2
+		% \Biggr\}.
+		% \end{aligned}
+	% \label{eq:ipcw-brier}
+	% \end{equation}
+% The integration horizon is selected from the outer training data and restricted to times with reliable censoring support. The integrated Brier score is the time average obtained by trapezoidal integration of Equation~\eqref{eq:ipcw-brier} over the frozen grid and division by the horizon length, without renormalizing by the realized sum of weights.
+
+% Evaluation summaries retain paired score differences, cure-fraction error in simulations, calibration, convergence, failures, and runtime. A common generalized gamma latency is used throughout the reported simulation so that the generating latency matches the fitted latency structure and predictor-shape contrasts are not confounded with unmodelled latency heterogeneity. Covariate-dependent latency was not evaluated in the reported scenarios and remains a future misspecification stress test.

@@ -1,0 +1,115 @@
+\begin{table*}[p]
+\caption{
+Numerical diagnostics aggregated over all 12 high-dimensional simulation
+scenarios. Each method configuration has 3,000 planned fits, corresponding to
+250 replications in each scenario. Converged fits are successful fits satisfying
+the explicit convergence criterion; successful nonconverged fits completed
+without failure but did not satisfy that criterion. Failed denotes fits with
+\texttt{status = failed}. Latency-bound contacts count final successful fits
+with at least one of the generalized-gamma parameters $a$, $d$, or $p$ at the
+lower optimization bound of $10^{-5}$. The $\phi$-bound column counts contacts
+with the negative-binomial dispersion lower bound of $10^{-8}$; a dash indicates
+that the dispersion parameter is not applicable. Runtime is the mean with the
+maximum in parentheses, in seconds.
+}
+\label{tab:supp-highdim-diagnostics}
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\hline
+Method
+& Converged
+& Successful nonconverged
+& Failed
+& Latency bound
+& $\phi$ low
+& Runtime (s) \\
+\hline
+
+GG-KM Poisson -- linear
+& 2998/3000 & 0 & 2 & 97 & -- & 6.92 (43.10) \\
+
+GG-KM Poisson -- RBF
+& 2997/3000 & 1 & 2 & 87 & -- & 39.10 (132.24) \\
+
+GG-KM Poisson -- Laplacian
+& 2996/3000 & 2 & 2 & 85 & -- & 42.94 (250.48) \\
+
+GG-KM Poisson -- exponential
+& 2999/3000 & 0 & 1 & 84 & -- & 34.03 (127.85) \\
+
+GG-KM Poisson -- Cauchy
+& 2996/3000 & 0 & 4 & 82 & -- & 37.17 (132.88) \\
+
+GG-KM Poisson -- polynomial
+& 2997/3000 & 0 & 3 & 81 & -- & 51.96 (230.66) \\
+
+GG-KM Poisson -- wavelet
+& 2998/3000 & 0 & 2 & 85 & -- & 58.10 (242.73) \\
+
+\hline
+
+GG-KM Negative binomial -- linear
+& 2998/3000 & 0 & 2 & 104 & 0 & 6.81 (111.57) \\
+
+GG-KM Negative binomial -- RBF
+& 2998/3000 & 0 & 2 & 86 & 0 & 35.25 (273.51) \\
+
+GG-KM Negative binomial -- Laplacian
+& 2996/3000 & 0 & 4 & 85 & 0 & 37.85 (216.56) \\
+
+GG-KM Negative binomial -- exponential
+& 2995/3000 & 0 & 5 & 80 & 0 & 33.38 (212.08) \\
+
+GG-KM Negative binomial -- Cauchy
+& 2995/3000 & 0 & 5 & 85 & 0 & 34.71 (255.29) \\
+
+GG-KM Negative binomial -- polynomial
+& 2994/3000 & 0 & 6 & 79 & 0 & 87.66 (616.38) \\
+
+GG-KM Negative binomial -- wavelet
+& 2997/3000 & 0 & 3 & 83 & 0 & 61.85 (351.75) \\
+
+\hline
+
+Spline Poisson
+& 2997/3000 & 0 & 3 & 91 & -- & 13.03 (73.98) \\
+
+Spline Negative binomial
+& 2998/3000 & 0 & 2 & 97 & 0 & 13.02 (141.35) \\
+
+Promotion time
+& 2981/3000 & 1 & 18 & 29 & -- & 1.50 (13.96) \\
+
+Mixture cure
+& 2993/3000 & 6 & 1 & 65 & -- & 0.98 (16.77) \\
+
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+% % Generated from results/simulation-highdim/status-summary-84332eb72406d20c.csv and results/simulation-highdim/diagnostic-summary-84332eb72406d20c.csv
+% \begin{table*}[p]
+% \caption{Numerical diagnostics aggregated over all 12 high-dimensional simulation scenarios. Runtime is the mean with the maximum in parentheses. Latency-bound contacts count final fits with at least one of $a$, $d$, or $p$ at a declared optimization bound; dispersion contacts are shown separately by lower and upper bound. Safeguard counts indicate final fits that accepted a fractional block step. Inner nonconvergence counts candidate-fold fits and therefore has a larger denominator than the number of final fits.}
+% \label{tab:supp-highdim-diagnostics}
+% \centering
+% \scriptsize
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{lcccccccc}
+% \hline
+% Method & Converged & Failed & Latency bound & $\phi$ low & $\phi$ high & Safeguard & Inner nonconverged & Runtime (s) \\
+% \hline
+% Log-linear Poisson & 1800/1800 & 0 & 191 & 0 & 0 & 0 & 75/14400 & 7.16 (14.65) \\
+% Log-linear Negative binomial & 1788/1800 & 0 & 249 & 1027 & 0 & 0 & 253/14400 & 8.92 (17.92) \\
+% Spline Poisson & 1798/1800 & 0 & 168 & 0 & 0 & 0 & 45/14400 & 9.59 (18.50) \\
+% Spline Negative binomial & 1787/1800 & 0 & 211 & 1062 & 3 & 0 & 181/14400 & 10.89 (23.38) \\
+% Quadratic Poisson & 1796/1800 & 0 & 162 & 0 & 0 & 0 & 75/14400 & 8.99 (17.47) \\
+% Quadratic Negative binomial & 1796/1800 & 0 & 171 & 1225 & 2 & 0 & 216/14400 & 10.03 (20.32) \\
+% GG-KM Poisson & 1799/1800 & 0 & 164 & 0 & 0 & 0 & 87/14400 & 9.80 (19.45) \\
+% GG-KM Negative binomial & 1796/1800 & 0 & 160 & 1799 & 0 & 0 & 82/14400 & 9.97 (17.71) \\
+% \hline
+% \end{tabular}%
+% }
+% \end{table*}

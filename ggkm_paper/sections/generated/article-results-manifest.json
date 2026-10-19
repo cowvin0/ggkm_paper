@@ -1,0 +1,199 @@
+{
+  "highdim": {
+    "prefix": "84332eb72406d20c",
+    "sources": {
+      "design": {
+        "path": "results/simulation-highdim/simulation-design-84332eb72406d20c.json",
+        "sha256": "60cd9c86cbcda8d6b3112117b01c7f97fd80f1902b8a4562f74e88b593591953"
+      },
+      "diagnostic_summary": {
+        "path": "results/simulation-highdim/diagnostic-summary-84332eb72406d20c.csv",
+        "sha256": "2ed2f9df381820af4d1fb359a6958729c1dce8c91bf4dd544cf6ca598dcc0f9b"
+      },
+      "failure_summary": {
+        "path": "results/simulation-highdim/failure-summary-84332eb72406d20c.csv",
+        "sha256": "e6e4c95fe8d80577c5d226ed7b78722b4e25a57a3118bf9599fd68c7af3c6b68"
+      },
+      "metric_summary": {
+        "path": "results/simulation-highdim/metric-summary-84332eb72406d20c.csv",
+        "sha256": "770cc8f902c24e86d334c7847f9c9248063a94fe1843c0d594b90f48e9502766"
+      },
+      "paired_summary": {
+        "path": "results/simulation-highdim/paired-summary-84332eb72406d20c.csv",
+        "sha256": "344837a68e0e9ca1c80650292fc06882b2c0561c2eb61e20e6e4b157b0224d27"
+      },
+      "precision_summary": {
+        "path": "results/simulation-highdim/precision-summary-84332eb72406d20c.csv",
+        "sha256": "3652665c1acbf01f5d55c5d270dfc6403412b07443d13f765e5666d876401bf7"
+      },
+      "raw_results": {
+        "path": "results/simulation-highdim/simulation-results-84332eb72406d20c.csv",
+        "sha256": "0aef1a2baf70e2f1d514cd0cf51a38d77d57de59a8b36ff1ed305c93be68cc4d"
+      },
+      "selection_summary": {
+        "path": "results/simulation-highdim/selection-summary-84332eb72406d20c.csv",
+        "sha256": "e183c66666fdcf7c782864dfa27938746b109a430ca2df657761eacbb93f8340"
+      },
+      "status_summary": {
+        "path": "results/simulation-highdim/status-summary-84332eb72406d20c.csv",
+        "sha256": "0ad8aa04d06b9daf65dcd974aeb9516919394e4aaef3f652a8caeb891b42bb97"
+      },
+      "summary_report": {
+        "path": "results/simulation-highdim/summary-report-84332eb72406d20c.json",
+        "sha256": "c82deb60470e8ffc4284d3da2d879a4305884bc00cdee256866e7ea7017cfa12"
+      }
+    },
+    "tables": {
+      "best": {
+        "path": "sections/generated/highdim-best-table.tex",
+        "sha256": "8831d01b4c0571a1348234853a2c0c53a7a5da502f0440441b6de6171dbd7ee1"
+      },
+      "cure_rmse": {
+        "path": "sections/generated/highdim-cure-rmse-table.tex",
+        "sha256": "80d615f19d18ce6b278f1d485205022b3847bef77fd81ba181a91f6e4a8ba384"
+      },
+      "diagnostics": {
+        "path": "sections/generated/highdim-diagnostics-table.tex",
+        "sha256": "03d23d50610e7df39264525f4f557d4df9e48a7091a3971336216d2253f62482"
+      },
+      "integrated_brier": {
+        "path": "sections/generated/highdim-ibs-table.tex",
+        "sha256": "dd05549691194b4ab0b69fb79d9517212ce06af7f4f4c285829d35384cb6525a"
+      }
+    }
+  },
+  "melanoma": {
+    "prefix": "fdbd60b09c1bc6e2-02355a2252ee9e82",
+    "sources": {
+      "data_audit": {
+        "path": "results/melanoma/data-audit-fdbd60b09c1bc6e2-02355a2252ee9e82.json",
+        "sha256": "03254a8c44b928e24f4a0da6e3de012ae62060101933b344f189fadaeccb1f15"
+      },
+      "design": {
+        "path": "results/melanoma/application-design-fdbd60b09c1bc6e2-02355a2252ee9e82.json",
+        "sha256": "05baf87d91b9d8e6a8c029ff1f265208400363e02388f468ea1cdeb23fde330b"
+      },
+      "individual_cure_summary": {
+        "path": "results/melanoma/individual-cure-summary-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "1ab2f2656ea9c44ff8f0f90b3b9e672dea478946989b8554a05e5cd8f5d91d8d"
+      },
+      "method_summary": {
+        "path": "results/melanoma/method-summary-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "c090fdb6e5136dec8b04147c9f9c6c220d0c3790a2b01f9d461dd2d689794292"
+      },
+      "paired_summary": {
+        "path": "results/melanoma/paired-summary-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "150a9da1e9ae72b169f89dfb22e6030785a425bf106943148ad6d15fb530dc49"
+      },
+      "raw_curves": {
+        "path": "results/melanoma/application-curves-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "0f6416718040734f5da468363264a2bc5789fbf566d88d7cc5789d1e5a39195e"
+      },
+      "raw_predictions": {
+        "path": "results/melanoma/application-predictions-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "13a6a235446597bb00d733e804aa2a19fc9e630c5f7d180b551f6c98678c6981"
+      },
+      "raw_results": {
+        "path": "results/melanoma/application-results-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "71cfaecafa5710e2fef3967c42eaa871205f98f2a885680194838dc2e2646af9"
+      },
+      "selection_summary": {
+        "path": "results/melanoma/selection-summary-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "6aa17143c9ae58ca9e1995bf725edb5efb3619af00f2401bf247fc201c9398ff"
+      },
+      "summary_report": {
+        "path": "results/melanoma/application-summary-report-fdbd60b09c1bc6e2-02355a2252ee9e82.json",
+        "sha256": "254366f1b369265a13c1c6843afd68b4d2139f04d2a1a2b3cb58717dbdeb7dff"
+      },
+      "survival_curve_summary": {
+        "path": "results/melanoma/survival-curve-summary-fdbd60b09c1bc6e2-02355a2252ee9e82.csv",
+        "sha256": "ed867d818b4aa959932cc08597e0aa34f5b48c2588cc27154f5337ef7b870405"
+      }
+    },
+    "tables": {
+      "performance": {
+        "path": "sections/generated/melanoma-performance-table.tex",
+        "sha256": "a93795110bcc4ed0b3b294343049a125417f1a082cff45bcee2280fbff42eba4"
+      }
+    }
+  },
+  "simulation": {
+    "prefix": "796f88e3cd8a027c",
+    "sources": {
+      "design": {
+        "path": "results/simulation-final/simulation-design-796f88e3cd8a027c.json",
+        "sha256": "57436c72d6beeefa3d77ef4569aaeefc7d21d4eaa9aa037000b5539b1b77615f"
+      },
+      "diagnostic_summary": {
+        "path": "results/simulation-final/diagnostic-summary-796f88e3cd8a027c.csv",
+        "sha256": "31bbade02e68fb9aaff4ddce15c9b2408eda054cb339d04a5978e0348d1c8ee5"
+      },
+      "failure_summary": {
+        "path": "results/simulation-final/failure-summary-796f88e3cd8a027c.csv",
+        "sha256": "9eb1bef111312b7b2b421021311af341b116fed2f9ee329f64df492eb5f14ef9"
+      },
+      "metric_summary": {
+        "path": "results/simulation-final/metric-summary-796f88e3cd8a027c.csv",
+        "sha256": "78b21c4bc37c1820ebfc578207bfb1303e2c2fba8b1ce8c25e0d78961c2a8d61"
+      },
+      "paired_summary": {
+        "path": "results/simulation-final/paired-summary-796f88e3cd8a027c.csv",
+        "sha256": "b7e447c065a649a2fad5d7c2a664fd951a80018198e8914dfd1deccae1c66b82"
+      },
+      "precision_summary": {
+        "path": "results/simulation-final/precision-summary-796f88e3cd8a027c.csv",
+        "sha256": "19a54b64ffeca586d0b0be87df97f680fe295776d326a5019ddc988610b467f4"
+      },
+      "raw_results": {
+        "path": "results/simulation-final/simulation-results-796f88e3cd8a027c.csv",
+        "sha256": "1c1e43fe2ba92aa039d55fc736b050e142f42c53c607760aa47aa51d21b92289"
+      },
+      "regret_method_summary": {
+        "path": "results/simulation-final/regret-method-summary-796f88e3cd8a027c.csv",
+        "sha256": "a055724ad783844cf98101d8b16f369ea9f570b1aa352d0fbcab7332eb60b116"
+      },
+      "regret_scenario_summary": {
+        "path": "results/simulation-final/regret-scenario-summary-796f88e3cd8a027c.csv",
+        "sha256": "6409d82f8a070d4281d35255c498229288337e9d41bb5fe9d893a476f0efbe79"
+      },
+      "selection_summary": {
+        "path": "results/simulation-final/selection-summary-796f88e3cd8a027c.csv",
+        "sha256": "14f8875c3838146cb43b5ffca78d963f819fc374a6f3d82a5fc9be1a4b3fdd86"
+      },
+      "status_summary": {
+        "path": "results/simulation-final/status-summary-796f88e3cd8a027c.csv",
+        "sha256": "7191db613cf6fb154150217e1ec691c2a09a277c85f35aec1787f86c330eec05"
+      },
+      "summary_report": {
+        "path": "results/simulation-final/summary-report-796f88e3cd8a027c.json",
+        "sha256": "7c25f291b1125691f3d57aa4ce06cc4c8ffead38c33a36f6ad7dec38d95927d8"
+      },
+      "surface_recovery_summary": {
+        "path": "results/simulation-final/surface-recovery-summary-796f88e3cd8a027c.csv",
+        "sha256": "17788eab843c9f3a07e5b8cf8a9ec6b8939df2b6342b4ae00eeb8cf9c3263036"
+      }
+    },
+    "tables": {
+      "best": {
+        "path": "sections/generated/simulation-best-table.tex",
+        "sha256": "d1ef7d3e747e95aaad4caf2a9672d7a8203af99026c7ce14863194166d50e812"
+      },
+      "cure_rmse": {
+        "path": "sections/generated/simulation-cure-rmse-table.tex",
+        "sha256": "f9b9b522d9699564949e64815a6639056f1d09716333069b7d3c385ee2eaa7b2"
+      },
+      "diagnostics": {
+        "path": "sections/generated/simulation-diagnostics-table.tex",
+        "sha256": "31369bf58492adebbd410b0bcfaf211257996f52e53da41fb72bd4d144b98836"
+      },
+      "integrated_brier": {
+        "path": "sections/generated/simulation-ibs-table.tex",
+        "sha256": "7e6c8ee79b6fc0ab656a64250d1b77091ee6a57b25ebec5876e5df3b8d3e14f1"
+      },
+      "regret": {
+        "path": "sections/generated/simulation-regret-table.tex",
+        "sha256": "2edee6adb429f1f052420073940429f74378a424a0ac21f6dc704f7e83e5d85a"
+      }
+    }
+  }
+}

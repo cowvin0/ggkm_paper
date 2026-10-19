@@ -1,0 +1,137 @@
+\section{Breast Cancer Data Application}\label{sec:cancer-data-application}
+
+The second empirical application considered a hospital-based cohort of
+patients with breast cancer from Paraíba State, Brazil. Follow-up time was
+represented by the recorded survival time, and death from breast cancer was
+treated as the event of interest; observations without a recorded
+breast-cancer death were treated as censored. In contrast with the melanoma application, the breast-cancer data
+contained a substantially richer set of demographic, socioeconomic,
+clinical, health-care access, lifestyle, and treatment-related information,
+allowing the cure component to depend on a broader patient profile.
+
+The predictor set included race or skin-colour classification, educational
+level, income category, age at first consultation, age group, health
+macroregion, health-system origin and referral pathway, and the hospital
+source of the record. Clinical characteristics included primary tumour
+site, histological type, and clinical stage, with stage grouped into
+stages I--II, stages III--IV, and a separate category for unavailable
+staging information. Lifestyle and history variables comprised tobacco
+use, alcohol use, and family history of cancer. Information on the first
+treatment received at the hospital was represented through separate
+indicators for surgery, radiotherapy, chemotherapy, hormone therapy,
+immunotherapy, no treatment, other treatments, and unavailable treatment
+information. Health-care timing was represented by the intervals from
+first consultation to diagnosis, diagnosis to first treatment, and first
+consultation to first treatment. In addition to their continuous versions,
+these intervals were represented by indicators distinguishing delays of up
+to 90 days from delays exceeding 90 days.
+
+Preprocessing was estimated exclusively from each training sample and then
+applied unchanged to the corresponding validation or test observations.
+Continuous age and delay variables were transformed using the Yeo--Johnson
+power transformation\cite{yeo2000new} and standardized. Explicit missingness indicators were
+retained for treatment-delay variables, while several categorical predictors
+included dedicated levels for unavailable information. Because primary
+tumour site and histological type contained more complex categorical
+structures, they were represented using cross-validated survival-target
+encodings based on restricted mean survival time, with smoothing applied
+within the training data. The resulting representations were carried
+unchanged to held-out observations, thereby preventing outcome information
+from the validation or test samples from entering the preprocessing stage.
+
+Several prespecified interaction terms were also included to allow clinically
+relevant associations to vary across patient subgroups. These comprised
+interactions between clinical stage and first treatment, between stage and
+hospital source, and between stage and educational level. The continuous
+consultation-to-diagnosis delay was additionally interacted with stage and
+with hormone-therapy and immunotherapy indicators. These interaction terms,
+together with the original transformed continuous variables, survival-target
+encodings, and categorical indicators, formed the predictor matrix used by
+all competing models.
+
+Predictive performance was assessed using 50 event-stratified paired outer
+holdouts, with approximately 70\% of the cohort assigned to training and
+30\% to testing in each split. The same outer split indices were used for
+all fitted methods. Hyperparameter selection was performed exclusively
+within the outer training sample using four inner folds and the IPCW
+integrated Brier score, together with the prediction-horizon rule defined
+in Section~\ref{sec:prediction-evaluation}. The comparison comprised GG-KM
+models under Poisson and negative-binomial latent-count laws, with linear,
+radial-basis, Laplacian, exponential, Cauchy, polynomial, and
+wavelet kernels, as well as spline Poisson and negative-binomial
+models and the classical mixture-cure and promotion-time comparators.
+All kernel and spline hyperparameters were selected from prespecified
+grids.
+
+\GGKMTable{sections/generated/breast-cancer-performance-table}
+
+Table~\ref{tab:breast-cancer-performance} reports split-level means and
+variation. The spline models under both Poisson and negative-binomial
+latent-count laws achieved the lowest mean IPCW integrated Brier score,
+0.0877 with split standard deviation 0.0019, followed by the mixture-cure
+and promotion-time models, both with mean IBS 0.0883. The mixture-cure
+model attained the highest mean cure AUC overall, 0.7851, followed by the
+promotion-time model at 0.7775 and the spline models at 0.7707. Among the
+GG-KM specifications, the negative-binomial linear kernel had the lowest
+mean IBS, 0.0897, whereas the exponential kernel produced the highest mean
+cure AUC, 0.7124, under both latent-count laws. Across the 900 planned
+split-model fits, 873 completed successfully and 871 satisfied the explicit
+convergence criteria.
+
+Figure~\ref{fig:breast-cancer-performance} summarizes out-of-sample survival
+calibration, prediction error, and cure discrimination. The split-averaged
+predicted survival curves closely followed the Kaplan--Meier estimate over
+the common prediction horizon, with relatively small differences among the
+fitted methods. The spline Poisson and negative-binomial models showed the
+lowest IPCW integrated Brier scores, whereas the mixture-cure model achieved
+the highest cure-discrimination performance. The GG-KM models with the
+exponential kernel were less competitive in overall prediction error than
+the spline and classical cure models, but retained substantially better cure
+discrimination than several alternative kernel specifications.
+
+\GGKMWideFigure{breast_cancer_predictive_assessment_ibs_auc.pdf}
+{Predictive assessment in 50 paired repeated holdouts of the breast cancer
+cohort. Panel A compares the full-cohort Kaplan--Meier curve with
+split-averaged out-of-sample survival predictions over the common supported
+horizon. Panel B shows split-level IPCW integrated Brier scores and Panel C
+shows the corresponding cure-discrimination area under the curve
+($\mathrm{AUC}_{\mathrm{cure}}$). Each point represents one outer split, and
+lower IBS values indicate better prediction whereas larger cure AUC values
+indicate better discrimination.}
+{fig:breast-cancer-performance}
+{Three-panel predictive assessment for the breast cancer application. Panel A
+compares the Kaplan--Meier survival curve with mean out-of-sample survival
+predictions from the mixture-cure, promotion-time, spline, and selected GG-KM
+models. Panels B and C show the corresponding repeated-holdout distributions
+of IPCW integrated Brier scores and cure AUC values.}
+
+Figure~\ref{fig:breast-cancer-performance-ggkm-kernel} shows that kernel
+choice had a marked influence on GG-KM performance. For prediction error,
+the exponential and Cauchy kernels yielded the lowest mean IBS values among
+the nonlinear GG-KM specifications, while the wavelet and RBF kernels were
+less favorable. Cure discrimination varied more substantially across
+kernels. The exponential kernel produced the highest mean cure AUC among the
+GG-KM models, 0.7124 under both count laws, whereas the wavelet kernel showed
+considerably weaker discrimination.
+
+% The linear Poisson model was particularly
+% poor for cure discrimination, with mean AUC close to 0.5, while its
+% negative-binomial counterpart performed substantially better. For most of
+% the RBF, Laplacian, exponential, Cauchy, and wavelet specifications, however,
+% the Poisson and negative-binomial results were very similar.
+
+\GGKMWideFigure{breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf}
+{Kernel-specific predictive performance of the GG-KM models in 50 paired
+repeated holdouts of the breast cancer cohort. Panel A shows the split-level
+IPCW integrated Brier score and Panel B the cure-discrimination area under
+the curve ($\mathrm{AUC}_{\mathrm{cure}}$) across the seven candidate
+kernels. Within each kernel, Poisson and negative-binomial GG-KM results are
+shown side by side, with color and hatching distinguishing the two
+latent-count laws. Individual points represent outer splits and boxplots
+summarize their distributions.}
+{fig:breast-cancer-performance-ggkm-kernel}
+{Two-panel comparison of GG-KM kernels in the breast cancer application.
+Panel A displays split-level IPCW integrated Brier scores and Panel B cure
+AUC values for the linear, RBF, Laplacian, exponential, Cauchy, polynomial,
+and wavelet kernels. Poisson and negative-binomial specifications are shown
+side by side for each kernel.}

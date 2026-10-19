@@ -1,0 +1,238 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage{amsmath,amssymb,bm,booktabs,graphicx,hyperref}
+\hypersetup{hidelinks}
+\graphicspath{{figures/review/}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\title{Supporting Information for ``A generalized gamma kernel-machine promotion-time cure model''}
+\author{Gabriel de Jesus Pereira \and Vera L. D. Tomazella \and Pedro R. D. Marinho \and Marcelo Rodrigo Portela Ferreira \and Agatha S. Rodrigues}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Likelihood construction and conditional blocks}\label{sec:supp-likelihood}
+
+The observed-data likelihood contributions follow from the promotion-time generating function. For subject $i$ with intensity $\theta_i=\theta(\bm{x}_i)$ and probability-generating function $A_i(u)$, the population survival, density, and cure fraction are $S_{\mathrm{pop}}(t\mid\bm{x}_i)=A_i\{S_{GG}(t)\}$, $f_{\mathrm{pop}}(t\mid\bm{x}_i)=f_{GG}(t)A_i'\{S_{GG}(t)\}$, and $p_c(\bm{x}_i)=A_i(0)$. A censored subject contributes $S_{\mathrm{pop}}(Y_i\mid\bm{x}_i)$ and an event contributes $f_{\mathrm{pop}}(Y_i\mid\bm{x}_i)$. Substituting the Poisson generating function $A_i(u)=\exp\{\theta_i(u-1)\}$ and the negative-binomial generating function $A_i(u)=\{1+\phi\theta_i(1-u)\}^{-1/\phi}$, and using $S_{GG}=1-F_{GG}$, recovers the two count-law contributions listed next.
+
+For subject $i$, write $F_i=F_{GG}(Y_i;a,d,p)$, $S_i=1-F_i$, $f_{GG,i}=f_{GG}(Y_i;a,d,p)$, $f_i=f(\bm{x}_i)$, and $\theta_i=\exp(f_i)$. Under Poisson latent counts, the censored contribution is $\exp(-\theta_iF_i)$ and the event contribution is $\theta_i f_{GG,i}\exp(-\theta_iF_i)$. Under negative-binomial counts with mean $\theta_i$ and dispersion $\phi$, the corresponding contributions are $(1+\phi\theta_iF_i)^{-1/\phi}$ and $\theta_i f_{GG,i}(1+\phi\theta_iF_i)^{-1/\phi-1}$.
+
+The complete-data construction conditions on the latent number of causes $N_i$. Given $N_i=n_i$, a censored observation contributes $S_i^{n_i}$, whereas an event contributes $n_i f_{GG,i}S_i^{n_i-1}$. Terms involving $\log(n_i!)$ or $\delta_i\log n_i$ do not affect the predictor and latency conditional maximizations after taking expectations.
+
+The E-step replaces the latent counts by their conditional expectations given the observed data. For the Poisson model, conditioning on $(Y_i,\delta_i)$ leaves the excess causes beyond the observed activation Poisson distributed with mean $\theta_i S_i$, so $\widehat N_i=\delta_i+\theta_i S_i$, the count reported in the main article. For the negative-binomial model, the analogous conditional expectation gives $\widehat N_i=\delta_i+(1+\phi\delta_i)\theta_i S_i/(1+\phi\theta_i F_i)$. Because the terms in $\log(N_i!)$ and $\delta_i\log N_i$ noted above vanish after taking expectations, these conditional counts are sufficient for the predictor and latency maximizations.
+
+The main article states the three conditional blocks used by the two estimators; this section retains their derivation and local notation. For Poisson counts, the predictor block, up to terms independent of $(\beta_0,\bm{\alpha})$, is
+\begin{equation}
+Q_{f,\mathrm{P}}
+=\sum_{i=1}^{n}\{\widehat N_i f_i-\exp(f_i)\}
+-\frac{\lambda}{2}\bm{\alpha}^{\mathsf T}\bm{K}\bm{\alpha}.
+\label{eq:supp-poisson-predictor}
+\end{equation}
+For negative-binomial counts, holding $\phi$ fixed gives
+\begin{equation}
+Q_{f,\mathrm{NB}}
+=\sum_{i=1}^{n}\left[
+\widehat N_i f_i-
+\left(\widehat N_i+\frac{1}{\phi}\right)
+\log\{1+\phi\exp(f_i)\}\right]
+-\frac{\lambda}{2}\bm{\alpha}^{\mathsf T}\bm{K}\bm{\alpha}.
+\label{eq:supp-nb-predictor}
+\end{equation}
+The shared latency block is
+\begin{equation}
+Q_{GG}=\sum_{i=1}^{n}
+\left\{\delta_i\log f_{GG,i}
++(\widehat N_i-\delta_i)\log S_i\right\}.
+\label{eq:supp-latency-block}
+\end{equation}
+Equations~\eqref{eq:supp-poisson-predictor}--\eqref{eq:supp-latency-block} are the Supporting Information counterparts of the three conditional blocks displayed in the main article. They yield the conditional predictor and latency updates used there. The negative-binomial dispersion is updated by conditional maximization of the observed penalized likelihood rather than by the latent-count block, which makes that procedure ECME rather than ordinary EM.
+
+\section{Analytical scores and numerical parameterization}\label{sec:supp-scores}
+
+Let $u=(t/a)^p$, $r=\log(t/a)$, $s=d/p$, $G_s(u)=u^s\exp(-u)/\Gamma(s)$, and $H_s(u)=\partial P(s,u)/\partial s$. The natural-scale derivatives of the generalized gamma log-density are
+\begin{equation}
+\begin{aligned}
+\frac{\partial\log f_{GG}}{\partial a}&=\frac{pu-d}{a},\\
+\frac{\partial\log f_{GG}}{\partial d}&=r-\frac{\psi(s)}{p},\\
+\frac{\partial\log f_{GG}}{\partial p}&=\frac{1}{p}-ur+\frac{d\psi(s)}{p^2},
+\end{aligned}
+\label{eq:supp-logdensity-gradient}
+\end{equation}
+where $\psi$ is the digamma function. The corresponding derivatives of $F_{GG}(t)=P(s,u)$ are
+\begin{equation}
+\begin{aligned}
+\frac{\partial F_{GG}}{\partial a}&=-\frac{p}{a}G_s(u),\\
+\frac{\partial F_{GG}}{\partial d}&=\frac{1}{p}H_s(u),\\
+\frac{\partial F_{GG}}{\partial p}&=-\frac{d}{p^2}H_s(u)+G_s(u)r.
+\end{aligned}
+\label{eq:supp-cdf-gradient}
+\end{equation}
+The implementation evaluates $H_s(u)$ by differentiating a convergent power-series representation of the regularized incomplete gamma function. Distribution values use the SciPy regularized incomplete-gamma routines, and focused checks compare the analytical derivatives with finite differences over interior and boundary-relevant parameter settings.
+
+For a generic latency parameter $\eta\in\{a,d,p\}$, the Poisson observed scores are
+\begin{equation}
+s_{f_i,\mathrm{P}}=\delta_i-\theta_iF_i,
+\qquad
+s_{\eta,\mathrm{P}}=
+\sum_{i=1}^{n}\left\{
+\delta_i\frac{\partial\log f_{GG,i}}{\partial\eta}
+-\theta_i\frac{\partial F_i}{\partial\eta}
+\right\}.
+\label{eq:supp-poisson-score}
+\end{equation}
+For negative-binomial counts, define $D_i=1+\phi\theta_iF_i$. The observed scores become
+\begin{equation}
+\begin{aligned}
+s_{f_i,\mathrm{NB}}
+&=\delta_i-\frac{(1+\phi\delta_i)\theta_iF_i}{D_i},\\
+s_{\eta,\mathrm{NB}}
+&=\sum_{i=1}^{n}\left\{
+\delta_i\frac{\partial\log f_{GG,i}}{\partial\eta}
+-\frac{(1+\phi\delta_i)\theta_i}{D_i}
+\frac{\partial F_i}{\partial\eta}\right\},\\
+s_{\phi,\mathrm{NB}}
+&=\sum_{i=1}^{n}\left\{
+\frac{\log D_i}{\phi^2}
+-\left(\frac{1}{\phi}+\delta_i\right)
+\frac{\theta_iF_i}{D_i}\right\}.
+\end{aligned}
+\label{eq:supp-nb-score}
+\end{equation}
+With $f=\beta_0\bm{1}+\bm{B}\bm{c}$, the corresponding penalized components are
+$\partial\ell/\partial\beta_0=\sum_i s_{f_i}$ and
+$\partial\ell/\partial\bm{c}=\bm{B}^{\mathsf T}\bm{s}_f-\lambda\bm{c}$, so the intercept remains
+unpenalized.
+
+These expressions are differentiated with respect to logarithmic latency and dispersion parameters by multiplying natural-scale scores by $a$, $d$, $p$, or $\phi$. This transformation enforces positivity, while box constraints on the logarithmic scale prevent numerically uninformative excursions.
+
+Rank-deficient Gram matrices are handled in their retained eigenspace. If $\bm{K}=\bm{U}\bm{\Lambda}\bm{U}^{\mathsf T}$ over eigenvalues above the declared numerical tolerance, the fitted predictor uses $\bm{B}=\bm{U}\bm{\Lambda}^{1/2}$ and coefficients $\bm{c}$, so $\bm{f}=\beta_0\bm{1}+\bm{B}\bm{c}$ and the penalty is $\lambda\bm{c}^{\mathsf T}\bm{c}/2$. The reported representer coefficients are recovered as $\bm{\alpha}=\bm{U}\bm{\Lambda}^{-1/2}\bm{c}$, and the intercept remains outside the penalty.
+
+These analytical scores are also used directly by the bounded joint refinement in Algorithm S1, which maximizes the observed penalized log-likelihood over all free parameters with L-BFGS-B after the block iterations. Finite-difference verification of the same expressions is retained in the test suite.
+
+Algorithms 1 and 2 in the main article separate the Poisson EM and negative-binomial ECME branches. Both use the guarded outer structure detailed here. Each accepted outer iteration must retain finite parameters and may not decrease the observed penalized likelihood by more than $\epsilon_{\ell}\{1+|\ell|\}$. When a full block update violates that condition, interpolation on the optimization scale uses fractions $2^{-j}$ for at most 18 safeguard steps; failure to find an admissible step is recorded rather than replaced by the previous fit.
+
+\textbf{Algorithm S1: penalized GG-KM estimation.}
+\begin{enumerate}
+\item Validate positive times, binary event indicators, covariate dimensions, kernel parameters, and the positive-semidefinite Gram-matrix tolerance. Construct the retained eigenspace and initialize the intercept from the observed event fraction, the latency at $(\operatorname{median}Y,1,1)$ unless supplied, and negative-binomial dispersion at 0.5 unless fixed.
+\item Compute $\widehat N_i$ from the Poisson or negative-binomial conditional expectation in the main article. Reject the iteration if any conditional count is nonfinite or smaller than $\delta_i$.
+\item Maximize Equation~\eqref{eq:supp-poisson-predictor} or \eqref{eq:supp-nb-predictor} for the intercept and eigenspace coefficients by L-BFGS-B. Then maximize Equation~\eqref{eq:supp-latency-block} for $(\log a,\log d,\log p)$, and, for an estimated negative-binomial dispersion, maximize the observed likelihood over $\log\phi$.
+\item Evaluate the observed penalized likelihood. Accept the block candidate directly when it satisfies the likelihood safeguard; otherwise apply the bounded interpolation rule and record the accepted fraction.
+\item Stop the block iterations only after the minimum iteration count when $|\ell^{(k+1)}-\ell^{(k)}|\leq\varepsilon_{\mathrm{abs}}+\varepsilon_{\mathrm{rel}}\{1+|\ell^{(k)}|\}$ and the maximum absolute parameter change is at most $\varepsilon_\eta$. Preserve the full objective, optimizer, timing, maximum-change, and step-fraction trace.
+\item Refine all free parameters jointly by bounded L-BFGS-B on the observed penalized likelihood using the analytical score. Label the fit converged only when the accepted refined parameters and objective are finite, the likelihood safeguard holds, and the projected maximum score does not exceed the gradient tolerance. Otherwise preserve the last finite block state and record a distinct failure code for nonfinite parameters, a nonfinite objective, or a likelihood decrease.
+\end{enumerate}
+The software defaults are $\varepsilon_{\mathrm{abs}}=10^{-8}$, $\varepsilon_{\mathrm{rel}}=10^{-8}$, and $\varepsilon_\eta=2\times10^{-6}$. The final experiments use at most 50 outer iterations, 300 iterations per conditional block, and 300 joint-refinement iterations, with $\varepsilon_{\mathrm{abs}}=10^{-8}$, $\varepsilon_{\mathrm{rel}}=2\times10^{-8}$, $\varepsilon_\eta=10^{-5}$, and projected-score tolerance $10^{-3}$. Log-latency parameters are bounded to $[-5,5]$ and estimated log-dispersion to $[-7,3]$, with boundary indicators retained in every fit record.
+
+The returned fit object stores the accepted objective trace, convergence label, projected score norm, block and refinement iterations, elapsed time, boundary indicators, and explicit failure reason. Automated checks cover normalization and special cases of the generalized gamma distribution, analytical gradients against finite differences, Gram-matrix properties, unseen-subject prediction, monotonic accepted objectives, Poisson limits of the negative-binomial formulation, and IPCW calculations on hand-checkable examples. Final summaries retain failed and nonconverged fits in their denominators rather than silently dropping them.
+
+\section{Frozen simulation design}\label{sec:supp-simulation}
+
+The primary experiment contains 18 scenarios formed by two sample sizes, three cure surfaces, and three latent-count settings. Sample sizes are 300 and 600; cure surfaces are linear, quadratic, and periodic; and generating counts are Poisson or negative binomial with dispersion 0.25 or 1.00. Each scenario uses 250 Monte Carlo replications generated from master seed 20260817, with deterministic child seeds derived from scenario and replication identifiers.
+
+Covariates $x_1$ and $x_2$ are independently uniform on $[-1,1]$. The latency parameters are $(a,d,p)=(1.6,1.3,1.1)$, and independent censoring times are exponential with scale 3.5. The target cure surface is mapped to the latent-count mean by $\theta=-\log p_c$ for Poisson generation and $\theta=(p_c^{-\phi}-1)/\phi$ for negative-binomial generation, which holds the cure probability fixed when the generating count law changes.
+
+All eight methods use common simulated samples and common event-stratified 70/30 outer splits. Inner tuning uses two training folds, 24 evaluation points, and four candidates within each predictor and count-law family: log-linear and quadratic penalties $\{0,0.1,1,10\}$, with all degree-two quadratic terms and interactions constructed within the training fold; cubic spline bases with three or five training-quantile knots and penalties $\{0.1,1\}$; and radial-basis GG-KM kernels with $\gamma\in\{0.25,1\}$ and penalties $\{0.3,3\}$. The primary evaluation grid contains 36 points and ends no later than the training 90th percentile of observed time or the last time at which estimated censoring survival remains at least 0.05.
+
+\section{Full simulation results}\label{sec:supp-simulation-results}
+
+The main article reports selected scenario summaries, whereas the tables in this section give the complete eight-method results over all 18 scenarios. Separate tables for fitted Poisson and negative-binomial count laws preserve readable predictor labels. Monte Carlo standard errors accompany every mean, and failed or nonconverged fits remain visible in the reported denominators.
+
+Tables~\ref{tab:supp-simulation-ibs-poisson} and \ref{tab:supp-simulation-ibs-negative-binomial} list mean IPCW integrated Brier scores for every predictor, fitted count law, and scenario. Log-linear, quadratic, and spline predictors attained the lowest scenario means on the corresponding linear, quadratic, and periodic surfaces.
+
+\input{sections/generated/simulation-ibs-table}
+
+Tables~\ref{tab:supp-simulation-cure-rmse-poisson} and \ref{tab:supp-simulation-cure-rmse-negative-binomial} give the corresponding cure-probability root mean squared errors. Their geometry-specific ordering matches the integrated Brier results, while the complete cells expose the magnitude of every alternative rather than only the minimum.
+
+\input{sections/generated/simulation-cure-rmse-table}
+
+Table~\ref{tab:supp-simulation-diagnostics} aggregates numerical behavior over the 18 scenarios. No final fit failed, and 35,881 of 36,000 met the convergence criteria; method-specific totals ranged from 4,475 to 4,493 of 4,500. Mean runtime ranged from 5.90 to 9.10 seconds per fit and the maximum was 34.62 seconds. No final fit required a safeguarded fractional step. Inner tuning recorded 20 failed and 2,422 nonconverged candidate-fold fits among 288,000 evaluations. The estimated negative-binomial dispersion contacted its lower bound 10,711 times and its upper bound four times, while latency parameters contacted a bound in 4,012 fits. IPCW evaluation clipped 15,512 event-weight contributions at the declared minimum probability and no grid-time weights.
+
+\input{sections/generated/simulation-diagnostics-table}
+
+\section{High-dimensional interaction surfaces}\label{sec:supp-highdim-simulation}
+
+The four-covariate experiment is a secondary mechanism study developed after the primary analysis. It probes nonadditive interactions but is neither independent confirmation nor evidence of a general kernel advantage. Covariates satisfy $x_1,\dots,x_4\sim\operatorname{Uniform}(-1,1)$, and the first target is the \emph{interaction} surface
+\begin{equation}
+p_c(\bm{x})=\operatorname{expit}\bigl(C_{\mathrm{int}}+1.60\,x_1x_2-1.30\,x_3x_4+0.70\,x_1-0.50\,x_4\bigr),
+\end{equation}
+and the \emph{radial} surface is
+\begin{equation}
+p_c(\bm{x})=\operatorname{expit}\bigl(C_{\mathrm{rad}}+3.00\exp\{-0.80(x_1^2+x_2^2+x_3^2+x_4^2)\}\bigr).
+\end{equation}
+Intercepts $C_{\mathrm{int}}$ and $C_{\mathrm{rad}}$ were calibrated by bisection on a fixed sample of $200\,000$ observations (seed 20260901) so that each surface yields a mean cure fraction of $0.45$. The latency remained the common generalized gamma with $(a,d,p)=(1.6,1.3,1.1)$ and no covariate-dependent scale; censoring was exponential with mean 3.5. The same eight methods were compared under Poisson, negative-binomial ($\phi=0.25$), and negative-binomial ($\phi=1.00$) generating laws at $n=300$ and $n=600$, giving 12 scenarios. A separate target-size pilot uses the same precision rule as the primary design, and all declared cells remain in the analysis.
+
+Tables~\ref{tab:supp-highdim-ibs-poisson} and \ref{tab:supp-highdim-ibs-negative-binomial} list the mean IPCW integrated Brier score for every predictor, fitted count law, and scenario, with Monte Carlo standard errors.
+\input{sections/generated/highdim-ibs-table}
+
+Tables~\ref{tab:supp-highdim-cure-rmse-poisson} and \ref{tab:supp-highdim-cure-rmse-negative-binomial} give the corresponding mean cure-probability root mean squared errors.
+\input{sections/generated/highdim-cure-rmse-table}
+
+Table~\ref{tab:supp-highdim-diagnostics} aggregates the numerical diagnostics for each method over the 12 scenarios.
+\input{sections/generated/highdim-diagnostics-table}
+\section{Additional melanoma summaries}\label{sec:supp-melanoma}
+
+The melanoma analysis uses the same eight method definitions as the primary simulation, with 50 common event-stratified holdouts and three inner tuning folds. All 205 patients appear in at least one outer test set across the eight methods, which permits a descriptive per-patient summary of repeated predictions. These summaries do not convert censored status into a cure label and are not used for model selection.
+
+Figure~\ref{fig:supp-melanoma-cure} shows the distribution of each patient's mean predicted cure fraction and the corresponding standard deviation across test-set appearances. The distributions differ across predictor structures, while Poisson and negative-binomial variants within GG-KM are visually similar. The across-split variation is a sensitivity summary for changing training samples, not a confidence interval for an individual's cure probability.
+
+Inner selection frequencies further describe the finite search used in this cohort. Radial-basis GG-KM with $\gamma=0.25$ and $\lambda=3$ was selected in 48 of 50 splits for each count law, with $\lambda=0.3$ selected in the remaining two. The log-linear Poisson model selected $\lambda=10$ in every split, while the dominant spline configuration used three knots and $\lambda=1$ in 38 Poisson and 45 negative-binomial splits.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{melanoma_individual_cure_variation.pdf}
+\caption{Descriptive individual cure-fraction predictions in the melanoma repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
+\label{fig:supp-melanoma-cure}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{breast_cancer_individual_cure_variation.pdf}
+\caption{Descriptive individual cure-fraction predictions in the breast cancer repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
+\label{fig:supp-breast-cancer-cure}
+\end{figure}
+
+
+\section{Reproducibility record}\label{sec:supp-reproducibility}
+
+The executable analysis is contained in the article \texttt{code} directory and requires Python 3.14; the reported runs used 3.14.6 as recorded in \path{results/session-information.json}. Exact package versions are recorded in \path{code/requirements.lock}, while \path{results/session-information.json} records the environment used for the reported runs. From the article directory, a clean environment is constructed and checked as follows.
+\begin{verbatim}
+cd code
+python3.14 -m venv .venv
+.venv/bin/python -m pip install pip==26.2.1
+.venv/bin/python -m pip install --no-deps --requirement requirements.lock
+.venv/bin/python -m pip install --no-deps --editable .
+.venv/bin/python -m pytest
+\end{verbatim}
+
+From the project root, \path{reproduce.sh} is the single documented entry point. Quick mode runs the validation suite and one diagnostic replication for each of the primary and secondary pilots without regenerating article claims. Full mode runs two separate five-replication pilots, applies the frozen precision rule, resumes all final analyses, generates assets once with three non-null prefixes, compiles all three PDFs with XeLaTeX and \texttt{-halt-on-error}, and assembles the root \path{submission/} package.
+\begin{verbatim}
+./reproduce.sh --quick --workers 1
+./reproduce.sh --workers 8
+\end{verbatim}
+
+All analyses use implementation \texttt{ggkm-python-2026-09-06.2}, deterministic child seeds, and one numerical thread per worker. The precision reports selected 250 primary replications (prefix \texttt{796f88e3cd8a027c}), 150 secondary replications (prefix \texttt{84332eb72406d20c}). The 50-holdout melanoma prefix is \texttt{fdbd60b09c1bc6e2-02355a2252ee9e82}. Checkpoints are resumed only when their implementation identifier, design hash, seeds, scenarios, methods, and output schema match the declared run. Pilots remain separate from final estimates.
+
+For component-level auditing, the result-dependent asset commands are
+\begin{verbatim}
+cd article/code
+.venv/bin/python article_assets.py \
+  --simulation-prefix 796f88e3cd8a027c \
+  --highdim-prefix 84332eb72406d20c \
+  --melanoma-prefix \
+    fdbd60b09c1bc6e2-02355a2252ee9e82
+.venv/bin/python \
+  ../figures/source/make_result_figures.py \
+  --simulation-prefix 796f88e3cd8a027c \
+  --highdim-prefix 84332eb72406d20c \
+  --melanoma-prefix \
+    fdbd60b09c1bc6e2-02355a2252ee9e82
+.venv/bin/python \
+  ../figures/source/make_method_diagram.py
+.venv/bin/python \
+  ../figures/source/make_model_figures.py
+\end{verbatim}
+
+Generated tables carry the path and SHA-256 checksum of their input summaries. The corresponding artifact hashes are recorded in \path{sections/generated/article-results-manifest.json}; figure inputs and all SVG, PDF, EPS, and 800 dpi LZW TIFF outputs are recorded in the figure manifests. Simulation summaries retain Monte Carlo precision, paired regret, convergence, boundary contact, clipping, failures, seeds, and runtime. Application rows, curves, and predictions retain the data hash, design hash, and split and tuning seeds.
+\end{document}
