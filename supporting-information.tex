@@ -196,43 +196,24 @@ Inner selection frequencies further describe the finite search used in this coho
 
 \section{Reproducibility record}\label{sec:supp-reproducibility}
 
-The executable analysis is contained in the article \texttt{code} directory and requires Python 3.14; the reported runs used 3.14.6 as recorded in \path{results/session-information.json}. Exact package versions are recorded in \path{code/requirements.lock}, while \path{results/session-information.json} records the environment used for the reported runs. From the article directory, a clean environment is constructed and checked as follows.
+To reproduce all simulation, melanoma, and breast cancer results, activate a Python environment with the required dependencies and make the original clinical datasets available in the project's \path{data/} directory. Run the following command from the project root on a PBS cluster:
 \begin{verbatim}
-cd code
-python3.14 -m venv .venv
-.venv/bin/python -m pip install pip==26.2.1
-.venv/bin/python -m pip install --no-deps --requirement requirements.lock
-.venv/bin/python -m pip install --no-deps --editable .
-.venv/bin/python -m pytest
+python scripts/run_workflow.py --mode cluster
 \end{verbatim}
+The workflow submits the experiment jobs and generates each dataset's figures and tables after its experiment array finishes successfully.
 
-From the project root, \path{reproduce.sh} is the single documented entry point. Quick mode runs the validation suite and one diagnostic replication for each of the primary and secondary pilots without regenerating article claims. Full mode runs two separate five-replication pilots, applies the frozen precision rule, resumes all final analyses, generates assets once with three non-null prefixes, compiles all three PDFs with XeLaTeX and \texttt{-halt-on-error}, and assembles the root \path{submission/} package.
+To run the same complete workflow on a local machine, use:
 \begin{verbatim}
-./reproduce.sh --quick --workers 1
-./reproduce.sh --workers 8
+python scripts/run_workflow.py --mode local
 \end{verbatim}
 
 All analyses use implementation \texttt{ggkm-python-2026-09-06.2}, deterministic child seeds, and one numerical thread per worker. The precision reports selected 250 primary replications (prefix \texttt{796f88e3cd8a027c}), 150 secondary replications (prefix \texttt{84332eb72406d20c}). The 50-holdout melanoma prefix is \texttt{fdbd60b09c1bc6e2-02355a2252ee9e82}. Checkpoints are resumed only when their implementation identifier, design hash, seeds, scenarios, methods, and output schema match the declared run. Pilots remain separate from final estimates.
 
-For component-level auditing, the result-dependent asset commands are
+If the experiment results are already available, regenerate only the figures and tables with:
 \begin{verbatim}
-cd article/code
-.venv/bin/python article_assets.py \
-  --simulation-prefix 796f88e3cd8a027c \
-  --highdim-prefix 84332eb72406d20c \
-  --melanoma-prefix \
-    fdbd60b09c1bc6e2-02355a2252ee9e82
-.venv/bin/python \
-  ../figures/source/make_result_figures.py \
-  --simulation-prefix 796f88e3cd8a027c \
-  --highdim-prefix 84332eb72406d20c \
-  --melanoma-prefix \
-    fdbd60b09c1bc6e2-02355a2252ee9e82
-.venv/bin/python \
-  ../figures/source/make_method_diagram.py
-.venv/bin/python \
-  ../figures/source/make_model_figures.py
+python scripts/run_workflow.py --mode cluster --stage postprocess
 \end{verbatim}
+Replace \texttt{cluster} with \texttt{local} to regenerate them locally. The saved CSV and NPZ results and the original clinical datasets must be available on the machine performing this step. Figures are saved in \path{figures/review/}, and tables in \path{sections/generated/}.
 
 Generated tables carry the path and SHA-256 checksum of their input summaries. The corresponding artifact hashes are recorded in \path{sections/generated/article-results-manifest.json}; figure inputs and all SVG, PDF, EPS, and 800 dpi LZW TIFF outputs are recorded in the figure manifests. Simulation summaries retain Monte Carlo precision, paired regret, convergence, boundary contact, clipping, failures, seeds, and runtime. Application rows, curves, and predictions retain the data hash, design hash, and split and tuning seeds.
 \end{document}
