@@ -18,9 +18,22 @@
 
 \subsection{Observed and complete-data likelihoods}
 
-The observed time is $Y_i=\min(T_i,C_i)$, its realized value is $t_i$, and $\delta_i=I(T_i\leq C_i)$. The observed data are $\mathcal D_{\mathrm{obs}}=\{(t_i,\delta_i,\bm{x}_i)\}_{i=1}^{n}$, and the complete data augment these observations with the latent counts $N_i$. The full predictor is $\eta_i=\beta_0+\bm K_i^{\mathsf T}\bm\alpha$, with $\theta_i=\exp(\eta_i)$; the symbol $f$ is reserved for the RKHS component in $\eta(\bm{x})=\beta_0+f(\bm{x})$. Write $F_i=F_{GG}(t_i;a,d,p)$, $S_i=S_{GG}(t_i;a,d,p)=1-F_i$, and $f_{GG,i}=f_{GG}(t_i;a,d,p)$. The parameter vectors are $\bm\Theta_{\mathrm P}=(\beta_0,\bm\alpha,a,d,p)$ and $\bm\Theta_{\mathrm{NB}}=(\beta_0,\bm\alpha,a,d,p,\phi)$.
+The observed time is $Y_i=\min(T_i,C_i)$, its realized value
+is $t_i$, and $\delta_i=I(T_i\leq C_i)$. The observed data
+are $\mathcal D_{\mathrm{obs}}=\{(t_i,\delta_i,\bm{x}_i)\}_{i=1}^{n}$,
+and the complete data augment these observations with the
+latent counts $N_i$. The full predictor is $\eta_i=\beta_0+\bm K_i^{\mathsf T}\bm\alpha$,
+with $\theta_i=\exp(\eta_i)$; the symbol $f$ is reserved for
+the RKHS component in $\eta(\bm{x})=\beta_0+f(\bm{x})$.
+Write $F_i=F_{GG}(t_i;a,d,p)$, $S_i=S_{GG}(t_i;a,d,p)=1-F_i$,
+and $f_{GG,i}=f_{GG}(t_i;a,d,p)$. The parameter vectors are
+$\bm\Theta_{\mathrm P}=(\beta_0,\bm\alpha,a,d,p)$ and
+$\bm\Theta_{\mathrm{NB}}=(\beta_0,\bm\alpha,a,d,p,\phi)$.
 
-Let $\pi_k(\bm{x}_i)=P(N_i=k\mid\bm{x}_i)$ and $A_i(u)=\sum_{k\geq0}\pi_k(\bm{x}_i)u^k$. Conditional on $N_i=n_i\geq1$, the event time is the minimum of $n_i$ independent activation times. Hence
+Let $\pi_k(\bm{x}_i)=P(N_i=k\mid\bm{x}_i)$ and
+$A_i(u)=\sum_{k\geq0}\pi_k(\bm{x}_i)u^k$. Conditional on
+$N_i=n_i\geq1$, the event time is the minimum of $n_i$
+independent activation times. Hence
 \begin{equation}
 \begin{aligned}
 P(T_i>t_i\mid N_i=n_i,\bm{x}_i)&=S_i^{n_i},\\
@@ -30,7 +43,11 @@ f_{T_i\mid N_i,\bm{x}_i}(t_i\mid n_i,\bm{x}_i)
 \end{aligned}
 \label{eq:supp-conditional-event-time}
 \end{equation}
-When $N_i=0$, $T_i=\infty$, so the conditional survival is one and an observed event is impossible. Under independent, noninformative censoring, the censoring contribution contains no parameters of interest and is omitted from the likelihood below. Combining event and censoring contributions gives
+When $N_i=0$, $T_i=\infty$, so the conditional survival is
+one and an observed event is impossible. Under independent,
+noninformative censoring, the censoring contribution contains
+no parameters of interest and is omitted from the likelihood
+below. Combining event and censoring contributions gives
 \begin{equation}
 \begin{aligned}
 L_{c,i}(\bm\Theta;n_i)
@@ -43,7 +60,9 @@ f_{GG,i}^{\delta_i}S_i^{n_i-\delta_i},
 \end{aligned}
 \label{eq:supp-complete-contribution}
 \end{equation}
-For a censored observation, $n_i^{0}$ is interpreted as one, including when $n_i=0$. The complete-data likelihood is the product of these contributions, and its logarithm is
+For a censored observation, $n_i^{0}$ is interpreted as one,
+including when $n_i=0$. The complete-data likelihood is the
+product of these contributions, and its logarithm is
 \begin{equation}
 \ell_c(\bm\Theta;\mathcal D_{\mathrm{comp}})
 =\sum_{i=1}^{n}\Bigl[
@@ -52,9 +71,12 @@ For a censored observation, $n_i^{0}$ is interpreted as one, including when $n_i
 \Bigr].
 \label{eq:supp-generic-complete-loglikelihood}
 \end{equation}
-The term $\delta_i\log N_i$ is evaluated only for observed events, for which $N_i\geq1$; its contribution is zero for censored observations.
+The term $\delta_i\log N_i$ is evaluated only for observed
+events, for which $N_i\geq1$; its contribution is zero for
+censored observations.
 
-Summing Equation~\eqref{eq:supp-complete-contribution} over the latent count recovers the observed-data contribution:
+Summing Equation~\eqref{eq:supp-complete-contribution} over
+the latent count recovers the observed-data contribution:
 \begin{equation}
 \begin{aligned}
 L_i(\bm\Theta)

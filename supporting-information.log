@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.3.28)  20 OCT 2026 13:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.3.28)  20 OCT 2026 13:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -359,7 +359,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] [5] [6] (./sections/generated/simulation-ibs-table.tex)
-Overfull \hbox (1.48294pt too wide) in paragraph at lines 402--403
+Overfull \hbox (1.48294pt too wide) in paragraph at lines 424--425
 []\OT1/cmr/m/n/10.95 Tables []3[] and []4[] give the cor-re-spond-ing cure-probability root mean squared er-rors. Their geometry-
  []
 
@@ -367,12 +367,12 @@ Overfull \hbox (1.48294pt too wide) in paragraph at lines 402--403
 <figures/review//melanoma_individual_cure_variation.pdf, id=203, 745.58499pt x 324.73294pt>
 File: figures/review//melanoma_individual_cure_variation.pdf Graphic file (type pdf)
 <use figures/review//melanoma_individual_cure_variation.pdf>
-Package pdftex.def Info: figures/review//melanoma_individual_cure_variation.pdf  used on input line 440.
+Package pdftex.def Info: figures/review//melanoma_individual_cure_variation.pdf  used on input line 462.
 (pdftex.def)             Requested size: 455.24411pt x 198.28004pt.
 <figures/review//breast_cancer_individual_cure_variation.pdf, id=204, 745.58499pt x 324.73294pt>
 File: figures/review//breast_cancer_individual_cure_variation.pdf Graphic file (type pdf)
 <use figures/review//breast_cancer_individual_cure_variation.pdf>
-Package pdftex.def Info: figures/review//breast_cancer_individual_cure_variation.pdf  used on input line 447.
+Package pdftex.def Info: figures/review//breast_cancer_individual_cure_variation.pdf  used on input line 469.
 (pdftex.def)             Requested size: 455.24411pt x 198.28004pt.
  [12 <./figures/review//melanoma_individual_cure_variation.pdf>] [13 <./figures/review//breast_cancer_individual_cure_variation.pdf>] (./supporting-information.aux)
 Package rerunfilecheck Info: File `supporting-information.out' has not changed.
