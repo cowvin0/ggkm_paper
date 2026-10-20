@@ -1,5 +1,12 @@
 # Experiment scripts
 
+Use [run_workflow.py](run_workflow.py) to run all experiments, figures, and tables
+through one entry point. Choose `--mode cluster` to submit the PBS jobs with
+dependencies, or `--mode local` to execute the same routines sequentially. Add
+`--dry-run` to preview the workflow or `--stage postprocess` to use existing
+experiment results. See [the workflow instructions](../pbs_jobs/README.md) for
+examples, dataset selection, and cluster environment settings.
+
 The entry points retain their dataset-specific settings, data loading, experiment
 ordering, and execution logic:
 
@@ -132,3 +139,144 @@ latency parameter at `1e-5`, or an applicable NB dispersion at `1e-8`, using a
 tight relative tolerance. Runtime includes all recorded attempts, including
 failures. Missing diagnostic fields raise an error; unavailable metric means or
 MCSEs display as `--`. Generated captions use the current replication count.
+
+## Melanoma review figures
+
+Run these scripts on the cluster after the melanoma experiment has saved its
+split results and prediction archives:
+
+```bash
+python scripts/melanoma_auc_plot.py
+python scripts/melanoma_individual_cure_variation.py
+```
+
+Both default to `data/melanoma_results/grid_search/` for results,
+`data/melanoma.csv` for the original cohort, and `figures/review/` for outputs.
+They accept `--results-dir`, `--data-path`, and `--output-dir`, and can be
+launched from any working directory. Preserve the cohort's original row order;
+stored training/test hashes are checked against the reconstructed holdouts.
+
+`melanoma_auc_plot.py` reproduces the supplied three-panel survival/IBS/cure-AUC
+figure and the separate two-panel kernel comparison:
+
+- `melanoma_predictive_assessment_ibs_auc.{pdf,png,svg}`
+- `melanoma_ggkm_kernel_comparison_ibs_auc.{pdf,png,svg}`
+- `melanoma_predictive_assessment_ibs_auc_summary.csv`
+
+Its main comparison follows the supplied code: mixture cure, promotion time,
+both spline models, and one GG-KM model per count law. GG-KM kernels are selected
+by highest finite successful mean cure AUC, then lowest mean IBS, then kernel
+name. The kernel comparison shows all seven kernels under both count laws.
+Saved IBS/AUC values are retained. Saved survival curves are interpolated onto
+a 250-point grid within the minimum supported horizon across displayed fits;
+this avoids refitting and does not extrapolate beyond the saved grids.
+
+`melanoma_individual_cure_variation.py` recreates the two violin panels in
+`melanoma_individual_cure_variation.{pdf,png,svg}` and saves
+`melanoma_individual_cure_variation_individual_statistics.csv`. It compares the
+linear, spline, polynomial, and RBF predictors under Poisson and NB count laws,
+matching the supplied figure. RBF remains the default for this supplementary
+comparison; `--ggkm-kernel` selects an explicit alternative. NB distributions
+are hatched. Patient means use only that patient's finite outer-test predictions;
+sample deviations use `ddof=1` and require at least two appearances. Patients
+never predicted and singleton deviations remain missing, and the CSV retains
+the appearance counts.
+
+The scripts use the runner's `plot_data/` NPZ archives, including original
+`test_indices`, rather than fitting models again. Keep that directory together
+with the `splits_melanoma_task*.csv` files when moving results. If an older run
+has only CSVs, explicitly enable reconstruction:
+
+```bash
+python scripts/melanoma_auc_plot.py --results-dir /path/to/results --refit-missing
+python scripts/melanoma_individual_cure_variation.py --results-dir /path/to/results --refit-missing
+```
+
+The optional fallback refits missing predictions with saved best parameters and
+the current model/preprocessing code, without retuning or changing the saved
+results. Malformed or mismatched archives still raise an error. Refit predictions
+can differ from the original run if model code or dependencies have changed.
+Shared archive validation and reconstruction live in `melanoma_plot_utils.py`
+and `melanoma_refit_utils.py`.
+
+## Breast cancer review figures
+
+Generate the corresponding breast cancer figures on the cluster:
+
+```bash
+python scripts/breast_cancer_auc_plot.py
+python scripts/breast_cancer_individual_cure_variation.py
+```
+
+Defaults are `data/breast_cancer_results/grid_search_paired_50/` for results,
+`data/cancer_de_mama_rhc_e_fap.csv` for the cohort, and `figures/review/` for
+outputs. Both scripts accept `--results-dir`, `--data-path`, `--output-dir`,
+and the explicit legacy `--refit-missing` option. The cohort cleaning,
+deduplication, event coding, zero-time adjustment, and original patient indices
+match `run_breast_cancer_experiment.py`. The holdouts use 30% of the cohort for
+testing, and survival plots preserve the recorded `Tempo` units.
+
+The predictive script saves:
+
+- `breast_cancer_predictive_assessment_ibs_auc.{pdf,png,svg}`
+- `breast_cancer_ggkm_kernel_comparison_ibs_auc.{pdf,png,svg}`
+- `breast_cancer_predictive_assessment_ibs_auc_summary.csv`
+
+As in the melanoma script, GG-KM kernels in the main comparison are selected by
+highest mean cure AUC, then lowest mean IBS. The kernel figure includes all
+eight breast-cancer kernels, including sigmoid. For older runs, select the
+available kernels explicitly, for example:
+
+```bash
+python scripts/breast_cancer_auc_plot.py \
+  --kernels linear rbf laplacian exponential cauchy polynomial wavelet
+```
+
+The individual script saves
+`breast_cancer_individual_cure_variation.{pdf,png,svg}` and
+`breast_cancer_individual_cure_variation_individual_statistics.csv`. It compares
+the same eight linear/spline/polynomial/RBF methods as the melanoma figure,
+with means and sample deviations calculated from each patient's held-out
+appearances. `--ggkm-kernel` changes the RBF comparison explicitly. Shared plot
+rendering and patient summaries are reused from the melanoma modules; the
+breast-specific helpers supply the correct data, split design, and optional
+refit preprocessor.
+
+## Clinical performance tables
+
+Regenerate both supplied clinical tables with one command:
+
+```bash
+python scripts/create_clinical_performance_tables.py
+```
+
+This replaces `sections/generated/melanoma-performance-table.tex` and
+`sections/generated/breast-cancer-performance-table.tex`, preserving their
+labels, columns, method ordering, and decimal precision. It reads the clinical
+`splits_*.csv` files from the same default results directories as the plots;
+patient data and NPZ files are unnecessary.
+
+For a single cohort or different results locations:
+
+```bash
+python scripts/create_clinical_performance_tables.py \
+  --dataset breast-cancer \
+  --breast-cancer-results-dir /path/to/breast/results \
+  --output-dir /path/to/generated-tables \
+  --planned-splits 50
+```
+
+Use `--dataset melanoma` and `--melanoma-results-dir` for melanoma alone.
+`--planned-splits` is optional; the attempted split count is otherwise inferred
+from complete CSVs. Split IDs and training/test hashes must agree across the
+selected methods. All selected inputs are checked and tables rendered before
+any existing table is replaced.
+
+Table parentheses contain sample split standard deviations, rather than Monte
+Carlo standard errors. Metric summaries use successful fits with finite values.
+Convergence is the number converged among successful fits, and runtime is the
+successful-fit mean with its maximum in parentheses. The default tables retain
+the 18 active method rows in the supplied files. Add `--include-sigmoid` to
+include the two breast cancer sigmoid rows that were commented out in the
+reference table. Missing estimates or undefined standard deviations appear as
+`--`; missing convergence information raises an error.

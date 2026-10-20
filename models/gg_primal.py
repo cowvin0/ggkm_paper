@@ -76,9 +76,7 @@ def _fit_primal_em(
         )
 
     initial_validator = (
-        model._validate_initial_loglik
-        if validate_initial_loglik
-        else None
+        model._validate_initial_loglik if validate_initial_loglik else None
     )
 
     coefficients, ll_new = run_em(
@@ -117,7 +115,6 @@ class _BaseGGPrimal(_BaseLinearCureModel):
     _update_dispersion = False
     _validate_initial_primal_loglik = True
 
-    # All primal models used in the paper contain an intercept.
     fit_intercept = True
 
     def _penalty_value_and_grad(
@@ -141,9 +138,7 @@ class _BaseGGPrimal(_BaseLinearCureModel):
             slopes = coefficients
             gradient[:] = self.lambda_reg * slopes
 
-        penalty = (
-            self.lambda_reg / 2.0
-        ) * float(slopes @ slopes)
+        penalty = (self.lambda_reg / 2.0) * float(slopes @ slopes)
 
         return penalty, gradient
 
@@ -195,10 +190,7 @@ class _BaseGGPrimal(_BaseLinearCureModel):
         value = value + penalty
         gradient = gradient + penalty_gradient
 
-        if (
-            not np.isfinite(value)
-            or np.any(~np.isfinite(gradient))
-        ):
+        if not np.isfinite(value) or np.any(~np.isfinite(gradient)):
             return (
                 np.inf,
                 np.zeros_like(
@@ -223,9 +215,7 @@ class _BaseGGPrimal(_BaseLinearCureModel):
         ).copy()
 
         if self.fit_intercept:
-            self.beta0_ = float(
-                coefficients[0]
-            )
+            self.beta0_ = float(coefficients[0])
             self.alpha_ = coefficients[1:].copy()
         else:
             self.beta0_ = 0.0
@@ -360,9 +350,7 @@ class GGPoissonPrimal(_BaseGGPrimal):
 
     _model_name = "penalized"
     _predictor_error = "Non-finite Poisson predictor."
-    _predictor_optimization_error = (
-        "Poisson predictor optimization failed: "
-    )
+    _predictor_optimization_error = "Poisson predictor optimization failed: "
 
     def __init__(
         self,
@@ -486,9 +474,7 @@ class GGNBPrimal(_BaseGGPrimal):
 
     _model_name = "penalized"
     _predictor_error = "Non-finite negative-binomial predictor."
-    _predictor_optimization_error = (
-        "Negative-binomial predictor optimization failed: "
-    )
+    _predictor_optimization_error = "Negative-binomial predictor optimization failed: "
 
     def __init__(
         self,
@@ -528,17 +514,12 @@ class GGNBPrimal(_BaseGGPrimal):
             and hasattr(self, "phi_")
             and self.phi_ is not None
         ):
-            warm_phi = float(
-                self.phi_
-            )
+            warm_phi = float(self.phi_)
 
         self._latent_model = self._make_latent_model()
         self._latent_model.reset_for_fit()
 
-        if (
-            warm_phi is not None
-            and self._latent_model.estimate_phi
-        ):
+        if warm_phi is not None and self._latent_model.estimate_phi:
             self._latent_model.phi = warm_phi
 
     def _validate_predictor_result(
@@ -546,20 +527,14 @@ class GGNBPrimal(_BaseGGPrimal):
         result,
     ):
         """Preserve the paper NB predictor optimizer acceptance rule."""
-        if (
-            not result.success
-            or np.any(~np.isfinite(result.x))
-        ):
+        if not result.success or np.any(~np.isfinite(result.x)):
             raise RuntimeError(
-                "Negative-binomial predictor optimization failed: "
-                f"{result.message}"
+                "Negative-binomial predictor optimization failed: " f"{result.message}"
             )
 
     def _publish_latent_state(self):
         """Expose fitted NB dispersion through the estimator API."""
-        self.phi_ = float(
-            self._latent_model.phi_
-        )
+        self.phi_ = float(self._latent_model.phi_)
 
 
 __all__ = [

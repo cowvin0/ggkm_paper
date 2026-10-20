@@ -4,7 +4,6 @@ import importlib
 
 import pytest
 
-
 pytest.importorskip("optuna")
 pytest.importorskip("tqdm")
 
@@ -27,8 +26,7 @@ def test_breast_cancer_retains_sigmoid_grid_and_em_limit():
     ]
     assert all(item["K_bin"] == 1 and item["coef0"] == 0.0 for item in candidates)
     assert all(
-        item["A"] != 10
-        for item in script.kernel_parameter_grid("poisson", "wavelet")
+        item["A"] != 10 for item in script.kernel_parameter_grid("poisson", "wavelet")
     )
 
 
@@ -37,7 +35,7 @@ def test_melanoma_retains_extra_wavelet_scale_and_rejects_sigmoid():
     candidates = script.kernel_parameter_grid("poisson", "wavelet")
 
     assert [item["A"] for item in candidates] == [0.5, 0.5, 1.0, 1.0, 2.0, 2.0, 10, 10]
-    assert "max_em_iter" not in script.MODELS["bn"].keywords
+    assert "negative_binomial_max_em_iter" not in script.MODELS["bn"].keywords
     assert "sigmoid" not in script.KERNELS
     with pytest.raises(ValueError, match="^Unknown kernel: sigmoid$"):
         script.kernel_parameter_grid("poisson", "sigmoid")
@@ -54,8 +52,13 @@ def test_pcm_retains_distinct_spline_penalties(model_name):
         (5, 3.00),
     ]
     for dataset in ("breast_cancer", "melanoma"):
-        assert [item["lambda_reg"] for item in runner(dataset).SPLINE_PARAMETER_GRID] == [
-            0.10, 1.00, 0.10, 1.00,
+        assert [
+            item["lambda_reg"] for item in runner(dataset).SPLINE_PARAMETER_GRID
+        ] == [
+            0.10,
+            1.00,
+            0.10,
+            1.00,
         ]
 
 
@@ -75,11 +78,18 @@ def test_clinical_grids_use_current_runner_settings(monkeypatch, dataset):
     candidates = script.kernel_parameter_grid("binomial", "polynomial")
     assert len(candidates) == 2
     assert candidates[0] == {
-        "K_bin": 7, "gamma": 17.0, "degree": 4, "coef0": 19.0, "lambda_reg": 11.0,
+        "K_bin": 7,
+        "gamma": 17.0,
+        "degree": 4,
+        "coef0": 19.0,
+        "lambda_reg": 11.0,
     }
     assert candidates[1]["lambda_reg"] == 13.0
-    assert [item["A"] for item in script.kernel_parameter_grid("poisson", "wavelet")] == [
-        23.0, 23.0,
+    assert [
+        item["A"] for item in script.kernel_parameter_grid("poisson", "wavelet")
+    ] == [
+        23.0,
+        23.0,
     ]
 
     if dataset == "breast_cancer":
@@ -104,7 +114,9 @@ def test_spline_tuning_skips_failures_and_keeps_first_best(monkeypatch, dataset)
     estimator = object()
     seen = []
     monkeypatch.setattr(script, "SPLINE_PARAMETER_GRID", candidates)
-    monkeypatch.setattr(script, "prepare_inner_splits", lambda *args, **kwargs: prepared)
+    monkeypatch.setattr(
+        script, "prepare_inner_splits", lambda *args, **kwargs: prepared
+    )
 
     def score(inner_splits, *, estimator, kernel, params):
         assert inner_splits is prepared
@@ -127,9 +139,13 @@ def test_spline_tuning_skips_failures_and_keeps_first_best(monkeypatch, dataset)
 
 @pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma"])
 @pytest.mark.parametrize("failure_kind", ["exception", "nonfinite"])
-def test_spline_tuning_retains_dataset_failure_messages(monkeypatch, dataset, failure_kind):
+def test_spline_tuning_retains_dataset_failure_messages(
+    monkeypatch, dataset, failure_kind
+):
     script = runner(dataset)
-    monkeypatch.setattr(script, "SPLINE_PARAMETER_GRID", [{"n_knots": 3}, {"n_knots": 5}])
+    monkeypatch.setattr(
+        script, "SPLINE_PARAMETER_GRID", [{"n_knots": 3}, {"n_knots": 5}]
+    )
     monkeypatch.setattr(script, "prepare_inner_splits", lambda *args, **kwargs: [])
     seen = []
 

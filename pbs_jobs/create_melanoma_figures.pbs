@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N melanoma_figures
+# Rebuild melanoma predictive and individual cure figures from saved results.
+#PBS -l select=1:ncpus=1:mem=16gb
+#PBS -l walltime=12:00:00
+
+set -euo pipefail
+ggkm_root="${GGKM_PROJECT_ROOT:-${PBS_O_WORKDIR:-$PWD}}"
+if [[ ! -f "$ggkm_root/pbs_jobs/common.sh" && -f "$ggkm_root/ggkm_paper/pbs_jobs/common.sh" ]]; then
+    ggkm_root="$ggkm_root/ggkm_paper"
+fi
+if [[ ! -f "$ggkm_root/pbs_jobs/common.sh" ]]; then
+    echo "Cannot find pbs_jobs/common.sh. Submit from the repository root or set GGKM_PROJECT_ROOT." >&2
+    exit 1
+fi
+export GGKM_PROJECT_ROOT="$ggkm_root"
+source "$GGKM_PROJECT_ROOT/pbs_jobs/common.sh"
+ggkm_run_job melanoma-figures

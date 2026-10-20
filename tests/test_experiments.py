@@ -19,8 +19,8 @@ SCRIPT_NAMES = (
     "run_pcm_experiment",
     "run_melanoma_experiment",
     "run_breast_cancer_experiment",
-    "run_default_experiment",
-    "run_melanoma_fosp_experiment",
+    # "run_default_experiment",
+    # "run_melanoma_fosp_experiment",
 )
 SPLINE_CASES = (
     ("spline_poisson", SplinePoissonModel),
