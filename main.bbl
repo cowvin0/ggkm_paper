@@ -13,19 +13,23 @@ Joseph Berkson and Robert~P. Gage.
 
 \bibitem[Tsodikov et~al.(2003)Tsodikov, Ibrahim, and Yakovlev]{tsodikov2003}
 Alex~D. Tsodikov, Joseph~G. Ibrahim, and Andrei~Y. Yakovlev.
-\newblock Estimating cure rates from survival data: an alternative to two-component mixture models.
+\newblock Estimating cure rates from survival data: an alternative to
+  two-component mixture models.
 \newblock \emph{J Am Stat Assoc}, 98\penalty0 (464):\penalty0 1063--1078, 2003.
 \newblock \doi{https://doi.org/10.1198/01622145030000001007}.
 
 \bibitem[Boag(1949)]{boag1949}
 John~W. Boag.
-\newblock Maximum likelihood estimates of the proportion of patients cured by cancer therapy.
-\newblock \emph{J R Stat Soc Series B Stat Methodol}, 11\penalty0 (1):\penalty0 15--44, 1949.
+\newblock Maximum likelihood estimates of the proportion of patients cured by
+  cancer therapy.
+\newblock \emph{J R Stat Soc Series B Stat Methodol}, 11\penalty0 (1):\penalty0
+  15--44, 1949.
 \newblock \doi{https://doi.org/10.1111/j.2517-6161.1949.tb00020.x}.
 
 \bibitem[Farewell(1982)]{farewell1982}
 V.~T. Farewell.
-\newblock The use of mixture models for the analysis of survival data with long-term survivors.
+\newblock The use of mixture models for the analysis of survival data with
+  long-term survivors.
 \newblock \emph{Biometrics}, 38\penalty0 (4):\penalty0 1041--1046, 1982.
 \newblock \doi{https://doi.org/10.2307/2529885}.
 
@@ -37,25 +41,31 @@ Judy~P. Sy and Jeremy M.~G. Taylor.
 
 \bibitem[Balka et~al.(2009)Balka, Desmond, and McNicholas]{balka2009}
 Jeremy Balka, Anthony~F. Desmond, and Paul~D. McNicholas.
-\newblock Review and implementation of cure models based on first hitting times for {Wiener} processes.
+\newblock Review and implementation of cure models based on first hitting times
+  for {Wiener} processes.
 \newblock \emph{Lifetime Data Anal}, 15\penalty0 (2):\penalty0 147--176, 2009.
 \newblock \doi{https://doi.org/10.1007/s10985-008-9108-y}.
 
 \bibitem[Rocha et~al.(2017)Rocha, Nadarajah, Tomazella, and Louzada]{rocha2017}
 Ricardo Rocha, Saralees Nadarajah, Vera Tomazella, and Francisco Louzada.
-\newblock A new class of defective models based on the {Marshall--Olkin} family of distributions for cure rate modeling.
+\newblock A new class of defective models based on the {Marshall--Olkin} family
+  of distributions for cure rate modeling.
 \newblock \emph{Comput Stat Data Anal}, 107:\penalty0 48--63, 2017.
 \newblock \doi{https://doi.org/10.1016/j.csda.2016.10.001}.
 
-\bibitem[Scudilio et~al.(2019)Scudilio, Calsavara, Rocha, Louzada, Tomazella, and Rodrigues]{scudilio2019}
-Juliana Scudilio, Vin{\'i}cius~F. Calsavara, Ricardo Rocha, Francisco Louzada, Vera Tomazella, and Agatha~S. Rodrigues.
-\newblock Defective models induced by gamma frailty term for survival data with cured fraction.
+\bibitem[Scudilio et~al.(2019)Scudilio, Calsavara, Rocha, Louzada, Tomazella,
+  and Rodrigues]{scudilio2019}
+Juliana Scudilio, Vin{\'i}cius~F. Calsavara, Ricardo Rocha, Francisco Louzada,
+  Vera Tomazella, and Agatha~S. Rodrigues.
+\newblock Defective models induced by gamma frailty term for survival data with
+  cured fraction.
 \newblock \emph{J Appl Stat}, 46\penalty0 (3):\penalty0 484--507, 2019.
 \newblock \doi{https://doi.org/10.1080/02664763.2018.1498464}.
 
 \bibitem[Yakovlev and Tsodikov(1996)]{yakovlev1996}
 Andrei~Yu. Yakovlev and Alexander~D. Tsodikov.
-\newblock \emph{Stochastic Models of Tumor Latency and Their Biostatistical Applications}.
+\newblock \emph{Stochastic Models of Tumor Latency and Their Biostatistical
+  Applications}.
 \newblock World Scientific, Singapore, 1996.
 \newblock \doi{https://doi.org/10.1142/2420}.
 
@@ -65,22 +75,30 @@ Ming-Hui Chen, Joseph~G. Ibrahim, and Debajyoti Sinha.
 \newblock \emph{J Am Stat Assoc}, 94\penalty0 (447):\penalty0 909--919, 1999.
 \newblock \doi{https://doi.org/10.1080/01621459.1999.10474196}.
 
-\bibitem[Rodrigues et~al.(2009{\natexlab{a}})Rodrigues, Cancho, de~Castro, and Louzada-Neto]{rodrigues2009unif}
-Josemar Rodrigues, Vicente~G. Cancho, M{\'a}rio de~Castro, and Francisco Louzada-Neto.
+\bibitem[Rodrigues et~al.(2009{\natexlab{a}})Rodrigues, Cancho, de~Castro, and
+  Louzada-Neto]{rodrigues2009unif}
+Josemar Rodrigues, Vicente~G. Cancho, M{\'a}rio de~Castro, and Francisco
+  Louzada-Neto.
 \newblock On the unification of long-term survival models.
-\newblock \emph{Stat Probab Lett}, 79\penalty0 (6):\penalty0 753--759, 2009{\natexlab{a}}.
+\newblock \emph{Stat Probab Lett}, 79\penalty0 (6):\penalty0 753--759,
+  2009{\natexlab{a}}.
 \newblock \doi{https://doi.org/10.1016/j.spl.2008.10.029}.
 
 \bibitem[Rodrigues and Borges(2025)]{rodrigues2025}
 Agatha~S. Rodrigues and Patrick Borges.
-\newblock Long-term {Dagum}-power variance function frailty regression model: application in health studies.
-\newblock \emph{Stat Methods Med Res}, 34\penalty0 (3):\penalty0 407--439, 2025.
+\newblock Long-term {Dagum}-power variance function frailty regression model:
+  application in health studies.
+\newblock \emph{Stat Methods Med Res}, 34\penalty0 (3):\penalty0 407--439,
+  2025.
 \newblock \doi{https://doi.org/10.1177/09622802241304113}.
 
-\bibitem[Rodrigues et~al.(2009{\natexlab{b}})Rodrigues, de~Castro, Cancho, and Balakrishnan]{rodrigues2009}
+\bibitem[Rodrigues et~al.(2009{\natexlab{b}})Rodrigues, de~Castro, Cancho, and
+  Balakrishnan]{rodrigues2009}
 Josemar Rodrigues, M{\'a}rio de~Castro, Vicente~G. Cancho, and N.~Balakrishnan.
-\newblock {COM-Poisson} cure rate survival models and an application to a cutaneous melanoma data.
-\newblock \emph{J Stat Plan Inference}, 139\penalty0 (10):\penalty0 3605--3611, 2009{\natexlab{b}}.
+\newblock {COM-Poisson} cure rate survival models and an application to a
+  cutaneous melanoma data.
+\newblock \emph{J Stat Plan Inference}, 139\penalty0 (10):\penalty0 3605--3611,
+  2009{\natexlab{b}}.
 \newblock \doi{https://doi.org/10.1016/j.jspi.2009.04.014}.
 
 \bibitem[Amico and Van~Keilegom(2018)]{amico2018}
@@ -103,31 +121,37 @@ Ross~L. Prentice.
 
 \bibitem[Cox et~al.(2007)Cox, Chu, Schneider, and Mu{\~n}oz]{cox2007}
 Christopher Cox, Haitao Chu, Michael~F. Schneider, and Alvaro Mu{\~n}oz.
-\newblock Parametric survival analysis and taxonomy of hazard functions for the generalized gamma distribution.
+\newblock Parametric survival analysis and taxonomy of hazard functions for the
+  generalized gamma distribution.
 \newblock \emph{Stat Med}, 26\penalty0 (23):\penalty0 4352--4374, 2007.
 \newblock \doi{https://doi.org/10.1002/sim.2836}.
 
 \bibitem[Pal and Aselisewine(2023)]{pal2023}
 Suvra Pal and Wisdom Aselisewine.
-\newblock A semiparametric promotion time cure model with support vector machine.
+\newblock A semiparametric promotion time cure model with support vector
+  machine.
 \newblock \emph{Ann Appl Stat}, 17\penalty0 (3):\penalty0 2680--2699, 2023.
 \newblock \doi{https://doi.org/10.1214/23-AOAS1741}.
 
 \bibitem[Xie and Yu(2021)]{xie2021}
 Yujing Xie and Zhangsheng Yu.
-\newblock Promotion time cure rate model with a neural network estimated nonparametric component.
+\newblock Promotion time cure rate model with a neural network estimated
+  nonparametric component.
 \newblock \emph{Stat Med}, 40\penalty0 (15):\penalty0 3516--3532, 2021.
 \newblock \doi{https://doi.org/10.1002/sim.8980}.
 
-\bibitem[Medina-Olivares et~al.(2024)Medina-Olivares, Lessmann, and Klein]{medina2024}
+\bibitem[Medina-Olivares et~al.(2024)Medina-Olivares, Lessmann, and
+  Klein]{medina2024}
 Victor Medina-Olivares, Stefan Lessmann, and Nadja Klein.
 \newblock The deep promotion time cure model.
-\newblock \emph{IEEE Trans Neural Netw Learn Syst}, 35\penalty0 (12):\penalty0 18848--18858, 2024.
+\newblock \emph{IEEE Trans Neural Netw Learn Syst}, 35\penalty0 (12):\penalty0
+  18848--18858, 2024.
 \newblock \doi{https://doi.org/10.1109/TNNLS.2024.3398559}.
 
 \bibitem[Feng et~al.(2026)Feng, Li, Qin, Wu, and Yu]{feng2026}
 Xingdong Feng, Qiaoling Li, Xing Qin, Mengyun Wu, and Liang Yu.
-\newblock Structured nonlinear cure model with deep neural networks for high-dimensional survival analysis.
+\newblock Structured nonlinear cure model with deep neural networks for
+  high-dimensional survival analysis.
 \newblock \emph{Stat Med}, 45\penalty0 (1--2):\penalty0 e70368, 2026.
 \newblock \doi{https://doi.org/10.1002/sim.70368}.
 
@@ -137,10 +161,12 @@ George Kimeldorf and Grace Wahba.
 \newblock \emph{J Math Anal Appl}, 33\penalty0 (1):\penalty0 82--95, 1971.
 \newblock \doi{https://doi.org/10.1016/0022-247X(71)90184-3}.
 
-\bibitem[Sch{\"o}lkopf et~al.(2001)Sch{\"o}lkopf, Herbrich, and Smola]{scholkopf2001generalized}
+\bibitem[Sch{\"o}lkopf et~al.(2001)Sch{\"o}lkopf, Herbrich, and
+  Smola]{scholkopf2001generalized}
 Bernhard Sch{\"o}lkopf, Ralf Herbrich, and Alex~J Smola.
 \newblock A generalized representer theorem.
-\newblock In \emph{International conference on computational learning theory}, pages 416--426. Springer, 2001.
+\newblock In \emph{International conference on computational learning theory},
+  pages 416--426. Springer, 2001.
 
 \bibitem[McLachlan and Krishnan(2008)]{mclachlan2008algorithm}
 Geoffrey~J McLachlan and Thriyambakam Krishnan.
@@ -149,16 +175,20 @@ Geoffrey~J McLachlan and Thriyambakam Krishnan.
 
 \bibitem[Graf et~al.(1999)Graf, Schmoor, Sauerbrei, and Schumacher]{graf1999}
 Erika Graf, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher.
-\newblock Assessment and comparison of prognostic classification schemes for survival data.
+\newblock Assessment and comparison of prognostic classification schemes for
+  survival data.
 \newblock \emph{Stat Med}, 18\penalty0 (17--18):\penalty0 2529--2545, 1999.
-\newblock \doi{https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}.
+\newblock
+  \doi{https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}.
 
 \bibitem[Canty et~al.(2025)Canty, Ripley, and Brazzale]{boot2025}
 Angelo Canty, Brian Ripley, and Alessandra~R. Brazzale.
 \newblock {boot}: Bootstrap functions.
-\newblock R package version 1.3-32. Comprehensive R Archive Network. \url{https://cran.r-project.org/package=boot}, 2025.
+\newblock R package version 1.3-32. Comprehensive R Archive Network.
+  \url{https://cran.r-project.org/package=boot}, 2025.
 
-\bibitem[Andersen et~al.(1993)Andersen, Borgan, Gill, and Keiding]{andersen1993}
+\bibitem[Andersen et~al.(1993)Andersen, Borgan, Gill, and
+  Keiding]{andersen1993}
 Per~Kragh Andersen, {\O}rnulf Borgan, Richard~D. Gill, and Niels Keiding.
 \newblock \emph{Statistical Models Based on Counting Processes}.
 \newblock Springer, New York, NY, 1993.
@@ -166,7 +196,8 @@ Per~Kragh Andersen, {\O}rnulf Borgan, Richard~D. Gill, and Niels Keiding.
 
 \bibitem[Yeo and Johnson(2000)]{yeo2000new}
 In-Kwon Yeo and Richard~A Johnson.
-\newblock A new family of power transformations to improve normality or symmetry.
+\newblock A new family of power transformations to improve normality or
+  symmetry.
 \newblock \emph{Biometrika}, 87\penalty0 (4):\penalty0 954--959, 2000.
 
 \end{thebibliography}
