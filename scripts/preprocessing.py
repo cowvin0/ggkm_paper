@@ -14,7 +14,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import KFold, train_test_split
-from ggkm_paper.evaluate.metrics import uno_c_index_rmst, harrell_c_index
+from evaluate.metrics import uno_c_index_rmst, harrell_c_index
 from skcure.utils.estimator import fit_cure_model
 
 
@@ -620,7 +620,6 @@ class FOSPMelanomaSurvivalPreprocessor:
         if self.include_topography:
 
             X_topography = self._topography_features(df)
-
             X_topography_encoded = self.topography_encoder_.transform(X_topography)
 
             feature_blocks.append(X_topography_encoded)

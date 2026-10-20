@@ -1,21 +1,18 @@
+"""Simulation settings and PCM experiment entry point."""
+
 import os
 import time
-
-import numpy as np
-
 from pathlib import Path
-from functools import partial
-from skcure.models.ggkm import GGKM
-from skcure.models import MixtureCureModel, PromotionTimeModel
-from ggkm_paper.models import (
-    SplinePoissonModel,
-    SplineNegativeBinomialModel,
-)
 
-
-from ggkm_paper.evaluate.cross_validation import (
+from evaluate.cross_validation import (
     monte_carlo_pcm,
     summarize_monte_carlo,
+)
+
+from scripts.experiment_utils import (
+    models as experiment_models,
+    reporting,
+    results as experiment_results,
 )
 
 KERNELS = [
@@ -62,35 +59,9 @@ GENERATING_SCENARIOS = [
     },
 ]
 
-MODELS = {
-    "bernoulli": partial(
-        GGKM,
-        latent_distribution="binomial",
-    ),
-    "binomial": partial(
-        GGKM,
-        latent_distribution="binomial",
-    ),
-    "poisson": partial(
-        GGKM,
-        latent_distribution="poisson",
-    ),
-    "bn": partial(
-        GGKM,
-        latent_distribution="negative_binomial",
-    ),
-    "mixture_cure": MixtureCureModel,
-    "promotion_time": PromotionTimeModel,
-    "spline_poisson": SplinePoissonModel,
-    "spline_bn": SplineNegativeBinomialModel,
-}
+MODELS = experiment_models.make_model_registry(negative_binomial_max_em_iter=10000)
 
-KERNEL_MODELS = {
-    "bernoulli",
-    "binomial",
-    "poisson",
-    "bn",
-}
+KERNEL_MODELS = set(experiment_models.KERNEL_MODEL_NAMES)
 
 
 N_REPLICATIONS = 250
@@ -104,137 +75,13 @@ BINOMIAL_K = 2
 OUTPUT_DIR = Path("data/results")
 
 
-def parameter_grid(
-    model_name,
-    kernel,
-):
-
-    if model_name in {
-        "spline_poisson",
-        "spline_bn",
-    }:
-
-        grid = []
-
-        for n_knots in [
-            3,
-            5,
-        ]:
-            for lambda_reg in [
-                0.30,
-                3.00,
-            ]:
-                grid.append(
-                    {
-                        "n_knots": n_knots,
-                        "degree": 3,
-                        "lambda_reg": lambda_reg,
-                    }
-                )
-
-        return grid
-
-    if model_name not in KERNEL_MODELS:
-        return [{}]
-
-    base_params = {}
-
-    if model_name == "bernoulli":
-        base_params["K_bin"] = 1
-
-    elif model_name == "binomial":
-        base_params["K_bin"] = BINOMIAL_K
-
-    penalties = [
-        0.30,
-        3.00,
-    ]
-
-    grid = []
-
-    if kernel == "linear":
-
-        for lambda_reg in penalties:
-            grid.append(
-                {
-                    **base_params,
-                    "lambda_reg": lambda_reg,
-                }
-            )
-
-    elif kernel in {
-        "rbf",
-        "laplacian",
-        "exponential",
-        "cauchy",
-    }:
-
-        for gamma in [
-            0.25,
-            1.00,
-        ]:
-            for lambda_reg in penalties:
-                grid.append(
-                    {
-                        **base_params,
-                        "gamma": gamma,
-                        "lambda_reg": lambda_reg,
-                    }
-                )
-
-    elif kernel == "sigmoid":
-
-        for gamma in [
-            0.25,
-            1.00,
-        ]:
-            for lambda_reg in penalties:
-                grid.append(
-                    {
-                        **base_params,
-                        "gamma": gamma,
-                        "coef0": 0.0,
-                        "lambda_reg": lambda_reg,
-                    }
-                )
-
-    elif kernel == "polynomial":
-
-        for gamma in [
-            0.25,
-            1.00,
-        ]:
-            for degree in [
-                2,
-                3,
-            ]:
-                for lambda_reg in penalties:
-                    grid.append(
-                        {
-                            **base_params,
-                            "gamma": gamma,
-                            "degree": degree,
-                            "coef0": 1.0,
-                            "lambda_reg": lambda_reg,
-                        }
-                    )
-
-    elif kernel == "wavelet":
-
-        for A in [0.50, 1.00, 2.00]:
-            for lambda_reg in penalties:
-                grid.append(
-                    {
-                        **base_params,
-                        "A": A,
-                        "lambda_reg": lambda_reg,
-                    }
-                )
-
-    else:
-        raise ValueError(f"Unknown kernel: {kernel}")
-
-    return grid
+def parameter_grid(model_name, kernel):
+    return experiment_models.pcm_parameter_grid(
+        model_name,
+        kernel,
+        kernel_models=KERNEL_MODELS,
+        binomial_k=BINOMIAL_K,
+    )
 
 
 def build_experiments():
@@ -328,182 +175,70 @@ def run_experiment(
 
 
 def save_results(
-    results,
-    diagnostics,
-    task_id,
-    model_name,
-    n,
-    method,
-    generating_name,
-    kernel,
+    results, diagnostics, task_id, model_name, n, method, generating_name, kernel
 ):
-    OUTPUT_DIR.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    diagnostics_directory = OUTPUT_DIR / "diagnostics"
-
-    diagnostics_directory.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    kernel_label = kernel if kernel is not None else "parametric"
-
-    prefix = (
-        f"task{task_id}_"
-        f"{model_name}_"
-        f"n{n}_"
-        f"method{method}_"
-        f"gen{generating_name}_"
-        f"kernel{kernel_label}"
-    )
-
-    replication_file = OUTPUT_DIR / f"replications_{prefix}.csv"
-
-    summary_file = OUTPUT_DIR / f"summary_{prefix}.csv"
-
-    diagnostics_file = diagnostics_directory / f"diagnostics_{prefix}.npz"
-
-    results.to_csv(
-        replication_file,
-        index=False,
-    )
-
-    summary = summarize_monte_carlo(results)
-
-    summary.to_csv(
-        summary_file,
-        index=False,
-    )
-
-    np.savez_compressed(
-        diagnostics_file,
-        **diagnostics,
-    )
-
-    return (
-        replication_file,
-        summary_file,
-        diagnostics_file,
+    return experiment_results.save_pcm_results(
+        results,
+        diagnostics,
+        task_id,
+        model_name,
+        n,
+        method,
+        generating_name,
+        kernel,
+        output_dir=OUTPUT_DIR,
+        summarize_monte_carlo=summarize_monte_carlo,
     )
 
 
 def main():
     start_time = time.time()
-
     task_id = int(os.environ["PBS_ARRAY_INDEX"])
     experiments = build_experiments()
-    exp = get_experiment(
-        experiments,
-        task_id,
-    )
+    exp = get_experiment(experiments, task_id)
     model_name = exp["model_name"]
     n = exp["n"]
     method = exp["method"]
     generating_name = exp["generating_name"]
     generating_distribution = exp["generating_distribution"]
     generating_phi = exp["generating_phi"]
-
     kernel = exp["kernel"]
 
-    print(
-        f"Task {task_id} started",
-        flush=True,
-    )
-
-    print(
-        f"Model={model_name} "
-        f"n={n} "
-        f"method={method} "
-        f"generator={generating_name} "
-        f"kernel={kernel}",
-        flush=True,
-    )
-
-    if kernel is not None:
-        print(
-            f"Parameter grid: " f"{parameter_grid(model_name, kernel)}",
-            flush=True,
-        )
-
-    (
-        results,
-        diagnostics,
-    ) = run_experiment(
+    reporting.print_pcm_start(
+        task_id=task_id,
         model_name=model_name,
         n=n,
         method=method,
-        generating_distribution=(generating_distribution),
-        generating_phi=(generating_phi),
+        generating_name=generating_name,
+        kernel=kernel,
+        parameter_grid=parameter_grid,
+    )
+    results, diagnostics = run_experiment(
+        model_name=model_name,
+        n=n,
+        method=method,
+        generating_distribution=generating_distribution,
+        generating_phi=generating_phi,
         kernel=kernel,
     )
-
-    (
-        replication_file,
-        summary_file,
-        diagnostics_file,
-    ) = save_results(
+    replication_file, summary_file, diagnostics_file = save_results(
         results=results,
         diagnostics=diagnostics,
         task_id=task_id,
         model_name=model_name,
         n=n,
         method=method,
-        generating_name=(generating_name),
+        generating_name=generating_name,
         kernel=kernel,
     )
-
     elapsed = time.time() - start_time
-
-    successful = int((results["status"] == "ok").sum())
-
-    failed = len(results) - successful
-
-    print(
-        f"Task {task_id} finished",
-        flush=True,
-    )
-
-    print(
-        f"Replications: " f"{len(results)}",
-        flush=True,
-    )
-
-    print(
-        f"Successful: " f"{successful}",
-        flush=True,
-    )
-
-    print(
-        f"Failed: " f"{failed}",
-        flush=True,
-    )
-
-    print(
-        f"Elapsed seconds: " f"{elapsed:.2f}",
-        flush=True,
-    )
-
-    print(
-        f"Elapsed minutes: " f"{elapsed / 60:.2f}",
-        flush=True,
-    )
-
-    print(
-        f"Saved replications: " f"{replication_file}",
-        flush=True,
-    )
-
-    print(
-        f"Saved summary: " f"{summary_file}",
-        flush=True,
-    )
-
-    print(
-        f"Saved diagnostics: " f"{diagnostics_file}",
-        flush=True,
+    reporting.print_pcm_completion(
+        results=results,
+        task_id=task_id,
+        elapsed=elapsed,
+        replication_file=replication_file,
+        summary_file=summary_file,
+        diagnostics_file=diagnostics_file,
     )
 
 

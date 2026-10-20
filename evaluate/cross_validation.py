@@ -9,18 +9,19 @@ from tqdm.auto import tqdm
 from scipy.stats import gengamma
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.preprocessing import StandardScaler
-from skcure.metrics import uno_c_index_rmst, integrated_brier_score, auc_cure
+from skcure.metrics import auc_cure
 from skcure.utils.estimator import fit_cure_model
-from skcure.utils.optuna_utils import (
+from evaluate.optuna_utils import (
     _suggest_kernel_ranges,
     _kernel_ranges_from_best_params,
 )
-from ggkm_paper.evaluate.simulated_data import simulate_pcm, cure_probability
-from ggkm_paper.evaluate.util_cross_validation import (
+from evaluate.simulated_data import simulate_pcm, cure_probability
+from evaluate.util_cross_validation import (
     _make_evaluation_grid,
     _build_estimator,
     _select_grid_parameters,
 )
+from evaluate.metrics import integrated_brier_score, uno_c_index_rmst
 
 
 def _true_pcm_survival(

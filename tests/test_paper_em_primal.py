@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from sksurv.util import Surv
 
-from ggkm_paper.models import (
+from models import (
     GGNBPrimal,
     GGPoissonPrimal,
 )

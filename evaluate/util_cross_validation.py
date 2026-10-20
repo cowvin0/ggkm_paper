@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from skcure.utils.estimator import fit_cure_model
-from ggkm_paper.evaluate.metrics import integrated_brier_score
+from evaluate.metrics import integrated_brier_score
 
 
 def _make_evaluation_grid(

@@ -5,13 +5,13 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from ggkm_paper.models import (
+from models import (
     GGNBPrimal,
     GGPoissonPrimal,
     SplineNegativeBinomialModel,
     SplinePoissonModel,
 )
-from ggkm_paper.tests.test_paper_em_primal import _data
+from tests.test_paper_em_primal import _data
 
 
 @pytest.mark.parametrize(

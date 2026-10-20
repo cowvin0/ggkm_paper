@@ -32,23 +32,25 @@ from skcure.models.baseline_model import (
     MixtureCureModel,
     PromotionTimeModel,
 )
-from ggkm_paper import models as paper_models
-from ggkm_paper.models import (
+import models as paper_models
+from models import (
     GGNBPrimal,
     GGPoissonPrimal,
     SplineNegativeBinomialModel,
     SplinePoissonModel,
 )
 
-
 ESTIMATORS = [
-    GGPoissonPrimal, GGNBPrimal,
-    SplinePoissonModel, SplineNegativeBinomialModel,
+    GGPoissonPrimal,
+    GGNBPrimal,
+    SplinePoissonModel,
+    SplineNegativeBinomialModel,
 ]
 ESTIMATOR_BY_NAME = {cls.__name__: cls for cls in ESTIMATORS}
 LEGACY = json.loads((Path(__file__).parent / "data" / "legacy_models.json").read_text())
-CASE_NAMES = [name for name, case in LEGACY["cases"].items()
-              if case["class"] in ESTIMATOR_BY_NAME]
+CASE_NAMES = [
+    name for name, case in LEGACY["cases"].items() if case["class"] in ESTIMATOR_BY_NAME
+]
 
 
 @pytest.fixture(scope="module")
@@ -72,26 +74,39 @@ def regression_models(survival_data):
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
 def test_fitted_results_match_unmodified_research_models(
-    case_name, regression_models, survival_data,
+    case_name,
+    regression_models,
+    survival_data,
 ):
     X, _ = survival_data
     model = regression_models[case_name]
     expected = LEGACY["cases"][case_name]
-    np.testing.assert_allclose(model.predict_eta(X), expected["eta"], rtol=1e-10, atol=1e-12)
     np.testing.assert_allclose(
-        model.predict_survival(X, LEGACY["prediction_times"]), expected["survival"],
-        rtol=1e-10, atol=1e-12,
+        model.predict_eta(X), expected["eta"], rtol=1e-10, atol=1e-12
     )
     np.testing.assert_allclose(
-        model.predict_cure_probability(X), expected["cure"], rtol=1e-10, atol=1e-12,
+        model.predict_survival(X, LEGACY["prediction_times"]),
+        expected["survival"],
+        rtol=1e-10,
+        atol=1e-12,
+    )
+    np.testing.assert_allclose(
+        model.predict_cure_probability(X),
+        expected["cure"],
+        rtol=1e-10,
+        atol=1e-12,
     )
     for name, value in expected["learned"].items():
         if name in {"a", "d", "p", "phi"}:
             name += "_"
         observed = getattr(model, name)
-        np.testing.assert_allclose(observed, value, rtol=1e-10, atol=1e-12, err_msg=name)
+        np.testing.assert_allclose(
+            observed, value, rtol=1e-10, atol=1e-12, err_msg=name
+        )
     if "spline_design" in expected:
-        np.testing.assert_allclose(model.spline_.transform(X), expected["spline_design"])
+        np.testing.assert_allclose(
+            model.spline_.transform(X), expected["spline_design"]
+        )
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
@@ -99,9 +114,14 @@ def test_estimators_share_the_survival_contract(estimator_class):
     initial_a = np.float64(1.2)
     initial_iterations = np.int64(2)
     model = estimator_class(a=initial_a, max_em_iter=initial_iterations)
-    assert all(isinstance(model, parent) for parent in (
-        BaseCureEstimator, BaseEstimator, SurvivalAnalysisMixin,
-    ))
+    assert all(
+        isinstance(model, parent)
+        for parent in (
+            BaseCureEstimator,
+            BaseEstimator,
+            SurvivalAnalysisMixin,
+        )
+    )
     assert model.get_params()["a"] is initial_a
     assert model.get_params()["max_em_iter"] is initial_iterations
     assert not any(name.endswith("_") for name in vars(model))
@@ -125,7 +145,9 @@ def test_estimators_are_exported_from_public_namespaces(estimator_class):
 
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
-def test_constructor_parameters_remain_initial_values(case_name, regression_models, survival_data):
+def test_constructor_parameters_remain_initial_values(
+    case_name, regression_models, survival_data
+):
     X, _ = survival_data
     model = regression_models[case_name]
     case = LEGACY["cases"][case_name]
@@ -143,14 +165,18 @@ def test_constructor_parameters_remain_initial_values(case_name, regression_mode
 
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
-def test_coefficients_reproduce_the_fitted_predictor(case_name, regression_models, survival_data):
+def test_coefficients_reproduce_the_fitted_predictor(
+    case_name, regression_models, survival_data
+):
     X, _ = survival_data
     model = regression_models[case_name]
     design = model.spline_.transform(X) if hasattr(model, "spline_") else X
     assert model.coef_.shape == (design.shape[1],)
     np.testing.assert_allclose(
-        design @ model.coef_ + model.intercept_, model.predict_eta(X),
-        rtol=1e-12, atol=1e-12,
+        design @ model.coef_ + model.intercept_,
+        model.predict_eta(X),
+        rtol=1e-12,
+        atol=1e-12,
     )
 
 
@@ -165,13 +191,17 @@ def test_fitted_spline_survives_pickle_roundtrip(regression_models, survival_dat
         restored.predict_survival_function(X, return_array=True),
         model.predict_survival_function(X, return_array=True),
     )
-    np.testing.assert_array_equal(restored.predict_cure_probability(X), model.predict_cure_probability(X))
+    np.testing.assert_array_equal(
+        restored.predict_cure_probability(X), model.predict_cure_probability(X)
+    )
     np.testing.assert_array_equal(restored.unique_times_, model.unique_times_)
     assert restored.phi_ == model.phi_
 
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
-def test_risk_prediction_and_concordance_score(case_name, regression_models, survival_data):
+def test_risk_prediction_and_concordance_score(
+    case_name, regression_models, survival_data
+):
     X, y = survival_data
     model = regression_models[case_name]
     risk = model.predict(X)
@@ -183,7 +213,9 @@ def test_risk_prediction_and_concordance_score(case_name, regression_models, sur
 
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
-def test_survival_curves_and_cumulative_hazards(case_name, regression_models, survival_data):
+def test_survival_curves_and_cumulative_hazards(
+    case_name, regression_models, survival_data
+):
     X, y = survival_data
     model = regression_models[case_name]
     np.testing.assert_array_equal(model.unique_times_, np.unique(y["time"]))
@@ -197,14 +229,20 @@ def test_survival_curves_and_cumulative_hazards(case_name, regression_models, su
     np.testing.assert_allclose(values, expected)
     np.testing.assert_allclose(hazards, -np.log(values))
     assert np.all(np.diff(values, axis=1) <= 1e-14)
-    for curve, hazard_curve, row, hazard_row in zip(curves, hazard_curves, values, hazards):
-        assert isinstance(curve, StepFunction) and isinstance(hazard_curve, StepFunction)
+    for curve, hazard_curve, row, hazard_row in zip(
+        curves, hazard_curves, values, hazards
+    ):
+        assert isinstance(curve, StepFunction) and isinstance(
+            hazard_curve, StepFunction
+        )
         np.testing.assert_allclose(curve(model.unique_times_), row)
         np.testing.assert_allclose(hazard_curve(model.unique_times_), hazard_row)
 
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
-def test_population_survival_matches_distribution(case_name, regression_models, survival_data):
+def test_population_survival_matches_distribution(
+    case_name, regression_models, survival_data
+):
     X, _ = survival_data
     model = regression_models[case_name]
     times = np.array([0.0, 0.5, 1.5, 3.0, 5.0])
@@ -225,28 +263,45 @@ def test_population_survival_matches_distribution(case_name, regression_models, 
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
-@pytest.mark.parametrize("method,args", [
-    ("predict", ()), ("predict_eta", ()), ("predict_cure_probability", ()),
-    ("predict_survival", ([0.0, 1.0],)), ("predict_survival_function", ()),
-    ("predict_cumulative_hazard_function", ()),
-])
+@pytest.mark.parametrize(
+    "method,args",
+    [
+        ("predict", ()),
+        ("predict_eta", ()),
+        ("predict_cure_probability", ()),
+        ("predict_survival", ([0.0, 1.0],)),
+        ("predict_survival_function", ()),
+        ("predict_cumulative_hazard_function", ()),
+    ],
+)
 def test_prediction_requires_fitting(estimator_class, method, args):
     with pytest.raises(NotFittedError):
         getattr(estimator_class(), method)(np.ones((2, 2)), *args)
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
-@pytest.mark.parametrize("params", [
-    {"a": 0.0}, {"d": np.inf}, {"p": np.nan}, {"tol": -1.0},
-    {"max_em_iter": 0}, {"max_em_iter": 1.5}, {"warm_start": "yes"},
-])
+@pytest.mark.parametrize(
+    "params",
+    [
+        {"a": 0.0},
+        {"d": np.inf},
+        {"p": np.nan},
+        {"tol": -1.0},
+        {"max_em_iter": 0},
+        {"max_em_iter": 1.5},
+        {"warm_start": "yes"},
+    ],
+)
 def test_fit_validates_hyperparameters(estimator_class, params, survival_data):
     model = estimator_class(**params)
     with pytest.raises((ValueError, TypeError)):
         model.fit(*survival_data)
 
 
-@pytest.mark.parametrize("estimator_class", [GGPoissonPrimal, GGNBPrimal, SplinePoissonModel, SplineNegativeBinomialModel])
+@pytest.mark.parametrize(
+    "estimator_class",
+    [GGPoissonPrimal, GGNBPrimal, SplinePoissonModel, SplineNegativeBinomialModel],
+)
 def test_regularization_is_validated(estimator_class, survival_data):
     with pytest.raises(ValueError, match="lambda_reg"):
         estimator_class(lambda_reg=-1).fit(*survival_data)
@@ -259,17 +314,30 @@ def test_dispersion_is_validated(estimator_class, survival_data):
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
-@pytest.mark.parametrize("make_y", [
-    lambda y: np.column_stack([y["event"], y["time"]]),
-    lambda y: np.array(list(zip(y["event"].astype(int), y["time"])),
-                       dtype=[("event", int), ("time", float)]),
-    lambda y: y[:-1],
-    lambda y: Surv.from_arrays(y["event"], -y["time"]),
-    lambda y: Surv.from_arrays(y["event"], np.zeros(len(y))),
-    lambda y: Surv.from_arrays(y["event"], np.full(len(y), np.nan)),
-    lambda y: Surv.from_arrays(np.zeros(len(y), dtype=bool), y["time"]),
-], ids=["unstructured", "integer-event", "length", "negative-time",
-        "zero-time", "nonfinite-time", "all-censored"])
+@pytest.mark.parametrize(
+    "make_y",
+    [
+        lambda y: np.column_stack([y["event"], y["time"]]),
+        lambda y: np.array(
+            list(zip(y["event"].astype(int), y["time"])),
+            dtype=[("event", int), ("time", float)],
+        ),
+        lambda y: y[:-1],
+        lambda y: Surv.from_arrays(y["event"], -y["time"]),
+        lambda y: Surv.from_arrays(y["event"], np.zeros(len(y))),
+        lambda y: Surv.from_arrays(y["event"], np.full(len(y), np.nan)),
+        lambda y: Surv.from_arrays(np.zeros(len(y), dtype=bool), y["time"]),
+    ],
+    ids=[
+        "unstructured",
+        "integer-event",
+        "length",
+        "negative-time",
+        "zero-time",
+        "nonfinite-time",
+        "all-censored",
+    ],
+)
 def test_fit_validates_survival_targets(estimator_class, make_y, survival_data):
     X, y = survival_data
     with pytest.raises(ValueError):
@@ -285,7 +353,9 @@ def test_prediction_validates_times(case_name, times, regression_models, surviva
 
 
 @pytest.mark.parametrize("case_name", CASE_NAMES)
-def test_prediction_validates_feature_count_and_finiteness(case_name, regression_models):
+def test_prediction_validates_feature_count_and_finiteness(
+    case_name, regression_models
+):
     model = regression_models[case_name]
     with pytest.raises(ValueError, match="features"):
         model.predict(np.ones((3, 3)))
@@ -294,7 +364,9 @@ def test_prediction_validates_feature_count_and_finiteness(case_name, regression
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
-def test_fit_returns_self_and_cold_refit_is_reproducible(estimator_class, survival_data):
+def test_fit_returns_self_and_cold_refit_is_reproducible(
+    estimator_class, survival_data
+):
     X, y = survival_data
     model = estimator_class(max_em_iter=1)
     assert model.fit(X, y) is model
@@ -318,7 +390,9 @@ def test_failed_refit_invalidates_predictions(estimator_class, survival_data):
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
-def test_changed_invalid_parameter_invalidates_predictions(estimator_class, survival_data):
+def test_changed_invalid_parameter_invalidates_predictions(
+    estimator_class, survival_data
+):
     X, y = survival_data
     model = estimator_class(max_em_iter=1).fit(X, y)
     model.set_params(tol=-1)
@@ -329,10 +403,14 @@ def test_changed_invalid_parameter_invalidates_predictions(estimator_class, surv
 
 
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
-def test_failed_optimization_invalidates_predictions(estimator_class, survival_data, monkeypatch):
+def test_failed_optimization_invalidates_predictions(
+    estimator_class, survival_data, monkeypatch
+):
     X, y = survival_data
     model = estimator_class(max_em_iter=1).fit(X, y)
-    inner_class = model.estimator_class if hasattr(model, "estimator_class") else estimator_class
+    inner_class = (
+        model.estimator_class if hasattr(model, "estimator_class") else estimator_class
+    )
 
     def failed_e_step(*args):
         raise FloatingPointError("Synthetic optimizer failure")
@@ -349,7 +427,10 @@ def test_failed_optimization_invalidates_predictions(estimator_class, survival_d
 @pytest.mark.parametrize("estimator_class", ESTIMATORS)
 @pytest.mark.parametrize("warm_start", [False, True])
 def test_refit_starts_from_requested_gamma_parameters(
-    estimator_class, warm_start, survival_data, monkeypatch,
+    estimator_class,
+    warm_start,
+    survival_data,
+    monkeypatch,
 ):
     X, y = survival_data
     model = estimator_class(max_em_iter=1, warm_start=warm_start).fit(X, y)
@@ -358,7 +439,9 @@ def test_refit_starts_from_requested_gamma_parameters(
     model.set_params(a=1.2, d=1.4, p=1.1)
     expected_gamma = fitted_gamma if warm_start else [1.2, 1.4, 1.1]
     expected_phi = fitted_phi if warm_start else 0.5
-    inner_class = model.estimator_class if hasattr(model, "estimator_class") else estimator_class
+    inner_class = (
+        model.estimator_class if hasattr(model, "estimator_class") else estimator_class
+    )
 
     class InitializationChecked(Exception):
         pass
@@ -378,13 +461,18 @@ def test_refit_starts_from_requested_gamma_parameters(
 @pytest.mark.parametrize("estimator_class", [GGNBPrimal, SplineNegativeBinomialModel])
 @pytest.mark.parametrize("warm_start", [False, True])
 def test_fixed_phi_can_be_changed_before_refit(
-    estimator_class, warm_start, survival_data, monkeypatch,
+    estimator_class,
+    warm_start,
+    survival_data,
+    monkeypatch,
 ):
     X, y = survival_data
     model = estimator_class(phi=0.7, max_em_iter=1, warm_start=warm_start).fit(X, y)
     assert model.phi_ == 0.7
     model.set_params(phi=0.8)
-    inner_class = model.estimator_class if hasattr(model, "estimator_class") else estimator_class
+    inner_class = (
+        model.estimator_class if hasattr(model, "estimator_class") else estimator_class
+    )
 
     class InitializationChecked(Exception):
         pass
@@ -403,7 +491,9 @@ def test_fixed_phi_can_be_changed_before_refit(
 def test_feature_names_and_custom_target_fields(estimator_class, survival_data):
     X, y = survival_data
     frame = pd.DataFrame(X, columns=["age", "biomarker"])
-    custom_y = Surv.from_arrays(y["event"], y["time"], name_event="observed", name_time="duration")
+    custom_y = Surv.from_arrays(
+        y["event"], y["time"], name_event="observed", name_time="duration"
+    )
     model = estimator_class(max_em_iter=1).fit(frame, custom_y)
     np.testing.assert_array_equal(model.feature_names_in_, frame.columns)
     assert model.predict(frame).shape == (len(frame),)
@@ -416,8 +506,10 @@ def test_pipeline_and_grid_search_use_survival_score(survival_data):
     X, y = survival_data
     pipeline = make_pipeline(StandardScaler(), GGPoissonPrimal(max_em_iter=1))
     search = GridSearchCV(
-        pipeline, {"ggpoissonprimal__lambda_reg": [0.1, 0.2]},
-        cv=KFold(n_splits=2), error_score="raise",
+        pipeline,
+        {"ggpoissonprimal__lambda_reg": [0.1, 0.2]},
+        cv=KFold(n_splits=2),
+        error_score="raise",
     ).fit(X, y)
     assert np.all(np.isfinite(search.cv_results_["mean_test_score"]))
     assert search.predict(X[:3]).shape == (3,)

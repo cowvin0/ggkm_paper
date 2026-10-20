@@ -10,11 +10,10 @@ from sklearn.preprocessing import StandardScaler
 pytest.importorskip("optuna")
 pytest.importorskip("tqdm")
 
-from ggkm_paper.evaluate.simulated_data import simulate_pcm
-from ggkm_paper.models import SplineNegativeBinomialModel, SplinePoissonModel
+from evaluate.simulated_data import simulate_pcm
+from models import SplineNegativeBinomialModel, SplinePoissonModel
 from skcure.base import BaseCureEstimator
 from skcure.models import GGKM, MixtureCureModel, PromotionTimeModel
-
 
 SCRIPT_NAMES = (
     "run_pcm_experiment",
@@ -37,7 +36,8 @@ SMALL_PARAMS = {
 
 @pytest.mark.parametrize("script_name", SCRIPT_NAMES)
 def test_paper_entrypoint_registries_import(script_name):
-    script = importlib.import_module(f"ggkm_paper.scripts.{script_name}")
+    script = importlib.import_module(f"scripts.{script_name}")
+    # script = importlib.import_module(f"ggkm_paper.scripts.{script_name}")
     for name, distribution in (
         ("bernoulli", "binomial"),
         ("binomial", "binomial"),
@@ -64,16 +64,23 @@ def test_paper_entrypoint_registries_import(script_name):
 
 @pytest.mark.parametrize("model_name, estimator", SPLINE_CASES)
 def test_simulation_entrypoint_fits_relocated_spline_models(
-    monkeypatch, model_name, estimator,
+    monkeypatch,
+    model_name,
+    estimator,
 ):
-    script = importlib.import_module("ggkm_paper.scripts.run_pcm_experiment")
+    script = importlib.import_module("scripts.run_pcm_experiment")
+    # script = importlib.import_module("ggkm_paper.scripts.run_pcm_experiment")
     monkeypatch.setattr(script, "N_REPLICATIONS", 1)
     monkeypatch.setattr(script, "INNER_GRID_POINTS", 6)
     monkeypatch.setattr(script, "OUTER_GRID_POINTS", 8)
-    monkeypatch.setattr(script, "parameter_grid", lambda *args: [
-        dict(SMALL_PARAMS),
-        {**SMALL_PARAMS, "lambda_reg": 1.0},
-    ])
+    monkeypatch.setattr(
+        script,
+        "parameter_grid",
+        lambda *args: [
+            dict(SMALL_PARAMS),
+            {**SMALL_PARAMS, "lambda_reg": 1.0},
+        ],
+    )
 
     results, diagnostics = script.run_experiment(
         model_name=model_name,
@@ -102,27 +109,44 @@ def synthetic_inner_splits():
     time = data["time"].to_numpy(dtype=float)
     event = data["event"].to_numpy(dtype=int)
     splits = []
-    for train, validation in StratifiedKFold(2, shuffle=True, random_state=5).split(X, event):
+    for train, validation in StratifiedKFold(2, shuffle=True, random_state=5).split(
+        X, event
+    ):
         scaler = StandardScaler()
         grid = np.linspace(0.0, np.quantile(time[train], 0.75), 8)
-        splits.append((
-            scaler.fit_transform(X[train]), time[train], event[train],
-            scaler.transform(X[validation]), time[validation], event[validation], grid,
-        ))
+        splits.append(
+            (
+                scaler.fit_transform(X[train]),
+                time[train],
+                event[train],
+                scaler.transform(X[validation]),
+                time[validation],
+                event[validation],
+                grid,
+            )
+        )
     return splits
 
 
 @pytest.mark.parametrize(
-    "script_name", ["run_melanoma_experiment", "run_breast_cancer_experiment"],
+    "script_name",
+    ["run_melanoma_experiment", "run_breast_cancer_experiment"],
 )
 @pytest.mark.parametrize("model_name, estimator", SPLINE_CASES)
 def test_clinical_spline_tuning_uses_relocated_models(
-    monkeypatch, synthetic_inner_splits, script_name, model_name, estimator,
+    monkeypatch,
+    synthetic_inner_splits,
+    script_name,
+    model_name,
+    estimator,
 ):
-    script = importlib.import_module(f"ggkm_paper.scripts.{script_name}")
+    # script = importlib.import_module(f"ggkm_paper.scripts.{script_name}")
+    script = importlib.import_module(f"scripts.{script_name}")
     monkeypatch.setattr(script, "N_INNER_SPLITS", len(synthetic_inner_splits))
     monkeypatch.setattr(script, "SPLINE_PARAMETER_GRID", [dict(SMALL_PARAMS)])
-    monkeypatch.setattr(script, "prepare_inner_splits", lambda *args, **kwargs: synthetic_inner_splits)
+    monkeypatch.setattr(
+        script, "prepare_inner_splits", lambda *args, **kwargs: synthetic_inner_splits
+    )
 
     params, score, method, evaluations, valid_evaluations = script.tune_model(
         None,
