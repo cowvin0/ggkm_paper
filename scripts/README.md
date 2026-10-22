@@ -35,6 +35,76 @@ grids, including the differences between the two clinical experiments.
 Run the same entry-point modules as before; `PBS_ARRAY_INDEX`, input paths,
 output directories, file formats, and checkpoint resume rules are unchanged.
 
+## Primary simulation precision pilot
+
+The independent pilot uses all 18 primary data-generating scenarios and the 18
+model configurations reported in the manuscript: **324 cells and five planned
+replications per cell**. It reuses the final PCM generator, model definitions,
+tuning grids, train/test split, and evaluation settings. Its master seed is
+`20260818`, separate from the final experiment's `20260817`. Pilot observations
+are saved separately and never enter the final simulation tables or estimates.
+
+Run the pilot and its precision summary on the cluster:
+
+```bash
+python scripts/run_workflow.py --mode cluster --datasets simulation --stage pilot
+```
+
+Use `--mode local` to run the same pilot sequentially on a local machine. The
+complete workflow (`--stage all`, the default) and `--stage experiments` now
+include the pilot and summary before the final simulation. Figures-only,
+tables-only, and postprocessing runs use the existing final results directly.
+
+Pilot files are saved under `data/pilot_results/primary/`:
+
+- `pilot_design.json` records all cells, tuning grids, seeds, software versions,
+  and source checksums.
+- `replications_pilot_task*.csv` retains every planned attempt, including failed
+  fits, its metrics, and generation/split/tuning seeds. Each CSV has a metadata
+  file containing its study identity and checksum.
+- `pilot_cell_summary.csv` gives successful and failed counts, finite metric
+  counts, means, sample standard deviations, and precision projections by cell.
+- `pilot_precision_report.json` and `.txt` give the largest within-cell standard
+  deviation for each metric, the replication requirements, the worst cells,
+  and whether the configured final replication count meets the targets.
+
+For each cell, sample standard deviations use successful, finite observations
+with `ddof=1`. The report takes the largest cell standard deviation and computes
+`ceil((maximum_sd / target_mcse)**2)`, using targets **0.003 for IBS** and
+**0.005 for cure-probability MSE**. It uses `cure_mse` directly. Cure AUC has a
+projected MCSE but does not determine the required allocation. Projections use
+the current final replication count, initially 250; the pilot never changes it
+automatically or rounds its requirement to a convenient study size.
+
+Every cell must contain all five attempted replication IDs and at least four
+successful, finite values for each reported metric. Missing or insufficient
+cells produce an incomplete report. Mismatched cell identities, shared seeds,
+checksums, or study metadata are rejected. If the data are incomplete or 250
+replications do not meet the IBS/MSE targets, the summary exits unsuccessfully
+and prevents the dependent final simulation from starting. Inspect the report
+and choose the final allocation explicitly before proceeding.
+
+Completed pilot cells are reused when their study identity and checksums match.
+Use a separate output directory for a different seed, fitting design, or
+software/source version. To run one cell manually, or recompute only the report:
+
+```bash
+python scripts/run_simulation_pilot.py --task-id 0
+python scripts/summarize_simulation_pilot.py
+```
+
+The runner accepts `--all`, `--seed`, `--replications`, `--output-dir`, and
+`--overwrite`; the summary accepts `--results-dir`, `--output-dir`,
+`--final-replications`, `--minimum-successful`, and the two MCSE targets.
+Source/settings checks allow reassessing the same pilot at another final
+replication count without pooling or refitting its observations. The source and
+software used to read the pilot must match its recorded fitting design.
+
+These scripts recompute the pilot under the current implementation and the
+full design selected for this workflow. They do not impose the historical
+standard deviations quoted in the manuscript; the measured values and resulting
+allocation can differ.
+
 ## PCM review figures
 
 The plotting scripts read saved PCM experiment outputs; they do not rerun model

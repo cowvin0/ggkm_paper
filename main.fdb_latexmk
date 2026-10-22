@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex main"] 1792499509 "main.aux" "main.bbl" "main" 1792499511
+["bibtex main"] 1792518938 "main.aux" "main.bbl" "main" 1792518941
   "./WileyNJD-AMA.bst" 1792169879 24550 a41a6405f4de768c43e871d9fbce2bc8 ""
-  "main.aux" 1792499511 35133 ce5269c1cc0b3abb9966f0f5fe4c8f2c "pdflatex"
+  "main.aux" 1792518940 35133 ce5269c1cc0b3abb9966f0f5fe4c8f2c "pdflatex"
   "references.bib" 1792169888 14033 475f35051be58a9164f3b1bdeadbd0d6 ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1792499509 "/home/cowvin/Documents/ggkm_paper/main.tex" "main.pdf" "main" 1792499511
+["pdflatex"] 1792518938 "/home/cowvin/Documents/ggkm_paper/main.tex" "main.pdf" "main" 1792518941
   "/etc/texmf/web2c/texmf.cnf" 1774712065 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/cowvin/Documents/ggkm_paper/main.tex" 1792169888 11366 18c33e67b610189105286c0d6958e883 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathbb.enc" 1610747736 2904 e0faa515d685129700e18ca6e0e2b48f ""
@@ -280,8 +280,8 @@
   "images//Wiley_logo.eps" 1792169888 413570 ef0fb6bc9fa87a993ec36489549c55eb ""
   "images/ORCID_Logo.eps" 1792169888 397266 8e186bfe0e5a7cb3d8da532756dd8078 ""
   "lettersp.sty" 1792169888 12163 b6de1fa5e93e58dc68ba3c77a1af2e61 ""
-  "main.aux" 1792499511 35133 ce5269c1cc0b3abb9966f0f5fe4c8f2c "pdflatex"
-  "main.bbl" 1792499509 9405 c98b768fc9c1ac8f2e4469bb4e230dd9 "bibtex main"
+  "main.aux" 1792518940 35133 ce5269c1cc0b3abb9966f0f5fe4c8f2c "pdflatex"
+  "main.bbl" 1792518938 9405 c98b768fc9c1ac8f2e4469bb4e230dd9 "bibtex main"
   "main.tex" 1792169888 11366 18c33e67b610189105286c0d6958e883 ""
   "sections/01_introduction.tex" 1792169888 7390 93ddaefffa63d2a77e6fbc23f7d38977 ""
   "sections/02_methods.tex" 1792169888 50541 a1d5acbe77e7b4454556f8f4a18f43c0 ""
@@ -289,7 +289,7 @@
   "sections/04_melanoma_application.tex" 1792169888 9476 c84fa3081d3a31156c3afc91f2c7befe ""
   "sections/05_breast_cancer_application.tex" 1792169888 8700 79498a7115be88ac073fd3492e538892 ""
   "sections/06_discussion.tex" 1792169888 8847 fe7a5e7aab77269512ca2c94637d3151 ""
-  "sections/07_declarations.tex" 1792169888 2786 a49e355648753f38f377a883a2301e7d ""
+  "sections/07_declarations.tex" 1792518936 3229 728289cf023bef0118b4ca1e16c4e4bc ""
   "sections/generated/breast-cancer-performance-table.tex" 1792169888 3079 2c3b6ce6cc6ca80bf12b9fd2bc427973 ""
   "sections/generated/highdim-best-table.tex" 1792169888 2560 83f14ba33448d45f60a234121c2d0a49 ""
   "sections/generated/melanoma-performance-table.tex" 1792169888 2719 add05bd30e906a3931b292e223f8876e ""

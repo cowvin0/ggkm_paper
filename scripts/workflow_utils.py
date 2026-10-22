@@ -13,7 +13,7 @@ from typing import Iterable
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATASETS = ("simulation", "melanoma", "breast-cancer")
-STAGES = ("all", "experiments", "figures", "tables", "postprocess")
+STAGES = ("all", "pilot", "experiments", "figures", "tables", "postprocess")
 
 
 @dataclass(frozen=True)
@@ -25,7 +25,17 @@ class Job:
     commands: tuple[tuple[str, ...], ...]
 
     @property
+    def is_array(self) -> bool:
+        return self.stage in {"pilot", "experiments"}
+
+    @property
     def prerequisite(self) -> str | None:
+        if self.key == "simulation-pilot-summary":
+            return "simulation-pilot"
+        if self.key == "simulation-experiments":
+            return "simulation-pilot-summary"
+        if self.stage == "pilot":
+            return None
         if self.stage == "experiments":
             return None
         return f"{self.dataset}-experiments"
@@ -33,6 +43,8 @@ class Job:
 
 _COMMANDS = {
     "simulation": {
+        "pilot": (("scripts.run_simulation_pilot",),),
+        "pilot-summary": (("scripts.summarize_simulation_pilot",),),
         "experiments": (("scripts.run_pcm_experiment",),),
         "figures": (
             ("scripts.create_paired_plot_1_2_3_methods",),
@@ -64,6 +76,8 @@ _COMMANDS = {
 }
 
 _PBS_FILES = {
+    "simulation-pilot": "run_simulation_pilot.pbs",
+    "simulation-pilot-summary": "summarize_simulation_pilot.pbs",
     "simulation-experiments": "run_experiment.pbs",
     "melanoma-experiments": "run_melanoma_experiment.pbs",
     "breast-cancer-experiments": "run_breast_cancer_experiment.pbs",
@@ -83,8 +97,9 @@ JOBS = {
         pbs_file=_PBS_FILES[f"{dataset}-{stage}"],
         commands=_COMMANDS[dataset][stage],
     )
-    for stage in ("experiments", "figures", "tables")
+    for stage in ("pilot", "pilot-summary", "experiments", "figures", "tables")
     for dataset in DATASETS
+    if stage in _COMMANDS[dataset]
 }
 
 
@@ -96,8 +111,12 @@ def select_jobs(datasets: Iterable[str], stage: str = "all") -> list[Job]:
         raise ValueError(f"Unknown datasets: {', '.join(sorted(unknown))}")
     if stage not in STAGES:
         raise ValueError(f"Unknown stage: {stage}")
+    if stage == "pilot" and "simulation" not in datasets:
+        raise ValueError("--stage pilot requires simulation in --datasets")
     stages = {
-        "all": {"experiments", "figures", "tables"},
+        "all": {"pilot", "pilot-summary", "experiments", "figures", "tables"},
+        "pilot": {"pilot", "pilot-summary"},
+        "experiments": {"pilot", "pilot-summary", "experiments"},
         "postprocess": {"figures", "tables"},
     }.get(stage, {stage})
     return [job for job in JOBS.values() if job.dataset in datasets and job.stage in stages]

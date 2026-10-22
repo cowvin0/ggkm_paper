@@ -156,13 +156,15 @@ def test_local_complete_dataset_runs_each_task_before_figures_and_tables(fake_co
     assert process.returncode == 0, process.stderr
     events = _modules(fake)
     assert [event["argv"][2] for event in events] == [
+        "scripts.run_simulation_pilot", "scripts.run_simulation_pilot",
+        "scripts.summarize_simulation_pilot",
         "scripts.run_pcm_experiment", "scripts.run_pcm_experiment",
         "scripts.create_paired_plot_1_2_3_methods",
         "scripts.create_paired_plot_interaction_quadratic_surfaces",
         "scripts.recover_cure_surfaces_figure",
         "scripts.create_simulation_tables",
     ]
-    assert [event["index"] for event in events] == ["0", "1", None, None, None, None]
+    assert [event["index"] for event in events] == ["0", "1", None, "0", "1", None, None, None, None]
     assert all(event["job_id"] is None for event in events)
     assert all(event["cwd"] == str(PROJECT_ROOT) for event in events)
     assert all(event["workers"] == "1" for event in events)
@@ -231,15 +233,14 @@ def test_cluster_submits_dynamic_arrays_and_matching_dependents(fake_commands):
 
     assert process.returncode == 0, process.stderr
     submissions = _events(fake["qsub_calls"])
-    assert len(submissions) == 9
+    assert len(submissions) == 11
     arrays = [event for event in submissions if "-J" in event["argv"]]
     outputs = [event for event in submissions if "-J" not in event["argv"]]
-    assert len(arrays) == 3
-    assert len(outputs) == 6
+    assert len(arrays) == 4
+    assert len(outputs) == 7
     for event in arrays:
         arguments = event["argv"]
         assert arguments[arguments.index("-J") + 1] == "0-1"
-        assert not any("depend=" in argument for argument in arguments)
     for event in submissions:
         arguments = event["argv"]
         assert arguments[arguments.index("-q") + 1] == "research"
@@ -247,9 +248,18 @@ def test_cluster_submits_dynamic_arrays_and_matching_dependents(fake_commands):
         assert event["project_root"] == str(PROJECT_ROOT)
         assert event["workers"] == "2"
     for parent in arrays:
-        assert sum(parent["job_id"] in argument for event in outputs for argument in event["argv"]) == 2
+        expected_dependents = 1 if Path(parent["argv"][-1]).name == "run_simulation_pilot.pbs" else 2
+        assert sum(parent["job_id"] in argument for event in outputs for argument in event["argv"]) == expected_dependents
     assert all(any("depend=afterok:" in argument for argument in event["argv"]) for event in outputs)
     by_script = {Path(event["argv"][-1]).name: event for event in submissions}
+    pilot = by_script["run_simulation_pilot.pbs"]
+    summary = by_script["summarize_simulation_pilot.pbs"]
+    simulation = by_script["run_experiment.pbs"]
+    assert not any("depend=" in argument for argument in pilot["argv"])
+    assert f"depend=afterok:{pilot['job_id']}" in summary["argv"]
+    assert f"depend=afterok:{summary['job_id']}" in simulation["argv"]
+    for independent in ("run_melanoma_experiment.pbs", "run_breast_cancer_experiment.pbs"):
+        assert not any("depend=" in argument for argument in by_script[independent]["argv"])
     for experiment, figures, tables in [
         ("run_experiment.pbs", "create_simulation_figures.pbs", "create_simulation_tables.pbs"),
         ("run_melanoma_experiment.pbs", "create_melanoma_figures.pbs", "create_melanoma_table.pbs"),
@@ -287,7 +297,9 @@ def test_cluster_failure_preserves_prior_job_ids_and_stops_submitting(fake_comma
     assert "synthetic scheduler rejection" in process.stderr
     submissions = _events(fake["qsub_calls"])
     assert len(submissions) == 2
-    assert all("-J" in event["argv"] for event in submissions)
+    assert "-J" in submissions[0]["argv"]
+    assert "-J" not in submissions[1]["argv"]
+    assert "summarize_simulation_pilot.pbs" in submissions[1]["argv"][-1]
     manifest = json.loads((fake["logs"] / "workflow.json").read_text())
     assert [job["state"] for job in manifest["jobs"]] == ["submitted", "failed"]
     assert [job["job_id"] for job in manifest["jobs"][:-1]] == [event["job_id"] for event in submissions[:-1]]
@@ -397,3 +409,124 @@ def test_local_stage_selection_runs_only_requested_work(fake_commands, stage, mo
 
     assert process.returncode == 0, process.stderr
     assert [event["argv"][2] for event in _modules(fake)] == modules
+
+
+def test_local_pilot_stage_runs_array_then_summary_without_final_experiment(fake_commands):
+    fake = fake_commands
+
+    process = _with_fake_python(
+        fake, "--mode", "local", "--datasets", "simulation", "--stage", "pilot",
+    )
+
+    assert process.returncode == 0, process.stderr
+    events = _modules(fake)
+    assert [event["argv"][2] for event in events] == [
+        "scripts.run_simulation_pilot", "scripts.run_simulation_pilot",
+        "scripts.summarize_simulation_pilot",
+    ]
+    assert [event["index"] for event in events] == ["0", "1", None]
+    assert _events(fake["calls"])[0] == {
+        "kind": "discovery", "modules": ["scripts.run_simulation_pilot"],
+    }
+    manifest = json.loads((fake["logs"] / "workflow.json").read_text())
+    assert manifest["task_counts"] == {"simulation-pilot": 2}
+    assert [job["job"] for job in manifest["jobs"]] == [
+        "simulation-pilot", "simulation-pilot-summary",
+    ]
+
+
+def test_experiments_stage_includes_pilot_and_validation_without_figures_or_tables(fake_commands):
+    fake = fake_commands
+
+    process = _with_fake_python(
+        fake, "--mode", "local", "--datasets", "simulation", "--stage", "experiments",
+    )
+
+    assert process.returncode == 0, process.stderr
+    assert [event["argv"][2] for event in _modules(fake)] == [
+        "scripts.run_simulation_pilot", "scripts.run_simulation_pilot",
+        "scripts.summarize_simulation_pilot",
+        "scripts.run_pcm_experiment", "scripts.run_pcm_experiment",
+    ]
+
+
+def test_pilot_summary_failure_prevents_final_simulation_and_postprocessing(fake_commands):
+    fake = fake_commands
+    fake["environment"]["WORKFLOW_TEST_FAIL_MODULE"] = "scripts.summarize_simulation_pilot"
+
+    process = _with_fake_python(fake, "--mode", "local", "--datasets", "simulation")
+
+    assert process.returncode != 0
+    assert [event["argv"][2] for event in _modules(fake)] == [
+        "scripts.run_simulation_pilot", "scripts.run_simulation_pilot",
+        "scripts.summarize_simulation_pilot",
+    ]
+    manifest = json.loads((fake["logs"] / "workflow.json").read_text())
+    assert [job["state"] for job in manifest["jobs"]] == ["complete", "failed"]
+    assert manifest["jobs"][-1]["job"] == "simulation-pilot-summary"
+
+
+def test_pilot_array_failure_prevents_summary_and_final_simulation(fake_commands):
+    fake = fake_commands
+    fake["environment"]["WORKFLOW_TEST_FAIL_MODULE"] = "scripts.run_simulation_pilot"
+
+    process = _with_fake_python(fake, "--mode", "local", "--datasets", "simulation")
+
+    assert process.returncode != 0
+    assert [event["argv"][2] for event in _modules(fake)] == ["scripts.run_simulation_pilot"]
+
+
+def test_clinical_only_pilot_selection_fails_before_any_work(fake_commands):
+    fake = fake_commands
+
+    process = _with_fake_python(
+        fake, "--mode", "local", "--datasets", "melanoma", "--stage", "pilot",
+    )
+
+    assert process.returncode != 0
+    assert "--stage pilot requires simulation" in process.stderr
+    assert _events(fake["calls"]) == []
+    assert not fake["logs"].exists()
+
+
+def test_pilot_pbs_worker_preserves_scheduler_index(fake_commands):
+    fake = fake_commands
+    fake["environment"]["PBS_ARRAY_INDEX"] = "123"
+
+    process = _with_fake_python(fake, "--run-job", "simulation-pilot")
+
+    assert process.returncode == 0, process.stderr
+    events = _modules(fake)
+    assert len(events) == 1
+    assert events[0]["argv"][2] == "scripts.run_simulation_pilot"
+    assert events[0]["index"] == "123"
+
+
+def test_pilot_summary_pbs_worker_clears_inherited_array_index(fake_commands):
+    fake = fake_commands
+    fake["environment"]["PBS_ARRAY_INDEX"] = "123"
+
+    process = _with_fake_python(fake, "--run-job", "simulation-pilot-summary")
+
+    assert process.returncode == 0, process.stderr
+    events = _modules(fake)
+    assert len(events) == 1
+    assert events[0]["argv"][2] == "scripts.summarize_simulation_pilot"
+    assert events[0]["index"] is None
+
+
+def test_pilot_cluster_stage_submits_two_jobs_with_array_dependency(fake_commands):
+    fake = fake_commands
+
+    process = _with_fake_python(
+        fake, "--mode", "cluster", "--qsub", str(fake["qsub"]),
+        "--datasets", "simulation", "--stage", "pilot",
+    )
+
+    assert process.returncode == 0, process.stderr
+    pilot, summary = _events(fake["qsub_calls"])
+    assert Path(pilot["argv"][-1]).name == "run_simulation_pilot.pbs"
+    assert pilot["argv"][pilot["argv"].index("-J") + 1] == "0-1"
+    assert Path(summary["argv"][-1]).name == "summarize_simulation_pilot.pbs"
+    assert "-J" not in summary["argv"]
+    assert f"depend=afterok:{pilot['job_id']}" in summary["argv"]

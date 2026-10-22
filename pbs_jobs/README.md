@@ -6,11 +6,27 @@ figure and table jobs to its experiment array. The figure jobs save to
 `figures/review/`; the table jobs replace the corresponding files in
 `sections/generated/`.
 
+The simulation workflow first runs a separate diagnostic pilot and checks its
+projected Monte Carlo precision before starting the final simulation array.
+The pilot uses five planned replicates in each of 324 cells (18 primary
+scenarios crossed with the 18 reported model configurations). Its samples and
+outputs are separate from the final 250-replicate experiment.
+Raw pilot replications, their recorded design and checksums, and the CSV, JSON,
+and text precision reports are saved in `data/pilot_results/primary/`. The
+reported standard deviations and projected errors come from the newly run
+pilot; historical numbers in the manuscript are not imposed on its results.
+
 | Dataset | Experiment array | Figures | Tables |
 | --- | --- | --- | --- |
 | Simulation | `run_experiment.pbs` (0–959) | `create_simulation_figures.pbs` | `create_simulation_tables.pbs` |
 | Melanoma | `run_melanoma_experiment.pbs` (0–31) | `create_melanoma_figures.pbs` | `create_melanoma_table.pbs` |
 | Breast cancer | `run_breast_cancer_experiment.pbs` (0–35) | `create_breast_cancer_figures.pbs` | `create_breast_cancer_table.pbs` |
+
+The additional simulation jobs are `run_simulation_pilot.pbs` (array 0–323) and
+`summarize_simulation_pilot.pbs`. The summary checks that every pilot cell has
+at least four successful replicates and that 250 final replicates satisfy the
+IBS and cure-probability MSE precision targets. A failed check stops the final
+simulation from starting; it does not change the final replication count.
 
 The simulation figure job runs the paired methods, interaction/quadratic
 surfaces, and recovered cure surfaces scripts. Each clinical figure job runs
@@ -38,10 +54,22 @@ tables:
 python scripts/run_workflow.py --mode cluster
 ```
 
-The launcher submits each experiment as an array, then submits that dataset's
-figure and table jobs with an `afterok` dependency on the complete array. All
-array tasks must finish successfully before the dependent jobs can run; see the
+The launcher submits experiment arrays and connects each dataset's figure and
+table jobs with an `afterok` dependency on its complete array. For simulation,
+the dependency chain is pilot array, pilot summary, final experiment array,
+then figures and tables. Clinical experiment arrays can run independently of
+the simulation pilot. All array tasks must finish successfully before the
+dependent jobs can run; see the
 [PBS Professional User's Guide, §§8.4.5–8.4.6](https://help.altair.com/2022.1.0/PBS%20Professional/PBSUserGuide2022.1.pdf).
+
+To run only the diagnostic pilot and its summary on the cluster:
+
+```bash
+python scripts/run_workflow.py --mode cluster --datasets simulation --stage pilot
+```
+
+Use `--mode local` with the same arguments to run the pilot locally. Neither
+command runs the final simulation or rewrites its existing results.
 
 To regenerate only figures and tables from existing results on the cluster:
 
@@ -71,7 +99,9 @@ python scripts/run_workflow.py --mode local --datasets breast-cancer --stage pos
 
 Postprocessing reads saved CSV/NPZ results; those files must be available on the
 machine running it. Use `--stage figures` or `--stage tables` for only one output
-type, or `--stage experiments` to run only the experiments. `--datasets` accepts
+type, or `--stage experiments` to run experiments, including the simulation
+pilot and its precision check. Postprocessing stages never run the pilot.
+`--datasets` accepts
 any combination of `simulation`, `melanoma`, and `breast-cancer`.
 
 Use `--python /path/to/venv/bin/python` to select a different interpreter and
@@ -115,6 +145,9 @@ the breast cancer memory request corrected to `64gb`. Figure jobs request one
 CPU and `16gb`; table jobs request one CPU and `4gb`. Edit their `#PBS -l` lines
 to suit the cluster's queues and limits.
 
+The pilot array requests four CPUs, `16gb`, and 72 hours per task; its summary
+requests one CPU, `4gb`, and one hour.
+
 Each job uses one BLAS/OpenMP thread per Python process and the `Agg` plotting
 backend. Standard output, standard error, and the final exit status/timing are
 recorded in `logs/pbs/`, with the job key, PBS job ID, and array index in the
@@ -128,6 +161,13 @@ From the repository root, the original experiment commands still work:
 qsub pbs_jobs/run_experiment.pbs
 qsub pbs_jobs/run_melanoma_experiment.pbs
 qsub pbs_jobs/run_breast_cancer_experiment.pbs
+```
+
+To submit the pilot and its dependent summary directly:
+
+```bash
+pilot_job_id=$(qsub pbs_jobs/run_simulation_pilot.pbs)
+qsub -W "depend=afterok:${pilot_job_id}" pbs_jobs/summarize_simulation_pilot.pbs
 ```
 
 Figure and table jobs can be submitted directly when the corresponding raw
@@ -147,4 +187,4 @@ qsub -v GGKM_PROJECT_ROOT,GGKM_VENV,GGKM_R_HOME pbs_jobs/create_melanoma_figures
 
 The workflow launcher handles its supported settings automatically. Direct
 submissions do not create dependencies; use the launcher to submit the complete
-workflow.
+workflow, including the pilot and its precision check before final simulation.

@@ -56,7 +56,7 @@ def discover_task_counts(
     jobs: list[Job], python: str, env: dict[str, str]
 ) -> dict[str, int]:
     """Read current grids in the selected Python environment without running fits."""
-    experiments = [job for job in jobs if job.stage == "experiments"]
+    experiments = [job for job in jobs if job.is_array]
     if not experiments:
         return {}
     modules = [job.commands[0][0] for job in experiments]
@@ -93,7 +93,7 @@ def run_job(
     job: Job, python: str, env: dict[str, str], *, log_file: Path | None = None
 ) -> None:
     """Execute one array task or all commands of one postprocessing job."""
-    if job.stage == "experiments":
+    if job.is_array:
         try:
             if int(env["PBS_ARRAY_INDEX"]) < 0:
                 raise ValueError("negative index")
@@ -141,7 +141,7 @@ def run_local(jobs, counts, python, env, log_dir, manifest):
             for index in range(total):
                 task_env = env.copy()
                 suffix = ""
-                if job.stage == "experiments":
+                if job.is_array:
                     task_env["PBS_ARRAY_INDEX"] = str(index)
                     suffix = f"_{index:04d}"
                 logfile = log_dir / f"{job.key}{suffix}.log"
@@ -162,7 +162,7 @@ def qsub_command(job, counts, submitted, qsub, queue, export_names):
     if queue:
         command.extend(["-q", queue])
     command.extend(["-v", ",".join(export_names)])
-    if job.stage == "experiments":
+    if job.is_array:
         command.extend(["-J", f"0-{counts[job.key] - 1}"])
     if job.prerequisite in submitted:
         command.extend(["-W", f"depend=afterok:{submitted[job.prerequisite]}"])
@@ -211,7 +211,7 @@ def build_parser():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--mode", choices=("local", "cluster"), help="Run locally or submit to PBS (required).")
     parser.add_argument("--datasets", nargs="+", choices=DATASETS, default=list(DATASETS))
-    parser.add_argument("--stage", choices=STAGES, default="all", help="Use postprocess for existing experiment results.")
+    parser.add_argument("--stage", choices=STAGES, default="all", help="Use pilot for the simulation diagnostic pilot only; postprocess for existing experiment results.")
     parser.add_argument("--python", default=sys.executable, help="Python executable with the experiment dependencies installed.")
     parser.add_argument("--workers", type=positive_int, help="Outer-holdout workers per task (local default: 1; cluster: PBS job defaults, at most 4).")
     parser.add_argument("--queue", help="PBS queue (cluster only; otherwise use the scheduler default).")
@@ -244,12 +244,15 @@ def main(argv=None):
                     print(shlex.join(command))
                 return 0
             env = execution_environment(args.workers)
-            if job.stage == "experiments" and "PBS_ARRAY_INDEX" in os.environ:
+            if job.is_array and "PBS_ARRAY_INDEX" in os.environ:
                 env["PBS_ARRAY_INDEX"] = os.environ["PBS_ARRAY_INDEX"]
             run_job(job, python, env)
             return 0
 
-        jobs = select_jobs(args.datasets, args.stage)
+        try:
+            jobs = select_jobs(args.datasets, args.stage)
+        except ValueError as error:
+            raise WorkflowError(str(error)) from error
         workers = (args.workers or 1) if args.mode == "local" else args.workers
         if args.mode == "cluster" and workers is None and os.environ.get("GGKM_WORKERS"):
             try:
@@ -275,7 +278,7 @@ def main(argv=None):
                     print(shlex.join(command))
                     submitted[job.key] = f"<{job.key}-job-id>"
                 else:
-                    if job.stage == "experiments":
+                    if job.is_array:
                         print(f"# Repeat with PBS_ARRAY_INDEX=0 through {counts[job.key] - 1}")
                     for command in module_commands(job, python):
                         print(shlex.join(command))

@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1792514403 "/home/cowvin/Documents/ggkm_paper/supporting-information.tex" "supporting-information.pdf" "supporting-information" 1792514403
+["pdflatex"] 1792521479 "/home/cowvin/Documents/ggkm_paper/supporting-information.tex" "supporting-information.pdf" "supporting-information" 1792521479
   "/etc/texmf/web2c/texmf.cnf" 1774712065 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/cowvin/Documents/ggkm_paper/supporting-information.tex" 1792514403 48421 bab91fddb89283e5217d83cb8b0a528e ""
+  "/home/cowvin/Documents/ggkm_paper/supporting-information.tex" 1792521479 48229 069adf37fc4dae135efcb316bf7ce82e ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm" 1246382020 1120 1e8878807317373affa7f7bba4cf2f6a ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
@@ -127,11 +127,11 @@
   "sections/generated/highdim-diagnostics-table.tex" 1792169888 4238 893d301a9e7b9907f1728de09eb29a34 ""
   "sections/generated/highdim-ibs-table.tex" 1792169888 6769 e5c480e6919cc9d167582694dca723c0 ""
   "sections/generated/simulation-cure-rmse-table.tex" 1792169888 14202 f743ecd889fffdcded547088909e9a6a ""
-  "sections/generated/simulation-diagnostics-table.tex" 1792169888 4135 ac56f12e9ba36dda7022453b6b6eb3bb ""
+  "sections/generated/simulation-diagnostics-table.tex" 1792520747 2434 384cb0eae282653085063240e69f34ca ""
   "sections/generated/simulation-ibs-table.tex" 1792169888 9152 50ddcdc1e214fd7fa7cbe2a56542ced9 ""
-  "supporting-information.aux" 1792514403 28733 2e6f19fa285c00093c9dc368d649299e "pdflatex"
-  "supporting-information.out" 1792514403 3517 5b89781c55dee06291852399f9f1770b "pdflatex"
-  "supporting-information.tex" 1792514403 48421 bab91fddb89283e5217d83cb8b0a528e ""
+  "supporting-information.aux" 1792521479 28733 2e6f19fa285c00093c9dc368d649299e "pdflatex"
+  "supporting-information.out" 1792521479 3517 5b89781c55dee06291852399f9f1770b "pdflatex"
+  "supporting-information.tex" 1792521479 48229 069adf37fc4dae135efcb316bf7ce82e ""
   (generated)
   "supporting-information.aux"
   "supporting-information.log"
