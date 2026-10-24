@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 from tqdm.auto import tqdm
 
-from skcure.utils.estimator import fit_cure_model
+from evaluate.util_cross_validation import fit_cure_model
 from skcure.metrics import auc_cure
 from scripts.preprocessing import BreastCancerSurvivalPreprocessor
 from evaluate.metrics import (
@@ -239,7 +239,9 @@ def censoring_reliable_horizon(t, delta, minimum_survival=MINIMUM_CENSORING_SURV
 
 def make_evaluation_grid(t, delta, *, points):
     return evaluation.make_evaluation_grid(
-        t, delta, points=points,
+        t,
+        delta,
+        points=points,
         observed_time_quantile=OBSERVED_TIME_QUANTILE,
         minimum_censoring_survival=MINIMUM_CENSORING_SURVIVAL,
         censoring_horizon=censoring_reliable_horizon,
@@ -247,12 +249,15 @@ def make_evaluation_grid(t, delta, *, points):
 
 
 def fixed_kernel_model_params(model_name):
-    return experiment_models.fixed_kernel_model_params(model_name, binomial_k=BINOMIAL_K)
+    return experiment_models.fixed_kernel_model_params(
+        model_name, binomial_k=BINOMIAL_K
+    )
 
 
 def kernel_parameter_grid(model_name, kernel):
     return experiment_models.kernel_parameter_grid(
-        model_name, kernel,
+        model_name,
+        kernel,
         binomial_k=BINOMIAL_K,
         base_params=fixed_kernel_model_params(model_name),
         penalties=KERNEL_PENALTIES,
@@ -267,7 +272,8 @@ def kernel_parameter_grid(model_name, kernel):
 
 def prepare_inner_splits(df_outer_train, *, inner_seed):
     return tuning.prepare_inner_splits(
-        df_outer_train, inner_seed=inner_seed,
+        df_outer_train,
+        inner_seed=inner_seed,
         n_inner_splits=N_INNER_SPLITS,
         preprocessor_factory=BreastCancerSurvivalPreprocessor,
         make_evaluation_grid=make_evaluation_grid,
@@ -278,7 +284,10 @@ def prepare_inner_splits(df_outer_train, *, inner_seed):
 
 def score_params_on_inner_splits(inner_splits, *, estimator, kernel, params):
     return tuning.score_params_on_inner_splits(
-        inner_splits, estimator=estimator, kernel=kernel, params=params,
+        inner_splits,
+        estimator=estimator,
+        kernel=kernel,
+        params=params,
         n_inner_splits=N_INNER_SPLITS,
         build_model=build_model,
         fit_model=fit_cure_model,
@@ -288,8 +297,11 @@ def score_params_on_inner_splits(inner_splits, *, estimator, kernel, params):
 
 def tune_kernel_grid(df_outer_train, *, estimator, model_name, kernel, inner_seed):
     return tuning.tune_kernel_grid(
-        df_outer_train, estimator=estimator, model_name=model_name,
-        kernel=kernel, inner_seed=inner_seed,
+        df_outer_train,
+        estimator=estimator,
+        model_name=model_name,
+        kernel=kernel,
+        inner_seed=inner_seed,
         prepare_inner_splits=prepare_inner_splits,
         kernel_parameter_grid=kernel_parameter_grid,
         score_params_on_inner_splits=score_params_on_inner_splits,
@@ -298,7 +310,9 @@ def tune_kernel_grid(df_outer_train, *, estimator, model_name, kernel, inner_see
 
 def tune_spline_grid(df_outer_train, *, estimator, inner_seed):
     return tuning.tune_spline_grid(
-        df_outer_train, estimator=estimator, inner_seed=inner_seed,
+        df_outer_train,
+        estimator=estimator,
+        inner_seed=inner_seed,
         prepare_inner_splits=prepare_inner_splits,
         score_params_on_inner_splits=score_params_on_inner_splits,
         spline_parameter_grid=SPLINE_PARAMETER_GRID,
@@ -428,10 +442,16 @@ def _resolve_saved_path(path):
     return artifacts.resolve_saved_path(path, project_root=PROJECT_ROOT)
 
 
-def load_valid_checkpoint(path, *, split_index, model_name, kernel, train_hash, test_hash):
+def load_valid_checkpoint(
+    path, *, split_index, model_name, kernel, train_hash, test_hash
+):
     return artifacts.load_valid_checkpoint(
-        path, split_index=split_index, model_name=model_name, kernel=kernel,
-        train_hash=train_hash, test_hash=test_hash,
+        path,
+        split_index=split_index,
+        model_name=model_name,
+        kernel=kernel,
+        train_hash=train_hash,
+        test_hash=test_hash,
         resolve_path=_resolve_saved_path,
     )
 
@@ -918,7 +938,10 @@ def run_experiment(
 
 def save_results(results, task_id, model_name, kernel):
     return experiment_results.save_clinical_results(
-        results, task_id, model_name, kernel,
+        results,
+        task_id,
+        model_name,
+        kernel,
         output_dir=OUTPUT_DIR,
         experiment_prefix=experiment_prefix,
         summarize_results=summarize_results,
@@ -935,7 +958,7 @@ def main():
 
     reporting.print_clinical_header(task_id, model_name, kernel)
     reporting.print_clinical_design(
-        dataset_name='Breast-cancer',
+        dataset_name="Breast-cancer",
         outer_splits=N_OUTER_SPLITS,
         outer_test_size=OUTER_TEST_SIZE,
         inner_splits=N_INNER_SPLITS,
@@ -959,10 +982,16 @@ def main():
     df = load_data()
     reporting.print_dataset_counts(df)
     results = run_experiment(
-        df, task_id=task_id, model_name=model_name, kernel=kernel,
+        df,
+        task_id=task_id,
+        model_name=model_name,
+        kernel=kernel,
     )
     split_file, summary_file, summary = save_results(
-        results, task_id, model_name, kernel,
+        results,
+        task_id,
+        model_name,
+        kernel,
     )
     elapsed = time.time() - start
     reporting.print_clinical_completion(summary, elapsed, split_file, summary_file)

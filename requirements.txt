@@ -89,4 +89,4 @@ wcwidth==0.8.3
 wheel==0.48.0
 wrapt==2.4.0
 xgboost==3.4.1
-skcure @ git+https://github.com/cowvin0/scikit-cure.git@e003572c856db9a1133bd4432b9e437402aff351
+skcure @ git+https://github.com/cowvin0/scikit-cure.git@832dcf1e5022171cb7b7df9996198c4752e00b64

@@ -11,8 +11,8 @@ from models import (
     GGPoissonPrimal,
 )
 from skcure.distributions import GeneralizedGamma
-from skcure.models._linear_cure import _BaseLinearCureModel
-from skcure.models.latent import (
+from skcure.linear_model._base import _BaseLinearCureModel
+from skcure._latent import (
     _NegativeBinomialLatentModel,
     _PoissonLatentModel,
 )
@@ -373,6 +373,7 @@ def test_estimated_nb_dispersion_uses_shared_latent_update(
         eta,
         t,
         delta,
+        **kwargs,
     ):
         nonlocal calls
         calls += 1
@@ -383,6 +384,7 @@ def test_estimated_nb_dispersion_uses_shared_latent_update(
             eta,
             t,
             delta,
+            **kwargs,
         )
 
     monkeypatch.setattr(

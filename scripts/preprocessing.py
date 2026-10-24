@@ -15,7 +15,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import KFold, train_test_split
 from evaluate.metrics import uno_c_index_rmst, harrell_c_index
-from skcure.utils.estimator import fit_cure_model
+from evaluate.util_cross_validation import fit_cure_model
 
 
 class MelanomaSurvivalPreprocessor:

@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import numpy as np
 
-from skcure.models._em import (
+from skcure._em import (
     _EstimatorEMState,
     _LinearCureSteps,
+    _record_optimizer_result,
+    _solver_options,
     run_em,
 )
-from skcure.models._linear_cure import _BaseLinearCureModel
-from skcure.models.latent import (
+
+from skcure.linear_model._base import _BaseLinearCureModel
+from skcure._latent import (
     _NegativeBinomialLatentModel,
     _PoissonLatentModel,
 )
@@ -33,6 +36,10 @@ class _NegativeBinomialPrimalSteps(_LinearCureSteps):
             eta,
             self.t,
             self.delta,
+            options=_solver_options(self.model, "dispersion"),
+            result_callback=lambda result: _record_optimizer_result(
+                self.model, "dispersion", result
+            ),
         )
 
         return coefficients
@@ -86,7 +93,8 @@ def _fit_primal_em(
         loglikelihood=steps.loglikelihood,
         state=_EstimatorEMState(model),
         tol=model.tol,
-        max_iter=model._max_em_iter,
+        max_iter=model.max_em_iter,
+        rtol=model.em_rtol,
         validate_initial_loglik=initial_validator,
         nonfinite_message="Non-finite penalized log-likelihood.",
     )
@@ -111,7 +119,7 @@ class _BaseGGPrimal(_BaseLinearCureModel):
     """
 
     _initialize_intercept_from_cure = True
-    _default_max_em_iter = 1000
+    max_em_iter = 1000
     _update_dispersion = False
     _validate_initial_primal_loglik = True
 
@@ -173,22 +181,38 @@ class _BaseGGPrimal(_BaseLinearCureModel):
         self,
         coefficients,
         expected,
+        *,
+        design_matrix=None,
     ):
         """Return penalized incidence objective and gradient."""
         value, gradient = super()._predictor_value_and_grad(
             coefficients,
             expected,
+            design_matrix=design_matrix,
         )
 
         if not np.isfinite(value):
             return value, gradient
 
+        coefficient_scales = 1.0
+        if design_matrix is not None:
+            # scikit-cure optimizes with rescaled design columns. Recover the
+            # coefficient units of W_train_ so the ridge penalty stays on the
+            # original slopes; apply the chain rule to its working gradient.
+            original_magnitude = np.max(np.abs(self.W_train_), axis=0)
+            working_magnitude = np.max(np.abs(design_matrix), axis=0)
+            coefficient_scales = np.divide(
+                original_magnitude,
+                working_magnitude,
+                out=np.ones_like(original_magnitude),
+                where=working_magnitude > 0.0,
+            )
         penalty, penalty_gradient = self._penalty_value_and_grad(
-            coefficients,
+            np.asarray(coefficients, dtype=float) / coefficient_scales,
         )
 
         value = value + penalty
-        gradient = gradient + penalty_gradient
+        gradient = gradient + penalty_gradient / coefficient_scales
 
         if not np.isfinite(value) or np.any(~np.isfinite(gradient)):
             return (
@@ -239,7 +263,7 @@ class _BaseGGPrimal(_BaseLinearCureModel):
 
         return self.alpha_.copy()
 
-    def fit(
+    def _fit(
         self,
         X,
         y,
@@ -250,7 +274,6 @@ class _BaseGGPrimal(_BaseLinearCureModel):
             y,
             nonnegative=("lambda_reg",),
             booleans=("fit_intercept",),
-            default_max_em_iter=self._default_max_em_iter,
         )
 
         self._reset_components_for_fit()
@@ -297,12 +320,20 @@ class GGPoissonPrimal(_BaseGGPrimal):
     tol : float, default=1e-6
         Absolute change in penalized log-likelihood required for convergence.
 
-    max_em_iter : int or None, default=1000
-        Maximum number of EM iterations. None uses the default limit.
+    max_em_iter : int, default=1000
+        Positive maximum number of EM iterations.
 
     warm_start : bool, default=False
         Reuse fitted generalized-gamma parameters on a subsequent fit.
         Regression coefficients and the intercept are initialized again.
+
+    em_rtol : float, default=0.0
+        Non-negative relative tolerance for EM convergence. Zero disables the
+        relative criterion; ``tol`` always supplies the absolute criterion.
+
+    solver_options : dict or None, default=None
+        Per-stage L-BFGS-B options, using the scikit-cure keys ``incidence``,
+        ``latency``, and ``dispersion``.
 
     Attributes
     ----------
@@ -336,6 +367,12 @@ class GGPoissonPrimal(_BaseGGPrimal):
     final_loglik_ : float
         Final penalized log-likelihood.
 
+    termination_reason_ : str
+        ``"converged"``, ``"max_em_iter"``, or ``"failed"`` after fitting.
+
+    optimizer_results_ : list of dict
+        Optimizer diagnostics for each attempted M-step.
+
     Notes
     -----
     The model uses the shared ``_PoissonLatentModel``,
@@ -346,7 +383,7 @@ class GGPoissonPrimal(_BaseGGPrimal):
     indicating higher risk.
     """
 
-    _default_max_em_iter = 1000
+    max_em_iter = 1000
 
     _model_name = "penalized"
     _predictor_error = "Non-finite Poisson predictor."
@@ -361,6 +398,9 @@ class GGPoissonPrimal(_BaseGGPrimal):
         tol=1e-6,
         max_em_iter=1000,
         warm_start=False,
+        *,
+        em_rtol=0.0,
+        solver_options=None,
     ):
         self.a = a
         self.d = d
@@ -369,6 +409,8 @@ class GGPoissonPrimal(_BaseGGPrimal):
         self.tol = tol
         self.max_em_iter = max_em_iter
         self.warm_start = warm_start
+        self.em_rtol = em_rtol
+        self.solver_options = solver_options
 
         self.fit_intercept = True
 
@@ -410,14 +452,21 @@ class GGNBPrimal(_BaseGGPrimal):
     tol : float, default=1e-6
         Absolute change in penalized log-likelihood required for convergence.
 
-    max_em_iter : int or None, default=10000
-        Maximum number of EM iterations. None uses the paper model's default
-        limit of 10000.
+    max_em_iter : int, default=10000
+        Positive maximum number of EM iterations.
 
     warm_start : bool, default=False
         Reuse fitted generalized-gamma parameters and an estimated dispersion
         on a subsequent fit. Regression coefficients and the intercept are
         initialized again.
+
+    em_rtol : float, default=0.0
+        Non-negative relative tolerance for EM convergence. Zero disables the
+        relative criterion; ``tol`` always supplies the absolute criterion.
+
+    solver_options : dict or None, default=None
+        Per-stage L-BFGS-B options, using the scikit-cure keys ``incidence``,
+        ``latency``, and ``dispersion``.
 
     Attributes
     ----------
@@ -454,6 +503,12 @@ class GGNBPrimal(_BaseGGPrimal):
     final_loglik_ : float
         Final penalized log-likelihood.
 
+    termination_reason_ : str
+        ``"converged"``, ``"max_em_iter"``, or ``"failed"`` after fitting.
+
+    optimizer_results_ : list of dict
+        Optimizer diagnostics for each attempted M-step.
+
     Notes
     -----
     The model uses the shared ``_NegativeBinomialLatentModel`` for the
@@ -465,7 +520,7 @@ class GGNBPrimal(_BaseGGPrimal):
     ``predictor -> generalized-gamma latency -> dispersion``.
     """
 
-    _default_max_em_iter = 10000
+    max_em_iter = 10000
     _update_dispersion = True
 
     # The historical NB paper implementation did not reject the initial
@@ -486,6 +541,9 @@ class GGNBPrimal(_BaseGGPrimal):
         tol=1e-6,
         max_em_iter=10000,
         warm_start=False,
+        *,
+        em_rtol=0.0,
+        solver_options=None,
     ):
         self.a = a
         self.d = d
@@ -495,6 +553,8 @@ class GGNBPrimal(_BaseGGPrimal):
         self.tol = tol
         self.max_em_iter = max_em_iter
         self.warm_start = warm_start
+        self.em_rtol = em_rtol
+        self.solver_options = solver_options
 
         self.fit_intercept = True
 

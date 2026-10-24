@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from functools import partial
 
-from skcure.models import MixtureCureModel, PromotionTimeModel
-from skcure.models.ggkm import GGKM
+from skcure.linear_model import MixtureCure, PromotionTimeCure
+from skcure.ggkm import GGKM
 
 from models import SplineNegativeBinomialModel, SplinePoissonModel
-
 
 KERNEL_MODEL_NAMES = frozenset({"bernoulli", "binomial", "poisson", "bn"})
 PARAMETRIC_MODEL_NAMES = frozenset({"mixture_cure", "promotion_time"})
@@ -26,8 +25,8 @@ def make_model_registry(*, negative_binomial_max_em_iter=None):
         "binomial": partial(GGKM, latent_distribution="binomial"),
         "poisson": partial(GGKM, latent_distribution="poisson"),
         "bn": partial(GGKM, **negative_binomial_params),
-        "mixture_cure": MixtureCureModel,
-        "promotion_time": PromotionTimeModel,
+        "mixture_cure": MixtureCure,
+        "promotion_time": PromotionTimeCure,
         "spline_poisson": SplinePoissonModel,
         "spline_bn": SplineNegativeBinomialModel,
     }
@@ -88,9 +87,7 @@ def kernel_parameter_grid(
     elif kernel in {"rbf", "laplacian", "exponential", "cauchy"}:
         for gamma in gammas:
             for lambda_reg in penalties:
-                grid.append(
-                    {**base_params, "gamma": gamma, "lambda_reg": lambda_reg}
-                )
+                grid.append({**base_params, "gamma": gamma, "lambda_reg": lambda_reg})
 
     elif kernel == "sigmoid" and allow_sigmoid:
         for gamma in gammas:

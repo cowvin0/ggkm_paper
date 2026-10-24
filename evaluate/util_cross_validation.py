@@ -1,9 +1,26 @@
 import numpy as np
 
+from sksurv.util import Surv
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
-from skcure.utils.estimator import fit_cure_model
+from skcure.base import BaseCureEstimator
 from evaluate.metrics import integrated_brier_score
+
+
+def fit_cure_model(model, X, t, delta, **fit_params):
+    if isinstance(model, BaseCureEstimator):
+        delta = np.asarray(delta)
+        if delta.ndim != 1 or not np.all(np.isin(delta, [0, 1])):
+            raise ValueError(
+                "delta must be a one-dimensional array containing only 0 and 1."
+            )
+
+        y = Surv.from_arrays(delta.astype(bool), t)
+        if fit_params:
+            model.set_params(**fit_params)
+        return model.fit(X, y)
+
+    return model.fit(X, t, delta, **fit_params)
 
 
 def _make_evaluation_grid(

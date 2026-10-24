@@ -16,7 +16,7 @@ class _SplineGGModel(_BaseParametricCureEstimator):
     """Shared spline feature mapping for the generalized-gamma primal models."""
 
     estimator_class = None
-    _default_max_em_iter = 1000
+    max_em_iter = 1000
 
     def __init__(
         self,
@@ -29,6 +29,9 @@ class _SplineGGModel(_BaseParametricCureEstimator):
         tol=1e-6,
         max_em_iter=1000,
         warm_start=False,
+        *,
+        em_rtol=0.0,
+        solver_options=None,
     ):
         self.n_knots = n_knots
         self.degree = degree
@@ -39,6 +42,8 @@ class _SplineGGModel(_BaseParametricCureEstimator):
         self.tol = tol
         self.max_em_iter = max_em_iter
         self.warm_start = warm_start
+        self.em_rtol = em_rtol
+        self.solver_options = solver_options
 
     def _make_spline(self):
         return SplineTransformer(
@@ -52,17 +57,26 @@ class _SplineGGModel(_BaseParametricCureEstimator):
 
     def fit(self, X, y):
         """Fit spline features and the primal model to a structured target."""
+        try:
+            return self._fit(X, y)
+        except Exception:
+            self._is_fitted = False
+            self.termination_reason_ = "failed"
+            raise
+
+    def _fit(self, X, y):
         model = self.__dict__.get("model_") if self.__sklearn_is_fitted__() else None
         X, t, _ = self._prepare_fit(
             X,
             y,
             nonnegative=("lambda_reg",),
-            default_max_em_iter=self._default_max_em_iter,
         )
         for name, minimum in (("n_knots", 2), ("degree", 1)):
             value = getattr(self, name)
             if isinstance(value, (bool, np.bool_)):
-                raise ValueError(f"{name} must be an integer greater than or equal to {minimum}.")
+                raise ValueError(
+                    f"{name} must be an integer greater than or equal to {minimum}."
+                )
             check_scalar(value, name, numbers.Integral, min_val=minimum)
 
         spline = self._make_spline()
@@ -75,6 +89,8 @@ class _SplineGGModel(_BaseParametricCureEstimator):
             "tol": self.tol,
             "max_em_iter": self.max_em_iter,
             "warm_start": self.warm_start,
+            "em_rtol": self.em_rtol,
+            "solver_options": self.solver_options,
         }
         if hasattr(self, "phi"):
             parameters["phi"] = self.phi
@@ -82,15 +98,32 @@ class _SplineGGModel(_BaseParametricCureEstimator):
             model = self.estimator_class(**parameters)
         else:
             model.set_params(**parameters)
-        model.fit(X_spline, y)
+        try:
+            model.fit(X_spline, y)
+        finally:
+            for name in (
+                "loglik_history_",
+                "converged_",
+                "n_iter_",
+                "final_loglik_",
+                "termination_reason_",
+                "optimizer_results_",
+            ):
+                if hasattr(model, name):
+                    setattr(self, name, getattr(model, name))
 
         self.spline_ = spline
         self.model_ = model
         self.X_train_ = X
         for name in (
-            "a_", "d_", "p_", "phi_", "beta0_", "alpha_", "coef_",
-            "intercept_", "loglik_history_", "converged_", "n_iter_",
-            "final_loglik_",
+            "a_",
+            "d_",
+            "p_",
+            "phi_",
+            "beta0_",
+            "alpha_",
+            "coef_",
+            "intercept_",
         ):
             if hasattr(model, name):
                 setattr(self, name, getattr(model, name))
@@ -111,9 +144,19 @@ class _SplineGGModel(_BaseParametricCureEstimator):
         X_spline = self._transform(X)
         return self.model_.predict_theta(X_spline)
 
+    def predict_latent_mean(self, X):
+        """Return the unconditional mean latent count on spline features."""
+        X_spline = self._transform(X)
+        return self.model_.predict_latent_mean(X_spline)
+
     def predict_survival(self, X, times):
         X_spline = self._transform(X)
         return self.model_.predict_survival(X_spline, times)
+
+    def predict_log_survival(self, X, times):
+        """Evaluate log survival directly to avoid probability underflow."""
+        X_spline = self._transform(X)
+        return self.model_.predict_log_survival(X_spline, times)
 
     def predict_cure_probability(self, X):
         X_spline = self._transform(X)
@@ -139,7 +182,7 @@ class SplineNegativeBinomialModel(_SplineGGModel):
     """
 
     estimator_class = GGNBPrimal
-    _default_max_em_iter = 10000
+    max_em_iter = 10000
 
     def __init__(
         self,
@@ -153,6 +196,9 @@ class SplineNegativeBinomialModel(_SplineGGModel):
         tol=1e-6,
         max_em_iter=10000,
         warm_start=False,
+        *,
+        em_rtol=0.0,
+        solver_options=None,
     ):
         super().__init__(
             n_knots=n_knots,
@@ -164,5 +210,7 @@ class SplineNegativeBinomialModel(_SplineGGModel):
             tol=tol,
             max_em_iter=max_em_iter,
             warm_start=warm_start,
+            em_rtol=em_rtol,
+            solver_options=solver_options,
         )
         self.phi = phi

@@ -13,7 +13,8 @@ pytest.importorskip("tqdm")
 from evaluate.simulated_data import simulate_pcm
 from models import SplineNegativeBinomialModel, SplinePoissonModel
 from skcure.base import BaseCureEstimator
-from skcure.models import GGKM, MixtureCureModel, PromotionTimeModel
+from skcure.ggkm import GGKM
+from skcure.linear_model import MixtureCure, PromotionTimeCure
 
 SCRIPT_NAMES = (
     "run_pcm_experiment",
@@ -49,8 +50,8 @@ def test_paper_entrypoint_registries_import(script_name):
         assert model.latent_distribution == distribution
 
     if "mixture_cure" in script.MODELS:
-        assert script.MODELS["mixture_cure"] is MixtureCureModel
-        assert script.MODELS["promotion_time"] is PromotionTimeModel
+        assert script.MODELS["mixture_cure"] is MixtureCure
+        assert script.MODELS["promotion_time"] is PromotionTimeCure
 
     if "spline_poisson" in script.MODELS:
         for name, estimator in SPLINE_CASES:

@@ -10,7 +10,6 @@ from scipy.stats import gengamma
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.preprocessing import StandardScaler
 from skcure.metrics import auc_cure
-from skcure.utils.estimator import fit_cure_model
 from evaluate.optuna_utils import (
     _suggest_kernel_ranges,
     _kernel_ranges_from_best_params,
@@ -20,6 +19,7 @@ from evaluate.util_cross_validation import (
     _make_evaluation_grid,
     _build_estimator,
     _select_grid_parameters,
+    fit_cure_model,
 )
 from evaluate.metrics import integrated_brier_score, uno_c_index_rmst
 

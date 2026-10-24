@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 from tqdm.auto import tqdm
 
-from skcure.utils.estimator import fit_cure_model
+from evaluate.util_cross_validation import fit_cure_model
 from evaluate.metrics import integrated_brier_score, uno_c_index_rmst
 from skcure.metrics import auc_cure
 from scripts.preprocessing import MelanomaSurvivalPreprocessor
