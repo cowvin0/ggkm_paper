@@ -1371,6 +1371,9 @@ class BreastCancerSurvivalPreprocessor:
         "III_IV_fundamental_ou_medio",
         "III_IV_nivel_superior",
         "III_IV_instrucao_sem_informacao",
+        "joao_pessoa",
+        "campina_grande",
+        "outros_municipios",
     ]
 
     def __init__(self, selected_raw_features: Optional[List[str]] = None):
