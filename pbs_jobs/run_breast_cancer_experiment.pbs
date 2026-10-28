@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N breast_cancer
-# 4 kernel models x 8 kernels + 2 parametric models + 2 spline models.
-#PBS -J 0-35
+# 4 kernel models x 7 kernels + 2 parametric models + 2 spline models.
+#PBS -J 0-31
 #PBS -l select=1:ncpus=4:mem=64gb
 #PBS -l walltime=336:00:00
 

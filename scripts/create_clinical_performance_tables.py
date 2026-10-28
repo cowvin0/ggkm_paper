@@ -20,7 +20,9 @@ else:
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MELANOMA_RESULTS_DIR = PROJECT_ROOT / "data" / "melanoma_results" / "grid_search"
-BREAST_CANCER_RESULTS_DIR = PROJECT_ROOT / "data" / "breast_cancer_results" / "grid_search_paired_50"
+BREAST_CANCER_RESULTS_DIR = (
+    PROJECT_ROOT / "data" / "breast_cancer_results" / "grid_search_paired_50_melanoma_design"
+)
 OUTPUT_DIR = PROJECT_ROOT / "sections" / "generated"
 
 
@@ -50,21 +52,17 @@ def _write_tables(tables: dict[str, str], output_dir: Path) -> tuple[Path, ...]:
 def generate_tables(
     *, dataset="all", melanoma_results_dir=MELANOMA_RESULTS_DIR,
     breast_cancer_results_dir=BREAST_CANCER_RESULTS_DIR, output_dir=OUTPUT_DIR,
-    planned_splits=None, include_sigmoid=False,
+    planned_splits=None,
 ):
     if dataset not in ("all", "melanoma", "breast-cancer"):
         raise ValueError("--dataset must be all, melanoma, or breast-cancer.")
-    if include_sigmoid and dataset == "melanoma":
-        raise ValueError("--include-sigmoid applies only to the breast cancer table.")
     tables = {}
     for selected, directory in (
         ("melanoma", melanoma_results_dir), ("breast-cancer", breast_cancer_results_dir),
     ):
         if dataset not in ("all", selected):
             continue
-        results = ClinicalResults(
-            directory, selected, include_sigmoid=include_sigmoid and selected == "breast-cancer",
-        )
+        results = ClinicalResults(directory, selected)
         count = results.validate(planned_splits)
         tables[f"{selected}-performance-table.tex"] = render_performance_table(
             results, planned_splits=count,
@@ -87,7 +85,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--breast-cancer-results-dir", type=Path, default=BREAST_CANCER_RESULTS_DIR,
-        help="Directory containing splits_breast_cancer_task*.csv (default: data/breast_cancer_results/grid_search_paired_50).",
+        help="Directory containing splits_breast_cancer_task*.csv (default: data/breast_cancer_results/grid_search_paired_50_melanoma_design).",
     )
     parser.add_argument(
         "--output-dir", type=Path, default=OUTPUT_DIR,
@@ -96,10 +94,6 @@ def main(argv=None):
     parser.add_argument(
         "--planned-splits", type=int,
         help="Require this number of attempted holdouts per method; otherwise infer it from the CSVs.",
-    )
-    parser.add_argument(
-        "--include-sigmoid", action="store_true",
-        help="Add breast cancer sigmoid Poisson/NB rows (omitted in the original active table).",
     )
     args = parser.parse_args(argv)
     try:

@@ -20,7 +20,7 @@ pilot; historical numbers in the manuscript are not imposed on its results.
 | --- | --- | --- | --- |
 | Simulation | `run_experiment.pbs` (0–959) | `create_simulation_figures.pbs` | `create_simulation_tables.pbs` |
 | Melanoma | `run_melanoma_experiment.pbs` (0–31) | `create_melanoma_figures.pbs` | `create_melanoma_table.pbs` |
-| Breast cancer | `run_breast_cancer_experiment.pbs` (0–35) | `create_breast_cancer_figures.pbs` | `create_breast_cancer_table.pbs` |
+| Breast cancer | `run_breast_cancer_experiment.pbs` (0–31) | `create_breast_cancer_figures.pbs` | `create_breast_cancer_table.pbs` |
 
 The additional simulation jobs are `run_simulation_pilot.pbs` (array 0–323) and
 `summarize_simulation_pilot.pbs`. The summary checks that every pilot cell has
@@ -33,6 +33,14 @@ surfaces, and recovered cure surfaces scripts. Each clinical figure job runs
 the predictive performance and individual cure variation scripts. The simulation
 table job regenerates all simulation and high-dimensional tables; each clinical
 table job regenerates its dataset's performance table.
+
+Breast cancer uses the same seven kernels, model parameter grids, and three
+inner folds as melanoma. Sigmoid is excluded. Updated breast cancer outputs go
+to `data/breast_cancer_results/grid_search_paired_50_melanoma_design/`, so the
+previous eight-kernel, four-fold results are kept separate. The breast cohort's
+30% outer holdout and preprocessing are retained. The figure job writes the
+predictive assessment, seven-kernel comparison, and individual cure variation
+as PDF, PNG, and SVG in `figures/review/`.
 
 ## One launcher for local and cluster execution
 

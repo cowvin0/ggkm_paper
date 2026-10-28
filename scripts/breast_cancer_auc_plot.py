@@ -21,7 +21,8 @@ from scripts import melanoma_auc_plot as shared
 from scripts.breast_cancer_plot_utils import (
     DATA_PATH, KERNEL_LABELS, KERNELS, OUTPUT_DIR, PROJECT_ROOT, RESULTS_DIR,
     choose_best_kernel, construct_outer_splits, full_cohort_times,
-    load_breast_cancer, read_split_file, unique_result_file, verify_split_hashes,
+    load_breast_cancer, read_split_file, resolve_kernels, unique_result_file,
+    verify_split_hashes,
 )
 from scripts.breast_cancer_refit_utils import obtain_split_predictions
 
@@ -31,7 +32,7 @@ KERNEL_OUTPUT_BASE = OUTPUT_DIR / "breast_cancer_ggkm_kernel_comparison_ibs_auc"
 
 def create_model_specs(results_dir=RESULTS_DIR, *, kernels=None):
     """Keep the same six families as melanoma; choose GG-KM kernels by cure AUC."""
-    kernels = KERNELS if kernels is None else kernels
+    kernels = resolve_kernels(kernels)
     selected = {
         model: choose_best_kernel(model, results_dir, kernels=kernels)
         for model in ("poisson", "bn")
@@ -79,7 +80,7 @@ def reconstruct_results(
 
 def collect_kernel_score_data(model_name, results_dir=RESULTS_DIR, *, kernels=None):
     ibs_values, auc_values = [], []
-    for kernel in KERNELS if kernels is None else kernels:
+    for kernel in resolve_kernels(kernels):
         path = unique_result_file(
             f"splits_breast_cancer_task*_{model_name}_kernel_{kernel}.csv", results_dir,
         )
@@ -96,7 +97,7 @@ def collect_kernel_score_data(model_name, results_dir=RESULTS_DIR, *, kernels=No
 def make_kernel_comparison_figure(
     results_dir=RESULTS_DIR, output_base=KERNEL_OUTPUT_BASE, *, kernels=None,
 ):
-    kernels = KERNELS if kernels is None else kernels
+    kernels = resolve_kernels(kernels)
 
     def collect(model_name, selected_dir):
         return collect_kernel_score_data(model_name, selected_dir, kernels=kernels)
@@ -121,7 +122,7 @@ def build_parser():
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument(
         "--kernels", nargs="+", choices=KERNELS, default=None,
-        help="Explicit subset for older or partial runs; default requires all eight current kernels.",
+        help="Explicit subset for older or partial runs; default requires the same seven kernels as melanoma.",
     )
     parser.add_argument(
         "--refit-missing", action="store_true",
@@ -132,7 +133,7 @@ def build_parser():
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
-    kernels = KERNELS if args.kernels is None else list(dict.fromkeys(args.kernels))
+    kernels = resolve_kernels(args.kernels)
     df = load_breast_cancer(args.data_path)
     specs = create_model_specs(args.results_dir, kernels=kernels)
     reconstructed = reconstruct_results(

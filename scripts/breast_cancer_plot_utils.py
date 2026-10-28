@@ -11,16 +11,15 @@ from scripts import melanoma_plot_utils as shared
 
 PROJECT_ROOT = shared.PROJECT_ROOT
 DATA_PATH = PROJECT_ROOT / "data" / "cancer_de_mama_rhc_e_fap.csv"
-RESULTS_DIR = PROJECT_ROOT / "data" / "breast_cancer_results" / "grid_search_paired_50"
+RESULTS_DIR = (
+    PROJECT_ROOT / "data" / "breast_cancer_results" / "grid_search_paired_50_melanoma_design"
+)
 OUTPUT_DIR = PROJECT_ROOT / "figures" / "review"
-N_OUTER_SPLITS = 50
+N_OUTER_SPLITS = shared.N_OUTER_SPLITS
 OUTER_TEST_SIZE = 0.30
-MASTER_SEED = 20260817
-KERNELS = [
-    "linear", "rbf", "laplacian", "exponential", "cauchy", "sigmoid",
-    "polynomial", "wavelet",
-]
-KERNEL_LABELS = {**shared.KERNEL_LABELS, "sigmoid": "Sigmoid"}
+MASTER_SEED = shared.MASTER_SEED
+KERNELS = list(shared.KERNELS)
+KERNEL_LABELS = dict(shared.KERNEL_LABELS)
 index_hash = shared.index_hash
 parse_best_params = shared.parse_best_params
 read_split_file = shared.read_split_file
@@ -67,6 +66,17 @@ def unique_result_file(pattern, results_dir=RESULTS_DIR):
     return shared.unique_result_file(pattern, results_dir)
 
 
+def resolve_kernels(kernels=None):
+    """Use melanoma's seven kernels, optionally selecting a supported subset."""
+    selected = list(KERNELS) if kernels is None else list(dict.fromkeys(kernels))
+    unsupported = set(selected).difference(KERNELS)
+    if unsupported:
+        raise ValueError(f"Unsupported breast-cancer kernels: {sorted(unsupported)}")
+    if not selected:
+        raise ValueError("At least one breast-cancer kernel must be selected.")
+    return selected
+
+
 def verify_split_hashes(frame, outer_splits, model_name):
     try:
         shared.verify_split_hashes(frame, outer_splits, model_name)
@@ -77,7 +87,7 @@ def verify_split_hashes(frame, outer_splits, model_name):
 def choose_best_kernel(model_name, results_dir=RESULTS_DIR, *, kernels=None):
     """Choose the highest mean saved cure AUC, with IBS then name breaking ties."""
     rows = []
-    for kernel in KERNELS if kernels is None else kernels:
+    for kernel in resolve_kernels(kernels):
         path = unique_result_file(
             f"splits_breast_cancer_task*_{model_name}_kernel_{kernel}.csv", results_dir,
         )

@@ -278,13 +278,21 @@ python scripts/breast_cancer_auc_plot.py
 python scripts/breast_cancer_individual_cure_variation.py
 ```
 
-Defaults are `data/breast_cancer_results/grid_search_paired_50/` for results,
+Defaults are
+`data/breast_cancer_results/grid_search_paired_50_melanoma_design/` for results,
 `data/cancer_de_mama_rhc_e_fap.csv` for the cohort, and `figures/review/` for
 outputs. Both scripts accept `--results-dir`, `--data-path`, `--output-dir`,
 and the explicit legacy `--refit-missing` option. The cohort cleaning,
 deduplication, event coding, zero-time adjustment, and original patient indices
 match `run_breast_cancer_experiment.py`. The holdouts use 30% of the cohort for
 testing, and survival plots preserve the recorded `Tempo` units.
+
+The runner uses melanoma's model and kernel parameter grids: seven kernels
+(linear, RBF, Laplacian, exponential, Cauchy, polynomial, and wavelet), three
+inner folds, and wavelet scales 0.5, 1, 2, and 10. The 32 array tasks use the
+same model/kernel ordering as melanoma. The new results directory separates
+these fits from the former sigmoid/four-fold experiment, and checkpoint
+settings hashes prevent reuse after a fitting setting changes.
 
 The predictive script saves:
 
@@ -293,13 +301,14 @@ The predictive script saves:
 - `breast_cancer_predictive_assessment_ibs_auc_summary.csv`
 
 As in the melanoma script, GG-KM kernels in the main comparison are selected by
-highest mean cure AUC, then lowest mean IBS. The kernel figure includes all
-eight breast-cancer kernels, including sigmoid. For older runs, select the
-available kernels explicitly, for example:
+highest mean cure AUC, then lowest mean IBS. The kernel figure includes the
+same seven kernels as melanoma. Sigmoid CSVs from older experiments are ignored.
+To plot an explicit subset of available kernels from a legacy results directory:
 
 ```bash
 python scripts/breast_cancer_auc_plot.py \
-  --kernels linear rbf laplacian exponential cauchy polynomial wavelet
+  --results-dir /path/to/legacy/breast/results \
+  --kernels linear rbf polynomial
 ```
 
 The individual script saves
@@ -345,8 +354,7 @@ any existing table is replaced.
 Table parentheses contain sample split standard deviations, rather than Monte
 Carlo standard errors. Metric summaries use successful fits with finite values.
 Convergence is the number converged among successful fits, and runtime is the
-successful-fit mean with its maximum in parentheses. The default tables retain
-the 18 active method rows in the supplied files. Add `--include-sigmoid` to
-include the two breast cancer sigmoid rows that were commented out in the
-reference table. Missing estimates or undefined standard deviations appear as
+successful-fit mean with its maximum in parentheses. Both tables retain
+the same 18 active method rows and seven kernels; sigmoid is excluded.
+Missing estimates or undefined standard deviations appear as
 `--`; missing convergence information raises an error.

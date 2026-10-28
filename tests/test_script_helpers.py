@@ -12,22 +12,16 @@ def runner(dataset):
     return importlib.import_module(f"scripts.run_{dataset}_experiment")
 
 
-def test_breast_cancer_retains_sigmoid_grid_and_em_limit():
+def test_breast_cancer_rejects_sigmoid_and_retains_em_limit():
     script = runner("breast_cancer")
-    candidates = script.kernel_parameter_grid("bernoulli", "sigmoid")
+    candidates = script.kernel_parameter_grid("bernoulli", "wavelet")
 
     assert script.MODELS["bn"]().max_em_iter == 10000
-    assert "sigmoid" in script.KERNELS
-    assert [(item["gamma"], item["lambda_reg"]) for item in candidates] == [
-        (0.25, 0.30),
-        (0.25, 3.00),
-        (1.00, 0.30),
-        (1.00, 3.00),
-    ]
-    assert all(item["K_bin"] == 1 and item["coef0"] == 0.0 for item in candidates)
-    assert all(
-        item["A"] != 10 for item in script.kernel_parameter_grid("poisson", "wavelet")
-    )
+    assert "sigmoid" not in script.KERNELS
+    with pytest.raises(ValueError, match="^Unknown kernel: sigmoid$"):
+        script.kernel_parameter_grid("bernoulli", "sigmoid")
+    assert [item["A"] for item in candidates] == [0.5, 0.5, 1.0, 1.0, 2.0, 2.0, 10, 10]
+    assert all(item["K_bin"] == 1 for item in candidates)
 
 
 def test_melanoma_retains_extra_wavelet_scale_and_rejects_sigmoid():
@@ -92,9 +86,8 @@ def test_clinical_grids_use_current_runner_settings(monkeypatch, dataset):
         23.0,
     ]
 
-    if dataset == "breast_cancer":
-        monkeypatch.setattr(script, "SIGMOID_COEF0", -2.0)
-        assert script.kernel_parameter_grid("poisson", "sigmoid")[0]["coef0"] == -2.0
+    with pytest.raises(ValueError, match="^Unknown kernel: sigmoid$"):
+        script.kernel_parameter_grid("poisson", "sigmoid")
 
 
 def test_pcm_grid_uses_current_model_settings(monkeypatch):

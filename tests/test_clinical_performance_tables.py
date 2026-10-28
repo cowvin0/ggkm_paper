@@ -42,10 +42,10 @@ def _write(directory, *, dataset="melanoma", method=METHOD, frame=None, task=0):
     return path
 
 
-def _complete(directory, *, dataset="melanoma", include_sigmoid=False):
-    for task, method in enumerate(methods(include_sigmoid=include_sigmoid)):
+def _complete(directory, *, dataset="melanoma"):
+    for task, method in enumerate(methods()):
         _write(directory, dataset=dataset, method=method, task=task)
-    return ClinicalResults(directory, dataset, include_sigmoid=include_sigmoid)
+    return ClinicalResults(directory, dataset)
 
 
 def test_summary_uses_successful_finite_values_and_sample_sd(tmp_path):
@@ -224,20 +224,19 @@ def test_undefined_summaries_render_as_dashes(tmp_path):
     assert "& 0.1000 (--)" in text
 
 
-def test_sigmoid_is_optional_only_for_breast_cancer(tmp_path):
-    _complete(tmp_path, dataset="breast-cancer", include_sigmoid=True)
-    standard = ClinicalResults(tmp_path, "breast-cancer")
-    extended = ClinicalResults(tmp_path, "breast-cancer", include_sigmoid=True)
-    assert standard.validate() == extended.validate() == 4
-    assert len(standard.methods) == 18
-    assert len(extended.methods) == 20
-    text = render_performance_table(extended, planned_splits=4)
-    assert text.count("GG-KM (sigmoid)") == 2
-    assert text.index("GG-KM (Cauchy)") < text.index("GG-KM (sigmoid)") < text.index("GG-KM (polynomial)")
+def test_breast_table_ignores_legacy_sigmoid_results(tmp_path):
+    _complete(tmp_path, dataset="breast-cancer")
+    for task, model in enumerate(("poisson", "bn"), start=99):
+        _write(tmp_path, dataset="breast-cancer", method=ClinicalMethod(model, "sigmoid"), task=task)
+
+    results = ClinicalResults(tmp_path, "breast-cancer")
+    assert results.validate() == 4
+    assert len(results.methods) == 18
+    assert all(method.kernel != "sigmoid" for method in results.methods)
+    text = render_performance_table(results, planned_splits=4)
+    assert "sigmoid" not in text
     assert r"\label{tab:breast-cancer-performance}" in text
     assert "Paraíba State, Brazil" in text
-    with pytest.raises(ValueError, match="only to breast cancer"):
-        ClinicalResults(tmp_path, "melanoma", include_sigmoid=True)
 
 
 def test_generator_writes_both_tables_and_replaces_old_values(tmp_path):
@@ -282,15 +281,25 @@ def test_error_in_second_cohort_preserves_every_existing_table(tmp_path):
 def test_single_dataset_cli_needs_only_its_own_results(tmp_path):
     results = tmp_path / "results"
     output = tmp_path / "tables"
-    _complete(results, dataset="breast-cancer", include_sigmoid=True)
+    _complete(results, dataset="breast-cancer")
 
     main([
         "--dataset", "breast-cancer", "--breast-cancer-results-dir", str(results),
-        "--output-dir", str(output), "--planned-splits", "4", "--include-sigmoid",
+        "--output-dir", str(output), "--planned-splits", "4",
     ])
 
     assert [path.name for path in output.iterdir()] == ["breast-cancer-performance-table.tex"]
-    assert (output / "breast-cancer-performance-table.tex").read_text().count("GG-KM (sigmoid)") == 2
+    text = (output / "breast-cancer-performance-table.tex").read_text()
+    assert "sigmoid" not in text
+    assert text.count("GG-KM (") == 14
+
+
+def test_cli_rejects_removed_sigmoid_option(tmp_path, capsys):
+    with pytest.raises(SystemExit) as error:
+        main(["--dataset", "breast-cancer", "--include-sigmoid"])
+
+    assert error.value.code == 2
+    assert "unrecognized arguments: --include-sigmoid" in capsys.readouterr().err
 
 
 def test_cli_missing_directory_has_actionable_error_and_no_outputs(tmp_path, capsys):

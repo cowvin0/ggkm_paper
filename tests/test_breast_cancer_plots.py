@@ -97,6 +97,11 @@ def test_breast_holdouts_use_thirty_percent_of_any_cohort(saved_breast_holdouts)
         assert len(test) == 6
 
 
+def test_breast_default_results_do_not_reuse_previous_design():
+    assert data.RESULTS_DIR.name == "grid_search_paired_50_melanoma_design"
+    assert predictive.RESULTS_DIR == individual.RESULTS_DIR == data.RESULTS_DIR
+
+
 def test_saved_breast_archives_and_individual_stats_keep_original_patient_ids(saved_breast_holdouts):
     cohort, results, splits, spec = saved_breast_holdouts
     predictions = individual.collect_individual_predictions(
@@ -134,13 +139,60 @@ def test_breast_survival_reconstruction_preserves_native_horizon(saved_breast_ho
     np.testing.assert_allclose(reconstructed["auc_values"]["GG-KM P"], [0.7, 0.71])
 
 
-def test_sigmoid_is_a_candidate_for_breast_auc_selection(saved_breast_holdouts):
+def test_breast_figures_export_pdf_png_and_svg(saved_breast_holdouts, tmp_path):
+    cohort, results, splits, spec = saved_breast_holdouts
+    output = tmp_path / "figures"
+    reconstructed = predictive.reconstruct_results(
+        cohort, [spec], results_dir=results, outer_splits=splits,
+    )
+    predictive_spec = {**spec, "box_label": spec["label"], "linestyle": "-"}
+    paths = list(predictive.make_figure(
+        cohort, [predictive_spec], reconstructed,
+        output / "breast_cancer_predictive_assessment_ibs_auc",
+    ))
+
+    kernel_results = tmp_path / "kernel_results"
+    kernel_results.mkdir()
+    template = pd.read_csv(spec["path"])
+    for model in ("poisson", "bn"):
+        for task, kernel in enumerate(data.KERNELS):
+            frame = template.assign(model_name=model, kernel=kernel)
+            frame.to_csv(
+                kernel_results / f"splits_breast_cancer_task{task}_{model}_kernel_{kernel}.csv",
+                index=False,
+            )
+    paths.extend(predictive.make_kernel_comparison_figure(
+        kernel_results, output / "breast_cancer_ggkm_kernel_comparison_ibs_auc",
+    ))
+
+    predictions = individual.collect_individual_predictions(
+        [spec], df=cohort, results_dir=results, outer_splits=splits,
+    )
+    statistics = individual.summarize_individual_predictions(predictions, n_patients=len(cohort))
+    paths.extend(individual.plot_individual_cure_variation(
+        statistics, [spec], output_dir=output,
+    ))
+
+    assert len(paths) == 9
+    for path in paths:
+        assert path.stat().st_size > 100
+        if path.suffix == ".pdf":
+            assert path.read_bytes().startswith(b"%PDF-")
+        elif path.suffix == ".png":
+            assert path.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+        else:
+            assert "<svg" in path.read_text()
+
+
+def test_breast_auc_selection_uses_melanoma_kernels_and_ignores_legacy_sigmoid(
+    saved_breast_holdouts,
+):
     _, results, _, spec = saved_breast_holdouts
     template = pd.read_csv(spec["path"])
     for index, kernel in enumerate(data.KERNELS):
         frame = template.copy()
         frame["kernel"] = kernel
-        frame["cure_auc"] = 0.9 if kernel == "sigmoid" else 0.6
+        frame["cure_auc"] = 0.9 if kernel == "rbf" else 0.6
         frame.to_csv(results / f"splits_breast_cancer_task{index}_poisson_kernel_{kernel}.csv", index=False)
     # The original RBF filename is one of the files just written (task7 differs).
     original = spec["path"]
@@ -148,9 +200,69 @@ def test_sigmoid_is_a_candidate_for_breast_auc_selection(saved_breast_holdouts):
     if original != generated_rbf:
         original.unlink()
 
-    assert data.choose_best_kernel("poisson", results)["kernel"] == "sigmoid"
+    legacy = template.copy()
+    legacy["kernel"] = "sigmoid"
+    legacy["cure_auc"] = 0.99
+    legacy.to_csv(results / "splits_breast_cancer_task99_poisson_kernel_sigmoid.csv", index=False)
+
+    assert data.KERNELS == predictive.shared.KERNELS
+    assert data.KERNEL_LABELS == predictive.shared.KERNEL_LABELS
+    assert data.choose_best_kernel("poisson", results)["kernel"] == "rbf"
     ibs, auc = predictive.collect_kernel_score_data("poisson", results)
-    assert len(ibs) == len(auc) == 8
+    assert len(ibs) == len(auc) == 7
+
+
+@pytest.mark.parametrize("selector", (
+    lambda directory: data.choose_best_kernel("poisson", directory, kernels=["sigmoid"]),
+    lambda directory: predictive.create_model_specs(directory, kernels=["sigmoid"]),
+    lambda directory: predictive.collect_kernel_score_data("poisson", directory, kernels=["sigmoid"]),
+    lambda directory: predictive.make_kernel_comparison_figure(directory, kernels=["sigmoid"]),
+    lambda directory: individual.create_model_specs(directory, ggkm_kernel="sigmoid"),
+))
+def test_breast_plot_apis_reject_sigmoid_before_reading_results(tmp_path, selector):
+    with pytest.raises(ValueError, match="(?:Unsupported|Unknown GG-KM) kernel|Unsupported breast-cancer kernels"):
+        selector(tmp_path)
+
+
+def test_breast_predictive_cli_rejects_sigmoid():
+    with pytest.raises(SystemExit):
+        predictive.build_parser().parse_args(["--kernels", "sigmoid"])
+
+
+def test_breast_predictive_model_selection_and_styles_match_melanoma(tmp_path, monkeypatch):
+    def selected(model, results_dir, **kwargs):
+        kernel = "wavelet" if model == "bn" else "rbf"
+        return {"kernel": kernel, "path": results_dir / f"{model}_{kernel}.csv"}
+
+    def result_file(pattern, results_dir):
+        return results_dir / pattern
+
+    monkeypatch.setattr(predictive, "choose_best_kernel", selected)
+    monkeypatch.setattr(predictive.shared, "choose_best_kernel", selected)
+    monkeypatch.setattr(predictive, "unique_result_file", result_file)
+    monkeypatch.setattr(predictive.shared, "unique_result_file", result_file)
+
+    breast = predictive.create_model_specs(tmp_path)
+    melanoma = predictive.shared.create_model_specs(tmp_path)
+    without_path = lambda specs: [{key: value for key, value in spec.items() if key != "path"} for spec in specs]
+    assert without_path(breast) == without_path(melanoma)
+    assert len(breast) == 6
+
+
+def test_breast_individual_model_pairs_and_styles_match_melanoma(tmp_path):
+    from scripts import melanoma_individual_cure_variation as melanoma
+
+    for dataset in ("breast_cancer", "melanoma"):
+        for model in ("poisson", "bn"):
+            for kernel in ("linear", "polynomial", "rbf"):
+                (tmp_path / f"splits_{dataset}_task1_{model}_kernel_{kernel}.csv").touch()
+            (tmp_path / f"splits_{dataset}_task2_spline_{model}.csv").touch()
+
+    breast = individual.create_model_specs(tmp_path)
+    reference = melanoma.create_model_specs(tmp_path)
+    without_path = lambda specs: [{key: value for key, value in spec.items() if key != "path"} for spec in specs]
+    assert without_path(breast) == without_path(reference)
+    assert len(breast) == 8
 
 
 def test_legacy_breast_refits_use_breast_preprocessing_and_saved_parameters(

@@ -54,15 +54,12 @@ _FILE_PATTERN = re.compile(
 )
 
 
-def methods(*, include_sigmoid: bool = False) -> tuple[ClinicalMethod, ...]:
-    """Match the active row order of the supplied clinical LaTeX tables."""
-    kernels = KERNELS
-    if include_sigmoid:
-        kernels = (*KERNELS[:5], "sigmoid", *KERNELS[5:])
+def methods() -> tuple[ClinicalMethod, ...]:
+    """Use the same seven-kernel comparison for both clinical cohorts."""
     return (
         ClinicalMethod("mixture_cure"), ClinicalMethod("promotion_time"),
         ClinicalMethod("spline_poisson"), ClinicalMethod("spline_bn"),
-        *(ClinicalMethod(model, kernel) for kernel in kernels for model in ("poisson", "bn")),
+        *(ClinicalMethod(model, kernel) for kernel in KERNELS for model in ("poisson", "bn")),
     )
 
 
@@ -92,16 +89,12 @@ def _convergence(value, path: Path):
 class ClinicalResults:
     """Validate complete paired holdouts and summarize successful finite values."""
 
-    def __init__(
-        self, results_dir: str | Path, dataset: str, *, include_sigmoid: bool = False,
-    ):
+    def __init__(self, results_dir: str | Path, dataset: str):
         if dataset not in ("melanoma", "breast-cancer"):
             raise ValueError("dataset must be 'melanoma' or 'breast-cancer'.")
-        if include_sigmoid and dataset != "breast-cancer":
-            raise ValueError("The optional sigmoid rows apply only to breast cancer.")
         self.dataset = dataset
         self.results_dir = Path(results_dir).expanduser().resolve()
-        self.methods = methods(include_sigmoid=include_sigmoid)
+        self.methods = methods()
         self._paths: dict[ClinicalMethod, Path] = {}
         self._frames: dict[ClinicalMethod, pd.DataFrame] = {}
         if not self.results_dir.is_dir():
