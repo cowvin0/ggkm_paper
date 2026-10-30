@@ -45,7 +45,7 @@
 \title{A generalized gamma kernel-machine promotion-time cure model}
 \titlemark{Kernel-machine promotion-time cure model}
 \shrttitle{Kernel-machine promotion-time cure model}
-\author[1]{Gabriel de Jesus Pereira}[https://orcid.org/0009-0003-3254-4854]
+\author[1,3]{Gabriel de Jesus Pereira}[https://orcid.org/0009-0003-3254-4854]
 \author[1]{Vera L. D. Tomazella}[https://orcid.org/0000-0002-6780-2089]
 \author[2]{Pedro R. D. Marinho}[https://orcid.org/0000-0003-1591-8300]
 \author[2]{Marcelo Rodrigo Portela Ferreira}[https://orcid.org/0000-0003-0242-0255]
@@ -53,6 +53,7 @@
 \authormark{PEREIRA \textsc{et al.}}
 \address[1]{\orgdiv{Department of Statistics, }\orgname{Universidade Federal de S\~ao Carlos, }\orgaddress{\state{S\~ao Carlos, }\country{Brazil}}}
 \address[2]{\orgdiv{Department of Statistics, }\orgname{Universidade Federal da Para\'iba, }\orgaddress{\state{Jo\~ao Pessoa, }\country{Brazil}}}
+\address[3]{\orgdiv{Institute of Mathematical Sciences and Computation, }\orgname{University of São Paulo, }\orgaddress{\state{S\~ao Carlos, }\country{Brazil}}}
 \corres{Vera L. D. Tomazella, Department of Statistics, Universidade Federal de S\~ao Carlos, S\~ao Carlos, Brazil. \textbf{AUTHOR CONFIRMATION REQUIRED:} corresponding-author email.}
 \keywords{cure model | generalized gamma | kernel machine | promotion time | survival analysis}
   \abstract[ABSTRACT]{Cure models make the long-term event-free fraction an explicit quantity, but
@@ -75,10 +76,10 @@ training-only tuning, and inverse-probability-of-censoring weighted integrated
 Brier scores together with calibration and cure-fraction accuracy. No single
 predictor is uniformly best: a correctly specified simpler predictor performs
 best when the covariate structure matches its form, whereas GG-KM is competitive
-across mechanisms, is the most accurate predictor for the radial four-covariate
-mechanism, and improves on the log-linear and additive-spline predictors for the
-interaction mechanism, although the correctly aligned quadratic model remains
-best in that setting. In the breast-cancer cohort, the spline models attained
+across mechanisms and, with a polynomial kernel, attains the lowest prediction
+and cure-probability errors for the interaction mechanism. Additive-spline
+predictors attain the lowest errors for the radial four-covariate mechanism.
+In the breast-cancer cohort, the spline models attained
 the lowest mean integrated Brier score, whereas the mixture-cure model attained
 the highest mean cure AUC. These findings support GG-KM as a flexible and robust
 alternative when the functional form of the latent-cause mechanism is unknown,

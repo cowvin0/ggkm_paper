@@ -1,10 +1,11 @@
 \begin{table*}[tbp]
 \caption{Predictive performance in 50 paired repeated holdouts of the breast cancer cohort
-from Paraíba State, Brazil. Values for the IPCW integrated Brier score (IBS),
-cure-discrimination area under the curve ($\mathrm{AUC}_{\mathrm{cure}}$), and mean
-predicted cure fraction are means across successful splits, with split standard deviations
-in parentheses. Convergence is reported as the number of converged fits among successful
-fits. Runtime is the mean with the maximum in parentheses.
+from Paraíba State, Brazil.
+Values for the IPCW integrated Brier score (IBS), cure-discrimination area under the curve
+($\mathrm{AUC}_{\mathrm{cure}}$), and mean predicted cure fraction are means across successful
+splits, with sample split standard deviations in parentheses. Convergence is reported as the number
+of converged fits among successful fits. Runtime is the mean across successful fits with the maximum
+in parentheses. Nonfinite measurements are excluded from each summary; a dash indicates an undefined value.
 }
 \label{tab:breast-cancer-performance}
 \centering
@@ -16,19 +17,19 @@ $\mathrm{AUC}_{\mathrm{cure}}$ & Mean cure prediction & Runtime (s) \\
 
 Mixture cure
 & Mixture cure
-& 48/50
+& 49/50
 & 0.0883 (0.0019)
-& 0.7851 (0.0156)
-& 0.814 (0.029)
-& 34.04 (132.92) \\
+& 0.7862 (0.0166)
+& 0.816 (0.029)
+& 78.33 (315.11) \\
 
 Promotion time
 & Poisson
 & 50/50
-& 0.0883 (0.0022)
-& 0.7775 (0.0072)
+& 0.0883 (0.0021)
+& 0.7805 (0.0072)
 & 0.816 (0.009)
-& 38.06 (71.25) \\
+& 83.63 (175.06) \\
 
 \hline
 
@@ -36,17 +37,17 @@ Spline
 & Poisson
 & 50/50
 & 0.0877 (0.0019)
-& 0.7707 (0.0067)
+& 0.7724 (0.0075)
 & 0.816 (0.009)
-& 1402.30 (2462.32) \\
+& 1739.06 (3160.48) \\
 
 Spline
 & Negative binomial
 & 50/50
 & 0.0877 (0.0019)
-& 0.7707 (0.0067)
+& 0.7724 (0.0075)
 & 0.816 (0.009)
-& 1593.56 (4530.27) \\
+& 1441.93 (2673.65) \\
 
 \hline
 
@@ -56,127 +57,111 @@ GG-KM (linear)
 & 0.0956 (0.0008)
 & 0.5007 (0.0015)
 & 0.884 (0.000)
-& 137.77 (169.54) \\
+& 46.01 (50.87) \\
 
 GG-KM (linear)
 & Negative binomial
 & 50/50
-& 0.0897 (0.0017)
-& 0.7085 (0.0103)
+& 0.0895 (0.0017)
+& 0.7141 (0.0095)
 & 0.818 (0.008)
-& 1934.49 (7967.88) \\
+& 819.38 (3312.24) \\
 
 GG-KM (RBF)
 & Poisson
 & 50/50
-& 0.0927 (0.0020)
-& 0.6262 (0.0699)
-& 0.807 (0.011)
-& 6648.94 (11951.68) \\
+& 0.0926 (0.0018)
+& 0.6555 (0.0634)
+& 0.803 (0.011)
+& 1685.25 (3058.22) \\
 
 GG-KM (RBF)
 & Negative binomial
 & 50/50
-& 0.0927 (0.0020)
-& 0.6262 (0.0699)
-& 0.807 (0.011)
-& 5364.04 (11483.93) \\
+& 0.0926 (0.0018)
+& 0.6555 (0.0634)
+& 0.803 (0.011)
+& 1903.64 (3762.07) \\
 
 GG-KM (Laplacian)
 & Poisson
 & 50/50
-& 0.0921 (0.0021)
-& 0.6745 (0.0557)
-& 0.801 (0.012)
-& 5410.98 (9729.17) \\
+& 0.0916 (0.0021)
+& 0.6865 (0.0273)
+& 0.798 (0.011)
+& 1813.56 (3102.36) \\
 
 GG-KM (Laplacian)
 & Negative binomial
 & 50/50
-& 0.0921 (0.0021)
-& 0.6745 (0.0557)
-& 0.801 (0.012)
-& 5701.58 (12885.37) \\
+& 0.0916 (0.0021)
+& 0.6865 (0.0273)
+& 0.798 (0.011)
+& 3117.85 (6344.89) \\
 
 GG-KM (exponential)
 & Poisson
 & 50/50
-& 0.0901 (0.0022)
-& 0.7124 (0.0579)
-& 0.804 (0.013)
-& 11443.53 (23233.80) \\
+& 0.0898 (0.0019)
+& 0.7140 (0.0567)
+& 0.804 (0.011)
+& 2326.78 (3603.20) \\
 
 GG-KM (exponential)
 & Negative binomial
 & 50/50
-& 0.0901 (0.0022)
-& 0.7124 (0.0579)
-& 0.804 (0.013)
-& 8428.04 (17262.88) \\
+& 0.0898 (0.0019)
+& 0.7140 (0.0566)
+& 0.804 (0.011)
+& 2544.80 (4191.11) \\
 
 GG-KM (Cauchy)
 & Poisson
 & 50/50
-& 0.0899 (0.0019)
-& 0.6927 (0.0240)
-& 0.798 (0.011)
-& 12069.98 (25675.73) \\
+& 0.0895 (0.0017)
+& 0.6978 (0.0156)
+& 0.796 (0.011)
+& 3559.25 (8371.08) \\
 
 GG-KM (Cauchy)
 & Negative binomial
 & 50/50
-& 0.0899 (0.0019)
-& 0.6927 (0.0240)
-& 0.798 (0.011)
-& 8726.52 (19034.95) \\
-
-% GG-KM (sigmoid)
-% & Poisson
-% & 49/49
-% & 0.0945 (0.0008)
-% & 0.5000 (0.0000)
-% & 0.819 (0.008)
-% & 1974.30 (4980.47) \\
-
-% GG-KM (sigmoid)
-% & Negative binomial
-% & 40/40
-% & 0.0947 (0.0008)
-% & 0.5000 (0.0000)
-% & 0.818 (0.007)
-% & 1680.01 (3205.18) \\
+& 0.0895 (0.0017)
+& 0.6979 (0.0156)
+& 0.796 (0.011)
+& 2523.86 (4641.38) \\
 
 GG-KM (polynomial)
 & Poisson
-& 37/37
-& 0.0927 (0.0013)
-& 0.6721 (0.0375)
-& 0.885 (0.004)
-& 630.28 (717.68) \\
-
-GG-KM (polynomial)
-& Negative binomial
 & 36/36
-& 0.0902 (0.0015)
-& 0.7019 (0.0090)
-& 0.820 (0.007)
-& 2973.05 (6276.62) \\
+& 0.0925 (0.0013)
+& 0.6780 (0.0389)
+& 0.886 (0.003)
+& 216.31 (236.11) \\
+
+GG-KM (polynomial)
+& Negative binomial
+& 34/34
+& 0.0898 (0.0016)
+& 0.7077 (0.0142)
+& 0.820 (0.006)
+& 1461.54 (3439.52) \\
 
 GG-KM (wavelet)
 & Poisson
 & 50/50
-& 0.0944 (0.0011)
-& 0.5456 (0.0274)
-& 0.807 (0.012)
-& 5598.89 (10148.10) \\
+& 0.0892 (0.0020)
+& 0.7348 (0.0379)
+& 0.814 (0.008)
+& 5233.08 (7298.69) \\
 
 GG-KM (wavelet)
 & Negative binomial
 & 50/50
-& 0.0944 (0.0011)
-& 0.5456 (0.0274)
-& 0.807 (0.012)
-& 5417.58 (13914.95) \\
+& 0.0892 (0.0020)
+& 0.7332 (0.0389)
+& 0.814 (0.008)
+& 5668.26 (8661.10) \\
 
 \hline
 \end{tabular}

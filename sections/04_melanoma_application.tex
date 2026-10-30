@@ -31,19 +31,23 @@ Laplacian, exponential, Cauchy, polynomial, and wavelet kernels, each
 with Poisson and negative-binomial latent-count laws, together with
 additive cubic-spline Poisson and negative-binomial models and the
 classical mixture-cure and promotion-time comparators. Kernel and spline
-hyperparameters were selected from prespecified grids.
+hyperparameters were selected from prespecified grids. The kernel grids
+followed Section~\ref{sec:simulation}, with the wavelet scale extended to
+$A\in\{0.5,1,2,10\}$. Cubic-spline candidates used three or five
+training-fold quantile knots with $\lambda\in\{0.1,1\}$.
 
 \GGKMTable{sections/generated/melanoma-performance-table}
 
 Table~\ref{tab:melanoma-performance} reports split-level means and
-variation. The Poisson and negative-binomial GG-KM models with the RBF
+variation. The Poisson and negative-binomial GG-KM models with the wavelet
 kernel attained the lowest mean IPCW integrated Brier score, both at
-0.1418 with split standard deviation 0.0206, followed closely by the
-Cauchy kernel under both count laws, with mean IBS 0.1419. The
-mixture-cure model had the highest mean cure AUC overall, 0.8492, while
+0.1408 with split standard deviations 0.0207 and 0.0206, respectively,
+followed by the RBF and Cauchy kernels under both count laws, with mean
+IBS values 0.1418 and 0.1419. The mixture-cure model had the highest mean
+cure AUC overall, 0.8529, while
 among the GG-KM models the negative-binomial polynomial kernel had the
 highest mean cure AUC, 0.8117. Across the 900 planned split-model fits,
-897 completed successfully and 893 satisfied the explicit convergence
+900 completed successfully and 898 satisfied the explicit convergence
 criteria.
 
 Figure~\ref{fig:melanoma-performance} places the paired score
@@ -57,11 +61,11 @@ intervals. Similar mean scores do not establish an approximately linear
 latent-cause structure, and a smaller split standard deviation alone does
 not prove greater predictive stability.
 
-\GGKMWideFigure{melanoma_predictive_assessment_ibs_auc.pdf}{Predictive assessment in 50 paired repeated holdouts of the melanoma cohort. Panel A compares the full-cohort Kaplan--Meier curve with split-averaged out-of-sample survival predictions over the common supported horizon. Panel B shows split-level IPCW integrated Brier scores, with each point representing one outer split and lower values indicating better prediction. Line type, marker or box encoding, and labels distinguish all eight methods without relying on color alone. Panel A shows mean curves without an uncertainty band; the dependence caveat for repeated holdouts is stated in the text.}{fig:melanoma-performance}{Two-panel melanoma prediction figure. The left panel shows a black Kaplan-Meier step curve and eight mean predicted survival curves from log-linear, spline, quadratic, and GG-KM models with Poisson or negative-binomial count laws. The right panel shows split-level IPCW integrated Brier scores as box-and-strip distributions for every method, with each point representing one outer split and lower values indicating better prediction.}
+\GGKMWideFigure{melanoma_predictive_assessment_ibs_auc.pdf}{Predictive assessment in 50 paired repeated holdouts of the melanoma cohort. Panel A compares the full-cohort Kaplan--Meier curve with split-averaged out-of-sample survival predictions over the common supported horizon. Panel B shows split-level IPCW integrated Brier scores and Panel C shows cure-discrimination area under the curve ($\mathrm{AUC}_{\mathrm{cure}}$), with each point representing one outer split. Lower IBS and higher cure AUC values indicate better prediction and discrimination, respectively. Line type, box encoding, and labels distinguish all six models without relying on color alone. Panel A shows mean curves without an uncertainty band; the dependence caveat for repeated holdouts is stated in the text.}{fig:melanoma-performance}{Three-panel melanoma prediction figure. Panel A shows a black Kaplan--Meier step curve and six mean predicted survival curves from mixture-cure, promotion-time, spline, and selected GG-KM models. Panels B and C show split-level IPCW integrated Brier scores and cure AUC values as box-and-strip distributions, with each point representing one outer split.}
 \GGKMWideFigure{melanoma_ggkm_kernel_comparison_ibs_auc.pdf}{Kernel-specific predictive performance of the GG-KM models in 50 paired repeated holdouts of the melanoma cohort. Panel A shows the split-level IPCW integrated Brier score and Panel B the cure-discrimination area under the curve ($\mathrm{AUC}_{\mathrm{cure}}$) across the seven candidate kernels. Within each kernel, Poisson and negative-binomial GG-KM results are shown side by side, with color and hatching distinguishing the two latent-count laws. Each point represents one outer split, and the boxplots summarize the corresponding split-level distributions.}{fig:melanoma-performance-ggkm-kernel}{Two-panel comparison of GG-KM kernels in the melanoma application. Panel A displays split-level IPCW integrated Brier scores and Panel B cure AUC values for the linear, RBF, Laplacian, exponential, Cauchy, polynomial, and wavelet kernels. For each kernel, Poisson and negative-binomial GG-KM boxplots are shown side by side and distinguished by color and hatching. Boxplots summarize the repeated-holdout distributions, with individual outer-split values overlaid as points.}
 
-Mean predicted cure fractions ranged from 0.572 for the Poisson
-GG-KM with the wavelet kernel to 0.639 for the Poisson GG-KM with the
+Mean predicted cure fractions ranged from 0.579 for the GG-KM models
+with the Laplacian kernel to 0.637 for the Poisson GG-KM with the
 polynomial kernel. These values are model-based extrapolations because
 individual cure status is unobserved and follow-up is finite, and the
 Kaplan--Meier comparison cannot identify a cure fraction. Across-split
@@ -91,8 +95,8 @@ For the IPCW integrated Brier score (Panel A), the distributions overlap
 substantially across kernels, and the differences between the Poisson and
 negative-binomial versions of the same kernel are generally small. Mean IBS
 values were relatively close across specifications, with both the Poisson
-and negative-binomial RBF models attaining the lowest mean value, 0.1418.
-The Poisson polynomial model had the largest mean IBS, 0.1515, and also
+and negative-binomial wavelet models attaining the lowest mean value, 0.1408.
+The Poisson polynomial model had the largest mean IBS, 0.1507, and also
 showed comparatively large between-split variability. Although several
 kernels exhibited isolated splits with substantially higher Brier scores,
 the central parts of the distributions remained similar. Overall, the IBS
@@ -107,12 +111,12 @@ polynomial model achieved the highest mean cure AUC among the GG-KM
 specifications, 0.8117, and showed a relatively concentrated distribution,
 whereas the corresponding Poisson polynomial model was substantially more
 variable across splits. The RBF, Laplacian, exponential, and Cauchy kernels
-generally produced lower cure AUCs, concentrated around 0.68--0.70, while
-the wavelet kernel showed the weakest discrimination, with mean cure AUCs
-of approximately 0.62 under both count laws. Thus, the results suggest that
+generally produced lower mean cure AUCs, around 0.68--0.70, while
+the wavelet kernel attained mean cure AUCs of approximately 0.75 under
+both count laws. Thus, the results suggest that
 kernel specification has a stronger practical influence than the choice
 between Poisson and negative-binomial latent-count laws in this application.
 No single kernel dominated simultaneously in prediction error and cure
-discrimination: the RBF kernel was most favorable in terms of mean IBS
+discrimination: the wavelet kernel was most favorable in terms of mean IBS
 under both count laws, whereas the polynomial and linear kernels provided
 the strongest cure discrimination.

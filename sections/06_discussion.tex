@@ -17,16 +17,17 @@ about 0.04 to 0.07, while its differences from the spline were much smaller and
 scenario-dependent. On the periodic surface, the RBF GG-KM improved substantially on the
 linear-kernel GG-KM yet trailed the spline by a small margin, and on the linear surface it
 paid a small resolved penalty against the correctly specified linear-kernel GG-KM. Within
-the original three-surface design, the count law was a secondary factor, since Poisson and
-negative-binomial variants within a predictor family differed by at most 0.02 in integrated
-Brier score and 0.01 in cure root mean squared error. The melanoma cohort produced overlapping
-score distributions in which the linear-kernel Poisson model had the lowest mean integrated
-Brier score and GG-KM was competitive with the smallest split-to-split variation. The
+the original three-surface design, Poisson and negative-binomial variants were generally
+close within a predictor family, although differences in reported means reached about
+0.010 in integrated Brier score and 0.042 in cure root mean squared error for the
+polynomial kernel on the periodic surface at $n=600$. The melanoma cohort produced overlapping
+score distributions in which the wavelet GG-KM models had the lowest mean integrated
+Brier score, 0.1408, and the mixture-cure model had the highest mean cure AUC, 0.8529. The
 breast-cancer cohort showed a complementary pattern: the spline models achieved the lowest
 mean integrated Brier score, 0.0877, whereas the mixture-cure model attained the
-highest mean cure AUC, 0.7851. Among the GG-KM specifications, the negative-binomial
-linear kernel had the lowest mean integrated Brier score, 0.0897, while the exponential
-kernel attained the highest mean cure AUC, 0.7124, under both latent-count laws. Together,
+highest mean cure AUC, 0.7862. Among the GG-KM specifications, the wavelet kernel had
+the lowest mean integrated Brier score, 0.0892, under both latent-count laws and the
+highest mean cure AUC, 0.7348 under Poisson and 0.7332 under negative-binomial counts. Together,
 the two empirical applications reinforce the simulation message that no
 single predictor is uniformly best and that the preferred predictor and
 kernel depend on the predictive target and data structure.
@@ -34,11 +35,10 @@ kernel depend on the predictive target and data structure.
 Several features of the cure-model setting limit how far these results can be interpreted. Cure fractions are
 only weakly identified from right-censored data with finite follow-up, because a long plateau of censored
 survivors is consistent with a range of cure probabilities. The melanoma follow-up ends in 1977 and the
-estimated cure fractions between 0.577 and 0.648 are model-based extrapolations, not quantities read directly
+estimated cure fractions between 0.579 and 0.637 are model-based extrapolations, not quantities read directly
 from the data. The comparison of split-averaged predicted survival with the Kaplan-Meier curve is a
 calibration check on the population survival function and does not identify which individuals are cured. The
-analysis therefore makes no claim to identify individual cure status, and simulation calibration slopes near
-identity do not change that limitation.
+analysis therefore makes no claim to identify individual cure status.
 
 Kernel choice and its hyperparameters shape the estimated intensity because they define which subjects are similar
 and how rapidly the fitted surface may change. In the primary three-surface comparisons, multiple GG-KM kernel
@@ -60,7 +60,7 @@ factorization can require cubic time; nested tuning repeats those operations acr
 inner folds. Reusing a Gram matrix within a candidate and retained eigenspace avoids unnecessary work, but
 matrices cannot be shared across folds whose preprocessing and training subjects differ. In the primary
 simulation experiment, these costs remained manageable at the sample sizes studied, with mean per-fit
-runtimes across methods ranging from 1.13 to 40.32 seconds. The richer breast-cancer application was
+runtimes across methods ranging from 1.21 to 60.55 seconds. The richer breast-cancer application was
 substantially more computationally demanding, particularly for several nonlinear GG-KM kernels and the
 spline models, underscoring that computational burden can increase sharply with a larger and more complex
 predictor representation; these timings do not establish scalability to substantially larger cohorts.
@@ -78,12 +78,10 @@ breast-cancer death were censored. Accordingly, both empirical analyses are caus
 definition and are not competing-risks analyses. Within these latent cause-specific processes,
 $p_c(\bm{x})$ describes the probability of no disease-specific death from the modelled process; it is
 neither an all-cause survival probability nor a competing-risks cumulative incidence. The interpretation
-relies on the corresponding independent-censoring assumption. The negative-binomial dispersion was only
-weakly identified from cure and latency information: under Poisson generation the estimated dispersion
-correctly stayed near zero, but under true dispersion of 1.00 it was systematically underestimated, ranging
-from 0.053 to 0.239. This weak identifiability explains the frequent contact of the dispersion estimate with
-its lower bound and cautions against interpreting the fitted dispersion as a precise measure of
-overdispersion.
+relies on the corresponding independent-censoring assumption. The negative-binomial dispersion can be
+weakly identified from cure and latency information, which cautions against interpreting the fitted
+dispersion as a precise measure of overdispersion. No dispersion-lower-bound contacts were recorded
+in either simulation experiment.
 
 Both empirical applications are observational, and no causal interpretation is attached to the covariate effects
 or to the predicted cure fractions. The reported associations describe out-of-sample predictive behaviour under

@@ -145,36 +145,34 @@ its 90th observed-time percentile and the limit at which estimated
 censoring survival remained at least 0.05. Primary test-set estimands were
 integrated Brier score, cure AUC, and cure-probability mean squared error.
 
-A target-size diagnostic pilot used five planned replicates per pilot
-scenario and was not pooled with the final experiment; at least four
+A target-size diagnostic pilot used five planned replicates in each of
+324 pilot cells and was not pooled with the final experiment; at least four
 replicates were successful in every pilot cell. The largest observed
-between-replicate standard deviations were 0.0418 for integrated Brier
-score and 0.0332 for cure-probability mean squared error. Requiring
-projected Monte Carlo standard errors no larger than 0.003 and 0.005,
-respectively, implied at least 195 replicates for integrated Brier score
-and 45 for cure-probability mean squared error. The more restrictive
-criterion therefore required 195 replicates, so the final count was fixed
-at 250 replicates per scenario before final estimation. At
+between-replicate standard deviations were 0.0343 for integrated Brier
+score and 0.0261 for cure-probability mean squared error. Calculations using
+the unrounded standard deviations and projected Monte Carlo standard error
+targets of 0.003 and 0.005, respectively, implied at least 132 replicates
+for integrated Brier score
+and 28 for cure-probability mean squared error. The more restrictive
+criterion therefore required 132 replicates, and the final count was retained
+at 250 replicates per scenario. At
 $R=250$, the corresponding projected Monte Carlo standard errors were
-0.00265 for integrated Brier score and 0.00210 for cure-probability mean
+0.00217 for integrated Brier score and 0.00165 for cure-probability mean
 squared error. For cure AUC, the largest pilot standard deviation was
-0.1211, corresponding to a projected Monte Carlo standard error of
-0.00766 at $R=250$. Final summaries report the realized Monte Carlo
+0.1080, corresponding to a projected Monte Carlo standard error of
+0.00683 at $R=250$. Final summaries report the realized Monte Carlo
 standard error for every primary metric and paired differences computed
 within each shared replication.
 
 \subsection{Simulation results}\label{sec:simulation-results}
 
 The primary final experiment contained 81,000 method rows from
-250 replications in each of 18 scenarios. The largest realized
-Monte Carlo standard errors were 0.00175 for the IPCW integrated
-Brier score, 0.00434 for cure-probability RMSE, and
-0.00694 for cure AUC. Of the 81,000 fits, 80,842 completed
-successfully and 158 failed; among the successful fits, 80,832
-satisfied the explicit convergence criterion and 10 did not.
-Method-specific successful-fit totals ranged from 4,467 to 4,498
-of 4,500. Mean per-fit runtime ranged from 1.13 to 40.32 seconds
-across methods, with a maximum of 520.48 seconds.
+250 replications in each of 18 scenarios. Monte Carlo standard errors
+accompany the reported metric means. Of the 81,000 fits, 80,997 completed
+successfully and three failed; all successful fits satisfied the explicit
+convergence criterion. Method-specific successful-fit totals ranged from
+4,497 to 4,500 of 4,500. Mean per-fit runtime ranged from 1.21 to 60.55 seconds
+across methods, with a maximum of 660.24 seconds.
 
 Table~\ref{tab:simulation-best} reports the best observed mean IPCW
 integrated Brier score, cure root mean squared error, and cure AUC in each
@@ -251,15 +249,15 @@ $n_{\mathrm{valid}}$ rather than being removed from the total
 number of replications. The panel means summarize the gridwise
 recovery of the cure surface. On the linear surface the
 linear-kernel GG-KM attains 0.0490, compared with 0.0671 for
-the additive spline, 0.0694 for the polynomial-kernel GG-KM,
+the additive spline, 0.0693 for the polynomial-kernel GG-KM,
 and 0.0730 for the RBF GG-KM. On the quadratic surface, the
-RBF GG-KM attains the lowest mean error, 0.0802, followed
+RBF GG-KM attains the lowest mean error, 0.0806, followed
 closely by the additive spline at 0.0816 and the
-polynomial-kernel GG-KM at 0.0827, whereas the linear-kernel
+polynomial-kernel GG-KM at 0.0826, whereas the linear-kernel
 GG-KM increases to 0.1282. On the periodic surface, the
-additive spline performs best at 0.0824, followed by the RBF
-GG-KM at 0.0959, while the linear- and polynomial-kernel GG-KM
-predictors increase to 0.1504 and 0.1510, respectively. The
+additive spline performs best at 0.0823, followed by the RBF
+GG-KM at 0.0960, while the linear- and polynomial-kernel GG-KM
+predictors increase to 0.1504 and 0.1497, respectively. The
 spatial pattern adds what these scalar summaries omit. A
 misaligned predictor does not spread its error evenly: the
 linear-kernel GG-KM shows concentrated error on the quadratic
@@ -281,7 +279,7 @@ the periodic surface.
 
 \GGKMWideFigure{simulation_cure_surface_recovery.pdf}{Pointwise accuracy of the three primary cure surfaces at $n=600$ under Poisson generation. Rows show the linear, quadratic and periodic generating surfaces; columns show the linear-kernel GG-KM, additive-spline, polynomial-kernel GG-KM and radial-basis-function (RBF) GG-KM predictors. The filled field is the root mean squared error of the predicted cure probability at each of the $41\times41$ grid points, taken across all valid replications, on one scale shared by every panel and truncated above 0.30. Solid labelled lines are the true cure levels $0.25$, $0.50$ and $0.60$; the dashed line is the mean estimated $0.50$ level and is annotated as absent when the fitted range does not contain it. The value printed in each panel is the mean of the displayed field. Failed fits remain in $n_{\mathrm{total}}$ and reduce the pointwise $n_{\mathrm{valid}}$ rather than disappearing.}{fig:cure-surface-recovery}{A three-row by four-column grid of shaded panels shows the pointwise root mean squared error of the predicted cure probability for the linear, quadratic and periodic generating surfaces. Columns correspond to the linear-kernel GG-KM, additive-spline, polynomial-kernel GG-KM and RBF GG-KM predictors. Darker shading marks larger error, and the printed value in each panel is the mean of the displayed field. Solid labelled lines mark the true cure levels, while a dashed line marks the mean estimated 0.50 level and is explicitly reported as absent wherever that level is outside the fitted range.}
 
-The complete mean IPCW integrated Brier scores for all eight methods,
+The complete mean IPCW integrated Brier scores for all 18 model configurations,
 with their Monte Carlo standard errors, appear in the Supporting
 Information. They confirm the geometry-specific ordering in
 Table~\ref{tab:simulation-best} and retain both fitted count laws for
@@ -293,18 +291,18 @@ best-performing method within the retained comparison set.
 Table~\ref{tab:simulation-regret} restricts this analysis to
 the Poisson and negative-binomial spline models and RBF GG-KM
 models across the 18 scenarios. For IPCW integrated Brier score,
-the Poisson spline had the smallest maximum paired regret,
-0.00065 with a 95\% Monte Carlo half-width of 0.00056, whereas
-the negative-binomial spline had the smallest equally weighted
-mean regret, 0.00012 (half-width 0.00010). For cure root mean
-squared error, the Poisson spline had the smallest maximum regret,
-0.00464 (half-width 0.00210), whereas the negative-binomial spline
-had the smallest mean regret, 0.00073 (half-width 0.00025). In
-contrast, the negative-binomial RBF GG-KM was most competitive
-for cure AUC, attaining the smallest maximum regret, 0.00687
-(half-width 0.00464), the smallest mean regret, 0.00144
+both spline models had a maximum paired regret of
+0.00059 with a 95\% Monte Carlo half-width of 0.00060, whereas
+the Poisson spline had the smallest equally weighted
+mean regret, 0.00010 (half-width 0.00010). For cure root mean
+squared error, both spline models had a maximum regret of
+0.00465 (half-width 0.00210), and the Poisson spline
+had the smallest mean regret, 0.00068 (half-width 0.00024). For
+cure AUC, the negative-binomial spline had the smallest maximum
+regret, 0.00687 (half-width 0.00529), whereas the negative-binomial
+RBF GG-KM attained the smallest mean regret, 0.00131
 (half-width 0.00060), and the best descriptive mean rank of
-2.06. Thus, the regret summaries favor the spline models for
+2.17. Thus, the regret summaries favor the spline models for
 prediction error but show greater competitiveness of the RBF
 GG-KM for cure discrimination.
 
@@ -349,9 +347,9 @@ including comparisons that do not favor GG-KM.
     \GGKMTable{sections/generated/highdim-best-table}
 \GGKMWideFigure
 {highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf}
-{Paired predictive differences of the radial-basis GG-KM predictor against the count-matched GG-KM linear-kernel, spline, and GG-KM polynomial-kernel comparators on the interaction and radial cure surfaces. The top row shows paired mean IPCW integrated Brier score differences and the bottom row paired mean cure root mean squared error differences. Each plotted contrast is defined as the RBF GG-KM value minus the corresponding comparator value, so negative differences favor the RBF GG-KM and positive differences favor the comparator. Solid lines with filled markers denote Poisson fits, whereas dashed lines with open markers denote negative-binomial fits. Each panel displays the six generating-law and sample-size cells, with error bars spanning $\pm1.96$ paired Monte Carlo standard errors.}
+{Paired predictive differences of the radial-basis GG-KM predictor against the count-matched GG-KM linear-kernel, spline, and GG-KM polynomial-kernel comparators on the interaction and radial cure surfaces. The top, middle, and bottom rows show paired mean differences in IPCW integrated Brier score, cure root mean squared error, and cure AUC, respectively. Each plotted contrast is defined as the RBF GG-KM value minus the corresponding comparator value. Negative differences favor the RBF GG-KM for integrated Brier score and cure root mean squared error, whereas positive differences favor it for cure AUC. Solid lines with filled markers denote Poisson fits, whereas dashed lines with open markers denote negative-binomial fits. Each panel displays the six generating-law and sample-size cells, with error bars spanning $\pm1.96$ paired Monte Carlo standard errors.}
 {fig:highdim-paired-differences}
-{Two-row by two-column grid of paired-difference plots for the interaction and radial cure surfaces, comparing RBF GG-KM with GG-KM linear-kernel, spline, and GG-KM polynomial-kernel models under Poisson and negative-binomial latent-count specifications.}
+{Three-row by two-column grid of paired-difference plots for the interaction and radial cure surfaces. Rows show differences in IPCW integrated Brier score, cure root mean squared error, and cure AUC, comparing RBF GG-KM with GG-KM linear-kernel, spline, and GG-KM polynomial-kernel models under Poisson and negative-binomial latent-count specifications.}
 
 The complete per-scenario means with Monte Carlo standard errors, together with the numerical diagnostics, are
 reported in the Supporting Information.

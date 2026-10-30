@@ -9,7 +9,8 @@ contained a substantially richer set of demographic, socioeconomic,
 clinical, health-care access, lifestyle, and treatment-related information,
 allowing the cure component to depend on a broader patient profile.
 
-The predictor set included race or skin-colour classification, educational
+The predictor set included municipality (João Pessoa, Campina Grande, or
+other municipalities), race or skin-colour classification, educational
 level, income category, age at first consultation, age group, health
 macroregion, health-system origin and referral pathway, and the hospital
 source of the record. Clinical characteristics included primary tumour
@@ -53,15 +54,15 @@ Predictive performance was assessed using 50 event-stratified paired outer
 holdouts, with approximately 70\% of the cohort assigned to training and
 30\% to testing in each split. The same outer split indices were used for
 all fitted methods. Hyperparameter selection was performed exclusively
-within the outer training sample using four inner folds and the IPCW
+within the outer training sample using three inner folds and the IPCW
 integrated Brier score, together with the prediction-horizon rule defined
 in Section~\ref{sec:prediction-evaluation}. The comparison comprised GG-KM
 models under Poisson and negative-binomial latent-count laws, with linear,
 radial-basis, Laplacian, exponential, Cauchy, polynomial, and
 wavelet kernels, as well as spline Poisson and negative-binomial
 models and the classical mixture-cure and promotion-time comparators.
-All kernel and spline hyperparameters were selected from prespecified
-grids.
+All kernel and spline hyperparameters were selected from the same
+prespecified grids as in the melanoma application.
 
 \GGKMTable{sections/generated/breast-cancer-performance-table}
 
@@ -70,12 +71,12 @@ variation. The spline models under both Poisson and negative-binomial
 latent-count laws achieved the lowest mean IPCW integrated Brier score,
 0.0877 with split standard deviation 0.0019, followed by the mixture-cure
 and promotion-time models, both with mean IBS 0.0883. The mixture-cure
-model attained the highest mean cure AUC overall, 0.7851, followed by the
-promotion-time model at 0.7775 and the spline models at 0.7707. Among the
-GG-KM specifications, the negative-binomial linear kernel had the lowest
-mean IBS, 0.0897, whereas the exponential kernel produced the highest mean
-cure AUC, 0.7124, under both latent-count laws. Across the 900 planned
-split-model fits, 873 completed successfully and 871 satisfied the explicit
+model attained the highest mean cure AUC overall, 0.7862, followed by the
+promotion-time model at 0.7805 and the spline models at 0.7724. Among the
+GG-KM specifications, the wavelet kernel had the lowest mean IBS, 0.0892,
+under both latent-count laws and the highest mean cure AUC, 0.7348 under
+Poisson and 0.7332 under negative-binomial counts. Across the 900 planned
+split-model fits, 870 completed successfully and 869 satisfied the explicit
 convergence criteria.
 
 Figure~\ref{fig:breast-cancer-performance} summarizes out-of-sample survival
@@ -85,7 +86,7 @@ the common prediction horizon, with relatively small differences among the
 fitted methods. The spline Poisson and negative-binomial models showed the
 lowest IPCW integrated Brier scores, whereas the mixture-cure model achieved
 the highest cure-discrimination performance. The GG-KM models with the
-exponential kernel were less competitive in overall prediction error than
+wavelet kernel were less competitive in overall prediction error than
 the spline and classical cure models, but retained substantially better cure
 discrimination than several alternative kernel specifications.
 
@@ -107,12 +108,13 @@ of IPCW integrated Brier scores and cure AUC values.}
 
 Figure~\ref{fig:breast-cancer-performance-ggkm-kernel} shows that kernel
 choice had a marked influence on GG-KM performance. For prediction error,
-the exponential and Cauchy kernels yielded the lowest mean IBS values among
-the nonlinear GG-KM specifications, while the wavelet and RBF kernels were
-less favorable. Cure discrimination varied more substantially across
-kernels. The exponential kernel produced the highest mean cure AUC among the
-GG-KM models, 0.7124 under both count laws, whereas the wavelet kernel showed
-considerably weaker discrimination.
+the wavelet kernel yielded the lowest mean IBS among the GG-KM
+specifications, followed by the Cauchy kernel among the nonlinear models,
+while the RBF kernel was less favorable. Cure discrimination varied more
+substantially across kernels. The wavelet kernel produced the highest mean
+cure AUC among the GG-KM models, 0.7348 under Poisson and 0.7332 under
+negative-binomial counts, whereas the linear Poisson model showed
+discrimination close to chance, with mean cure AUC 0.5007.
 
 % The linear Poisson model was particularly
 % poor for cure discrimination, with mean AUC close to 0.5, while its
