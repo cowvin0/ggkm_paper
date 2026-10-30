@@ -406,7 +406,7 @@ p\,\partial\mathcal J/\partial p
 \end{equation}
 These coordinates enforce positivity and preserve the predictor, latency, and dispersion separation derived above.
 
-The \href{https://github.com/cowvin0/scikit-cure/tree/e003572c856db9a1133bd4432b9e437402aff351}{scikit-cure implementation pinned by the experiment environment} optimizes the representer coefficients $(\beta_0,\bm\alpha)$ directly and uses L-BFGS-B for the conditional predictor and log-latency updates. Estimated negative-binomial dispersion is updated by observed-likelihood maximization in $\zeta$. During the generalized-gamma update, the parameters are constrained to $a,d,p\geq10^{-5}$. When the negative-binomial dispersion is estimated, its log-scale ECME update imposes the numerical lower bound $\phi\geq10^{-8}$; a user-specified fixed dispersion is only required to be positive and finite. Iterations stop when the absolute change in the observed penalized log-likelihood is smaller than the specified tolerance or when the iteration limit is reached. The fitted estimator records the penalized log-likelihood history, final value, convergence flag, and iteration count. Algorithms 1 and 2 in the main article summarize the Poisson EM and negative-binomial ECME procedures; the derivations here supply their conditional objectives and gradients.
+The \href{https://github.com/cowvin0/scikit-cure/tree/832dcf1e5022171cb7b7df9996198c4752e00b64}{scikit-cure implementation pinned by the experiment environment} optimizes the representer coefficients $(\beta_0,\bm\alpha)$ directly and uses L-BFGS-B for the conditional predictor and log-latency updates. Estimated negative-binomial dispersion is updated by observed-likelihood maximization in $\zeta$. During the generalized-gamma update, the parameters are constrained to $a,d,p\geq10^{-5}$. When the negative-binomial dispersion is estimated, its log-scale ECME update imposes the numerical lower bound $\phi\geq10^{-8}$; a user-specified fixed dispersion is only required to be positive and finite. Iterations stop when the absolute change in the observed penalized log-likelihood is smaller than the specified tolerance or when the iteration limit is reached. The fitted estimator records the penalized log-likelihood history, final value, convergence flag, and iteration count. Algorithms 1 and 2 in the main article summarize the Poisson EM and negative-binomial ECME procedures; the derivations here supply their conditional objectives and gradients.
 
 % \documentclass[11pt]{article}
 
@@ -833,22 +833,21 @@ All tuned configurations use penalties $\lambda\in\{0.3,3\}$. Linear-kernel GG-K
 \section{Full simulation results}\label{sec:supp-simulation-results}
 
 The main article reports selected scenario summaries, whereas
-the tables in this section give the complete eight-method
-results over all 18 scenarios. Separate tables for fitted
+the tables in this section give the complete results for all 18 model configurations over all 18 scenarios. Separate tables for fitted
 Poisson and negative-binomial count laws preserve readable
 predictor labels. Monte Carlo standard errors accompany
 every mean, and failed or nonconverged fits remain visible
 in the reported denominators.
 
-Tables~\ref{tab:supp-simulation-ibs-poisson} and \ref{tab:supp-simulation-ibs-negative-binomial} list mean IPCW integrated Brier scores for every predictor, fitted count law, and scenario. Log-linear, quadratic, and spline predictors attained the lowest scenario means on the corresponding linear, quadratic, and periodic surfaces.
+Tables~\ref{tab:supp-simulation-ibs-poisson} and \ref{tab:supp-simulation-ibs-negative-binomial} list mean IPCW integrated Brier scores for every predictor, fitted count law, and scenario. Linear-kernel GG-KM attained the lowest scenario means on the linear surface, and additive splines did so on the periodic surface. On the quadratic surface, polynomial-kernel GG-KM attained the lowest mean in five scenarios and RBF GG-KM in the remaining scenario.
 
 \input{sections/generated/simulation-ibs-table}
 
-Tables~\ref{tab:supp-simulation-cure-rmse-poisson} and \ref{tab:supp-simulation-cure-rmse-negative-binomial} give the corresponding cure-probability root mean squared errors. Their geometry-specific ordering matches the integrated Brier results, while the complete cells expose the magnitude of every alternative rather than only the minimum.
+Tables~\ref{tab:supp-simulation-cure-rmse-poisson} and \ref{tab:supp-simulation-cure-rmse-negative-binomial} give the corresponding cure-probability root mean squared errors. Linear-kernel GG-KM, polynomial-kernel GG-KM, and additive splines attained the lowest scenario means on the linear, quadratic, and periodic surfaces, respectively. The complete cells report every alternative rather than only the minimum.
 
 \input{sections/generated/simulation-cure-rmse-table}
 
-Table~\ref{tab:supp-simulation-diagnostics} aggregates numerical behavior over the 18 scenarios. Of the 81,000 final fits, 80,832 met the convergence criterion, 10 completed successfully without satisfying the convergence criterion, and 158 failed; method-specific convergence totals ranged from 4,464 to 4,498 of 4,500. Mean runtime ranged from 1.13 to 40.32 seconds per fit, and the maximum observed runtime was 520.48 seconds. Final successful fits contacted a generalized-gamma latency-parameter lower bound in 3,238 cases. No final negative-binomial fit contacted the dispersion lower bound of $10^{-8}$.
+Table~\ref{tab:supp-simulation-diagnostics} aggregates numerical behavior over the 18 scenarios. Of the 81,000 final fits, 80,997 completed successfully and satisfied the convergence criterion, and three failed; method-specific convergence totals ranged from 4,497 to 4,500 of 4,500. Mean runtime ranged from 1.21 to 60.55 seconds per fit, and the maximum observed runtime was 660.24 seconds. No final successful fit contacted a generalized-gamma latency-parameter lower bound of $10^{-5}$ or the negative-binomial dispersion lower bound of $10^{-8}$.
 
 \input{sections/generated/simulation-diagnostics-table}
 
@@ -862,7 +861,7 @@ and the \emph{radial} surface is
 \begin{equation}
 p_c(\bm{x})=\operatorname{expit}\bigl(C_{\mathrm{rad}}+3.00\exp\{-0.80(x_1^2+x_2^2+x_3^2+x_4^2)\}\bigr).
 \end{equation}
-Intercepts $C_{\mathrm{int}}$ and $C_{\mathrm{rad}}$ were calibrated by bisection on a fixed sample of $200\,000$ observations (seed 20260901) so that each surface yields a mean cure fraction of $0.45$. The latency remained the common generalized gamma with $(a,d,p)=(1.6,1.3,1.1)$ and no covariate-dependent scale; censoring was exponential with mean 3.5. The same eight methods were compared under Poisson, negative-binomial ($\phi=0.25$), and negative-binomial ($\phi=1.00$) generating laws at $n=300$ and $n=600$, giving 12 scenarios. A separate target-size pilot uses the same precision rule as the primary design, and all declared cells remain in the analysis.
+Intercepts $C_{\mathrm{int}}$ and $C_{\mathrm{rad}}$ were calibrated by bisection on a fixed sample of $200\,000$ observations (seed 20260901) so that each surface yields a mean cure fraction of $0.45$. The latency remained the common generalized gamma with $(a,d,p)=(1.6,1.3,1.1)$ and no covariate-dependent scale; censoring was exponential with mean 3.5. The same 18 model configurations were compared under Poisson, negative-binomial ($\phi=0.25$), and negative-binomial ($\phi=1.00$) generating laws at $n=300$ and $n=600$, giving 12 scenarios with 250 replications each. A separate target-size pilot uses the same precision rule as the primary design, and all declared cells remain in the analysis.
 
 Tables~\ref{tab:supp-highdim-ibs-poisson} and \ref{tab:supp-highdim-ibs-negative-binomial} list the mean IPCW integrated Brier score for every predictor, fitted count law, and scenario, with Monte Carlo standard errors.
 \input{sections/generated/highdim-ibs-table}
@@ -874,23 +873,27 @@ Table~\ref{tab:supp-highdim-diagnostics} aggregates the numerical diagnostics fo
 \input{sections/generated/highdim-diagnostics-table}
 \section{Additional melanoma summaries}\label{sec:supp-melanoma}
 
-The melanoma analysis uses the same eight method definitions as the primary simulation, with 50 common event-stratified holdouts and three inner tuning folds. All 205 patients appear in at least one outer test set across the eight methods, which permits a descriptive per-patient summary of repeated predictions. These summaries do not convert censored status into a cure label and are not used for model selection.
+The melanoma analysis compares the same 18 model configurations as the primary simulation, with 50 common event-stratified holdouts and three inner tuning folds. The individual-prediction summaries below show a subset of eight configurations: linear-kernel, polynomial-kernel, and RBF GG-KM and additive splines, each under Poisson and negative-binomial count laws. Predictions are summarized only over successful outer test-set appearances. Patient means require at least one finite prediction, and within-patient sample standard deviations require at least two. These summaries do not convert censored status into a cure label and are not used for model selection.
 
 Figure~\ref{fig:supp-melanoma-cure} shows the distribution of each patient's mean predicted cure fraction and the corresponding standard deviation across test-set appearances. The distributions differ across predictor structures, while Poisson and negative-binomial variants within GG-KM are visually similar. The across-split variation is a sensitivity summary for changing training samples, not a confidence interval for an individual's cure probability.
 
-Inner selection frequencies further describe the finite search used in this cohort. Radial-basis GG-KM with $\gamma=0.25$ and $\lambda=3$ was selected in 48 of 50 splits for each count law, with $\lambda=0.3$ selected in the remaining two. The log-linear Poisson model selected $\lambda=10$ in every split, while the dominant spline configuration used three knots and $\lambda=1$ in 38 Poisson and 45 negative-binomial splits.
+The clinical kernel grids match the primary simulation grids except that the wavelet scale is extended to $A\in\{0.5,1,2,10\}$, giving eight candidates per count law. Clinical cubic splines use three or five training-fold quantile knots with $\lambda\in\{0.1,1\}$, giving four candidates per count law. The same grids are used in the breast-cancer analysis, with all selection confined to the inner training folds.
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{melanoma_individual_cure_variation.pdf}
-\caption{Descriptive individual cure-fraction predictions in the melanoma repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
+\caption{Descriptive individual cure-fraction predictions in the melanoma repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. Log-lin, Spline, Poly., and GG-KM denote linear-kernel GG-KM, additive splines, polynomial-kernel GG-KM, and RBF GG-KM, respectively. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
 \label{fig:supp-melanoma-cure}
 \end{figure}
+
+\section{Additional breast-cancer summaries}\label{sec:supp-breast-cancer}
+
+Figure~\ref{fig:supp-breast-cancer-cure} gives the corresponding individual-prediction summaries for the breast-cancer cohort, using the same eight selected configurations and 50 paired event-stratified holdouts with three inner tuning folds. Each patient's mean and sample standard deviation are computed only from finite predictions in successful outer test-set appearances, with the same minimum appearance counts as in the melanoma summaries. Variation across holdouts describes sensitivity to the training sample and is not an individual confidence interval or evidence of observed cure status.
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{breast_cancer_individual_cure_variation.pdf}
-\caption{Descriptive individual cure-fraction predictions in the breast cancer repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
+\caption{Descriptive individual cure-fraction predictions in the breast cancer repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. Log-lin, Spline, Poly., and GG-KM denote linear-kernel GG-KM, additive splines, polynomial-kernel GG-KM, and RBF GG-KM, respectively. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
 \label{fig:supp-breast-cancer-cure}
 \end{figure}
 
