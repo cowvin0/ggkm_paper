@@ -64,9 +64,9 @@ ggkm_run_job() {
     fi
 
     case "$job_key" in
-        simulation-experiments) default_workers="${PBS_NCPUS:-4}" ;;
+        simulation-experiments|latent-robustness-experiments|latent-robustness-pilot) default_workers="${PBS_NCPUS:-4}" ;;
         melanoma-experiments) default_workers="${PBS_NCPUS:-4}" ;;
-        breast-cancer-experiments) default_workers=2 ;;
+        breast-cancer-experiments|fosp-melanoma-experiments) default_workers=2 ;;
     esac
     export PBS_NCPUS="${GGKM_WORKERS:-$default_workers}"
     if [[ ! "$PBS_NCPUS" =~ ^[1-9][0-9]*$ ]]; then

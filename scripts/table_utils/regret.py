@@ -60,7 +60,7 @@ def calculate_regret(results: Results, scenarios=PRIMARY_SCENARIOS):
     for metric in METRICS:
         regrets = {method: [] for method in REGRET_METHODS}
         ranks = {method: [] for method in REGRET_METHODS}
-        higher_is_better = metric == "test_auc"
+        higher_is_better = metric in {"test_auc", "test_cindex"}
 
         for scenario in scenarios:
             values = {

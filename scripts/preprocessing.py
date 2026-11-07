@@ -1068,6 +1068,65 @@ class SurvivalTargetEncoder(BaseEstimator, TransformerMixin):
         return X
 
 
+class FOSPMelanomaTargetEncodedPreprocessor(FOSPMelanomaSurvivalPreprocessor):
+    """Use breast-cancer-style survival target encoding for FOSP categories.
+
+    Stage, topography, and morphology each contribute one smoothed RMST
+    feature. Training features use five-fold out-of-fold encoding; validation
+    and test features use mappings fitted exclusively on the training data.
+    Continuous scaling, binary indicators, and follow-up conventions are
+    inherited from the existing FOSP preprocessor.
+    """
+
+    def _categorical_columns(self):
+        columns = [self.stage_col_]
+        if self.include_topography:
+            columns.append(self.topography_col_)
+        if self.include_morphology:
+            columns.append(self.morphology_col_)
+        return columns
+
+    def fit(self, df):
+        self._validate(df)
+        self.scaler_ = StandardScaler()
+        blocks = [
+            self.scaler_.fit_transform(self._continuous_features(df)),
+            self._binary_features(df),
+        ]
+        self.categorical_encoders_ = {}
+        self.feature_names_ = self.continuous_cols_ + self.binary_cols_
+        for column in self._categorical_columns():
+            encoder = SurvivalTargetEncoder(
+                column=column,
+                time_column=self.time_col,
+                event_column=self.status_col,
+                smooth=10.0,
+                cv=5,
+                random_state=42,
+            )
+            encoded = encoder.fit_transform(df)
+            self.categorical_encoders_[column] = encoder
+            name = f"{column}_rmst"
+            self.feature_names_.append(name)
+            blocks.append(encoded[[name]].to_numpy(dtype=float))
+        time, delta = self._make_outcome(df)
+        return np.column_stack(blocks), time, delta
+
+    def transform(self, df):
+        if not hasattr(self, "categorical_encoders_"):
+            raise RuntimeError("Call .fit(df) before .transform(df).")
+        self._validate(df)
+        blocks = [
+            self.scaler_.transform(self._continuous_features(df)),
+            self._binary_features(df),
+        ]
+        for column, encoder in self.categorical_encoders_.items():
+            encoded = encoder.transform(df)
+            blocks.append(encoded[[f"{column}_rmst"]].to_numpy(dtype=float))
+        time, delta = self._make_outcome(df)
+        return np.column_stack(blocks), time, delta
+
+
 class CIndexForwardSelector(BaseEstimator, TransformerMixin):
     def __init__(
         self,

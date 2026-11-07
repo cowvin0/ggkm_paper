@@ -12,7 +12,11 @@ ordering, and execution logic:
 
 - `run_breast_cancer_experiment.py`: breast-cancer repeated holdouts.
 - `run_melanoma_experiment.py`: melanoma repeated holdouts.
+- `run_fosp_melanoma_experiment.py`: FOSP melanoma repeated holdouts with
+  cross-fitted survival target encoding for categorical predictors.
 - `run_pcm_experiment.py`: simulated PCM experiments.
+- `run_latent_robustness_experiment.py`: paired latent-count misspecification
+  experiments and an independent pilot; see the [study workflow](../pbs_jobs/README.md#latent-count-misspecification-study).
 - `preprocessing.py`: dataset preprocessors and feature encoders.
 
 Shared boilerplate lives in `experiment_utils/`:
@@ -146,7 +150,7 @@ input file.
 
 ## PCM simulation tables
 
-Regenerate all nine simulation and high-dimensional LaTeX files on the cluster:
+Regenerate all eleven simulation and high-dimensional LaTeX files on the cluster:
 
 ```bash
 python scripts/create_simulation_tables.py
@@ -160,6 +164,7 @@ layouts used by the manuscript:
 - `simulation-regret-table.tex`
 - `simulation-ibs-table.tex` and `highdim-ibs-table.tex`
 - `simulation-cure-rmse-table.tex` and `highdim-cure-rmse-table.tex`
+- `simulation-uno-c-index-table.tex` and `highdim-uno-c-index-table.tex`
 - `simulation-diagnostics-table.tex` and `highdim-diagnostics-table.tex`
 
 For a different input directory or a separate output directory:
@@ -175,7 +180,7 @@ The replication count is inferred from the CSVs unless
 `--planned-replications` is supplied to enforce the expected study size. Every
 configuration must contain the same number of attempted replications, with IDs
 starting at zero and no gaps. Failed fits remain recorded attempts. The command
-validates all required inputs and computes all nine tables before replacing any
+validates all required inputs and computes all eleven tables before replacing any
 existing table. It requires the 18 configurations and 30 scenarios represented
 by these tables (540 CSVs); the Bernoulli and binomial configurations are ignored.
 NPZ archives and the experiment's summary CSVs are not required.
@@ -190,7 +195,7 @@ The calculations live in `table_utils/`:
 Means and Monte Carlo standard errors use successful fits with a finite value
 for that metric; MCSE is the sample standard deviation divided by the square
 root of the valid count. The best-method table selects the unrounded minimum
-IBS/RMSE or maximum AUC. The primary best-method comparison includes GG-KM and
+IBS/RMSE or maximum AUC/Uno's C-index. The primary best-method comparison includes GG-KM and
 spline Poisson/NB models; the high-dimensional best-method comparison additionally
 includes promotion time and mixture cure, following its supplied caption. The
 detailed metric and diagnostic tables include all 18 configurations.
@@ -289,7 +294,7 @@ testing, and survival plots preserve the recorded `Tempo` units.
 
 The runner uses melanoma's model and kernel parameter grids: seven kernels
 (linear, RBF, Laplacian, exponential, Cauchy, polynomial, and wavelet), three
-inner folds, and wavelet scales 0.5, 1, 2, and 10. The 32 array tasks use the
+inner folds, and wavelet scales 0.5, 1, 2, 10, 15, and 20. The 32 array tasks use the
 same model/kernel ordering as melanoma. The new results directory separates
 these fits from the former sigmoid/four-fold experiment, and checkpoint
 settings hashes prevent reuse after a fitting setting changes.
@@ -321,17 +326,56 @@ rendering and patient summaries are reused from the melanoma modules; the
 breast-specific helpers supply the correct data, split design, and optional
 refit preprocessor.
 
+## FOSP melanoma application
+
+Run the complete application, including dependent plots and tables, with:
+
+```bash
+python scripts/run_workflow.py --mode cluster --datasets fosp-melanoma
+```
+
+Add `--dry-run` to preview it, or select `--mode local` for local execution.
+The input is `data/melanoma_fosp_gomez2023.csv`. The existing extended follow-up
+(`tempo_ext`, already in years, and `status_ext`) defines the outcome; original
+patient row indices are preserved. `FOSPMelanomaTargetEncodedPreprocessor`
+uses the same smoothed RMST target encoder as breast cancer for stage,
+topography, and morphology (`smooth=10`, five-fold training cross-fitting,
+`random_state=42`). The encoders and continuous scaler are fitted separately
+inside every training fold. Sex and treatment indicators stay binary.
+
+The 32 tasks, 50 event-stratified 70/30 outer holdouts, three inner folds,
+model definitions, grids, IBS tuning objective, and scoring horizons match
+the other clinical experiments. The original melanoma cohort retains its
+143/62 split. Wavelet candidates are `A=0.5,1,2,10,15,20` across all workflows.
+
+Results go to `data/fosp_melanoma_results/grid_search/`. The following scripts
+reuse the same plot rendering, six-family selection, seven-kernel comparison,
+and eight-method individual comparison as the other clinical cohorts:
+
+```bash
+python scripts/fosp_melanoma_auc_plot.py
+python scripts/fosp_melanoma_individual_cure_variation.py
+```
+
+They export `fosp_melanoma_predictive_assessment_ibs_auc`,
+`fosp_melanoma_ggkm_kernel_comparison_ibs_auc`, and
+`fosp_melanoma_individual_cure_variation` as PDF, PNG, and SVG in
+`figures/review/`, together with the same prediction-summary/statistics CSVs.
+Path overrides and the explicit `--refit-missing` fallback work as for breast
+cancer. Cure AUC and plot selection rules are retained.
+
 ## Clinical performance tables
 
-Regenerate both supplied clinical tables with one command:
+Regenerate all three clinical tables with one command:
 
 ```bash
 python scripts/create_clinical_performance_tables.py
 ```
 
 This replaces `sections/generated/melanoma-performance-table.tex` and
-`sections/generated/breast-cancer-performance-table.tex`, preserving their
-labels, columns, method ordering, and decimal precision. It reads the clinical
+`sections/generated/breast-cancer-performance-table.tex`, and generates
+`sections/generated/fosp-melanoma-performance-table.tex`, preserving existing
+labels, method ordering, and decimal precision while adding Uno's C-index. It reads the clinical
 `splits_*.csv` files from the same default results directories as the plots;
 patient data and NPZ files are unnecessary.
 
@@ -346,6 +390,7 @@ python scripts/create_clinical_performance_tables.py \
 ```
 
 Use `--dataset melanoma` and `--melanoma-results-dir` for melanoma alone.
+Use `--dataset fosp-melanoma` and `--fosp-melanoma-results-dir` for FOSP alone.
 `--planned-splits` is optional; the attempted split count is otherwise inferred
 from complete CSVs. Split IDs and training/test hashes must agree across the
 selected methods. All selected inputs are checked and tables rendered before
@@ -354,7 +399,78 @@ any existing table is replaced.
 Table parentheses contain sample split standard deviations, rather than Monte
 Carlo standard errors. Metric summaries use successful fits with finite values.
 Convergence is the number converged among successful fits, and runtime is the
-successful-fit mean with its maximum in parentheses. Both tables retain
+successful-fit mean with its maximum in parentheses. All tables retain
 the same 18 active method rows and seven kernels; sigmoid is excluded.
 Missing estimates or undefined standard deviations appear as
 `--`; missing convergence information raises an error.
+Uno's C-index is read from the existing `uno_c_index` split CSV column. It uses
+negative RMST risk scores up to the saved evaluation horizon and censoring
+weights fitted on the training sample. AUC cure remains alongside it. Simulation
+tables read the corresponding `test_cindex` column; the best-method and regret
+tables treat higher concordance as better. Older CSVs missing these metrics
+must be regenerated; table generation does not invent missing scores.
+
+## Standalone IBS and Uno's C-index figures
+
+The figure jobs keep producing the existing IBS/cure-AUC figures and also run
+`create_score_plots.py`. Each metric is exported to its own PDF, PNG, and SVG.
+These additional figures read saved CSV scores directly, without refitting,
+retuning, loading patient data, or reconstructing survival curves.
+
+To generate only the additional figures for one cohort:
+
+```bash
+python scripts/create_score_plots.py --dataset fosp-melanoma
+```
+
+Use `--dataset melanoma`, `--dataset breast-cancer`, or `--dataset simulation`
+for the other workflows. `--results-dir` and `--output-dir` override the existing
+dataset-specific defaults. Output defaults to `figures/review/`.
+
+For each clinical prefix (`melanoma`, `breast_cancer`, `fosp_melanoma`), outputs are:
+
+- `<prefix>_predictive_assessment_ibs.{pdf,png,svg}`
+- `<prefix>_predictive_assessment_uno_c_index.{pdf,png,svg}`
+- `<prefix>_ggkm_kernel_comparison_ibs.{pdf,png,svg}`
+- `<prefix>_ggkm_kernel_comparison_uno_c_index.{pdf,png,svg}`
+- `<prefix>_standalone_metric_values.csv`, containing the exact plotted scores
+  and split IDs.
+
+The model comparisons retain the same six model families and AUC-selected
+GG-KM kernels as the original figure. The kernel comparisons retain all seven
+kernels, Poisson/NB colours, and NB hatching. Each metric uses successful splits
+with finite saved values; Uno's C-index uses its existing `uno_c_index` column,
+with larger values indicating better survival discrimination.
+
+Simulation outputs retain the existing contrasts, colours, and paired Monte
+Carlo intervals. They add `simulation_rbf_paired_differences_ibs` and
+`simulation_rbf_paired_differences_uno_c_index`, plus the corresponding
+`highdim_rbf_vs_linear_spline_polynomial_paired_differences_ibs` and
+`highdim_rbf_vs_linear_spline_polynomial_paired_differences_uno_c_index`, each
+as PDF, PNG, SVG, and a plotted-value CSV. C-index contrasts use `test_cindex`:
+positive RBF-minus-comparator values favour RBF; negative IBS contrasts favour
+RBF. The original `*_ibs_auc` and `*_with_auc` files remain unchanged.
+
+## Latent-count robustness workflow
+
+```bash
+python scripts/run_workflow.py --mode cluster --datasets latent-robustness
+```
+
+The dedicated jobs run an independent precision pilot, 40 primary and eight
+mixture-stress scenarios, and separate tables/figures. Each replication fits
+Poisson, negative-binomial, and binomial RBF GGKM to the same generated data.
+The primary `n=600` scenarios include a fixed-latency diagnostic. Defaults are
+10 pilot and 250 final replications, two inner folds, the current PCM RBF grid,
+and independently calibrated susceptible-censoring targets of 20% and 50%.
+
+`latent_robustness_utils.py` defines the design, count laws, matched cure
+surfaces, independent seeds, and censoring calibration. The runner records
+checksummed raw samples and atomic per-replication checkpoints in
+`data/latent_robustness/{pilot,final}/`. `summarize_latent_robustness.py` validates
+complete paired outputs and generates absolute performance, signed paired
+deterioration, finite-pair counts, Monte Carlo uncertainty, latency-compensation
+contrasts, LaTeX tables, and per-metric heatmaps. It preserves failures and
+reports nonconvergence separately. No practical robustness verdict is inferred
+without user-specified margins. See the PBS documentation for precision gates,
+output paths, direct CLI options, and resource requests.

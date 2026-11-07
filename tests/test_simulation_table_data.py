@@ -20,6 +20,7 @@ def _replications():
         "test_ibs": [0.1, 0.3, 999, np.nan],
         "cure_rmse": [0.2, 0.4, 999, 0.6],
         "test_auc": [0.8, 0.6, 999, 0.7],
+        "test_cindex": [0.65, 0.85, 999, 0.75],
         "converged": ["False", "True", "False", "1"],
         "runtime_seconds": [1.0, 2.0, 100.0, 4.0],
         "fitted_a": [1e-5, 1, np.nan, 2],
@@ -84,7 +85,7 @@ def test_loading_discards_large_json_fields_but_preserves_pairing_seeds(tmp_path
         pd.testing.assert_series_equal(loaded[column], frame[column])
 
 
-@pytest.mark.parametrize("column", ["replication", "status", "test_ibs", "cure_rmse", "test_auc"])
+@pytest.mark.parametrize("column", ["replication", "status", "test_ibs", "cure_rmse", "test_auc", "test_cindex"])
 def test_loading_rejects_missing_essential_columns(tmp_path, column):
     _write_replications(tmp_path, _replications().drop(columns=column))
 

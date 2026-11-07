@@ -37,6 +37,7 @@ def _frame(losses):
         "test_ibs": losses,
         "cure_rmse": losses,
         "test_auc": 1 - losses,
+        "test_cindex": 1 - losses,
     })
 
 
@@ -59,7 +60,7 @@ def test_regret_pairs_finite_cohorts_and_propagates_scenario_uncertainty(tmp_pat
     expected_halfwidths = np.array([0, 0, 0.123674003975206, 0.043555555555556]) * 0.625
     expected_ranks = [17 / 6, 5 / 3, 2.5, 3]
     expected_worst = np.array([0.2, 0.1, 0.1, 4 / 15]) * 0.625
-    for metric in ("test_ibs", "cure_rmse", "test_auc"):
+    for metric in ("test_ibs", "cure_rmse", "test_auc", "test_cindex"):
         selected = [row for row in rows if row["metric"] == metric]
         assert [row["method"] for row in selected] == list(REGRET_METHODS)
         np.testing.assert_allclose([row["mean_regret"] for row in selected], expected_means)
@@ -120,7 +121,7 @@ def complete_pcm_results(tmp_path_factory):
     return directory, paths
 
 
-def test_cli_generates_all_nine_tables_with_existing_labels(complete_pcm_results, tmp_path):
+def test_cli_generates_all_eleven_tables_with_existing_labels(complete_pcm_results, tmp_path):
     directory, _ = complete_pcm_results
     script = Path(generator.__file__).resolve()
     output = tmp_path / "tables"
@@ -134,13 +135,15 @@ def test_cli_generates_all_nine_tables_with_existing_labels(complete_pcm_results
     assert completed.returncode == 0, completed.stderr
     names = {
         "simulation-best-table.tex", "highdim-best-table.tex", "simulation-regret-table.tex",
+        "simulation-uno-c-index-table.tex", "highdim-uno-c-index-table.tex",
         "simulation-ibs-table.tex", "simulation-cure-rmse-table.tex", "simulation-diagnostics-table.tex",
         "highdim-ibs-table.tex", "highdim-cure-rmse-table.tex", "highdim-diagnostics-table.tex",
     }
     assert {path.name for path in output.iterdir()} == names
     for name in names:
         text = (output / name).read_text()
-        original = (generator.PROJECT_ROOT / "sections" / "generated" / name).read_text()
+        original_path = generator.PROJECT_ROOT / "sections" / "generated" / name
+        original = original_path.read_text() if original_path.exists() else text
         active_original = "\n".join(line for line in original.splitlines() if not line.lstrip().startswith("%"))
         assert re.findall(r"\\label\{([^}]+)\}", text) == re.findall(r"\\label\{([^}]+)\}", active_original)
         assert text.count(r"\begin{table*}") == text.count(r"\end{table*}")

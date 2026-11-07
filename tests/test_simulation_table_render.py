@@ -39,7 +39,7 @@ def _data_rows(latex):
 
 
 @pytest.mark.parametrize("primary,prefix", [(True, "simulation"), (False, "highdim")])
-@pytest.mark.parametrize("metric,suffix", [("test_ibs", "ibs"), ("cure_rmse", "cure-rmse")])
+@pytest.mark.parametrize("metric,suffix", [("test_ibs", "ibs"), ("cure_rmse", "cure-rmse"), ("test_cindex", "uno-c-index")])
 def test_metric_tables_preserve_labels_columns_and_scenario_order(primary, prefix, metric, suffix):
     # An intentional nondefault input order checks that rows stay aligned with inputs.
     scenarios = (Scenario(2 if primary else 5, "nb100", 600), Scenario(1 if primary else 4, "poisson", 300))
@@ -90,14 +90,15 @@ def test_best_table_compares_existing_model_set(primary, expected_count, label):
     assert (promotion in compared) is (not primary)
     assert (mixture in compared) is (not primary)
     assert re.findall(r"\\label\{([^}]+)\}", output) == [label]
-    assert r"\begin{tabular}{lllccc}" in output
+    assert r"\begin{tabular}{lllcccc}" in output
     if primary:
-        assert _data_rows(output)[0][3:] == ["GG-P (linear): 0.5000 (0.0100)"] * 3
+        assert _data_rows(output)[0][3:] == ["GG-P (linear): 0.5000 (0.0100)"] * 4
         assert r"\small" in output
-        assert r"\setlength{\tabcolsep}{4pt}" in output
+        assert r"\resizebox{\textwidth}{!}" in output
     else:
         assert _data_rows(output)[0][3:] == [
             "PT: 0.0100 (0.0020)", "Mix: 0.0200 (0.0030)", "PT: 0.9900 (0.0040)",
+            "GG-P (linear): 0.5000 (0.0100)",
         ]
         assert r"\resizebox{\textwidth}{!}" in output
 
@@ -113,6 +114,7 @@ def test_best_selection_uses_unrounded_means_and_metric_direction(primary, kerne
         (nb_poly, "cure_rmse"): (0.100041, 0.004, 3),
         (p_poly, "test_auc"): (0.700041, 0.005, 3),
         (nb_poly, "test_auc"): (0.700049, 0.006, 3),
+        (nb_linear, "test_cindex"): (0.900049, 0.007, 3),
     })
 
     output = render_best_table(results, (Scenario(1 if primary else 4, "poisson", 300),), primary=primary)
@@ -121,13 +123,14 @@ def test_best_selection_uses_unrounded_means_and_metric_direction(primary, kerne
         "GG-NB (linear): 0.2000 (0.0020)",
         f"GG-NB ({kernel_name}): 0.1000 (0.0040)",
         f"GG-NB ({kernel_name}): 0.7000 (0.0060)",
+        "GG-NB (linear): 0.9000 (0.0070)",
     ]
 
 
 def test_missing_means_and_single_replication_mcse_are_explained():
     class SparseResults(FakeResults):
         def summary(self, scenario, method, metric):
-            if method == Method("poisson", "rbf") and metric != "test_auc":
+            if method == Method("poisson", "rbf") and metric not in {"test_auc", "test_cindex"}:
                 return (0.2, float("nan"), 1)
             return (float("nan"), float("nan"), 0)
 
@@ -137,7 +140,7 @@ def test_missing_means_and_single_replication_mcse_are_explained():
 
     assert _data_rows(metric_table)[0][3:5] == ["--", "0.2000 (--)"]
     assert _data_rows(best_table)[0][3:] == [
-        "GG-P (rbf): 0.2000 (--)", "GG-P (rbf): 0.2000 (--)", "--",
+        "GG-P (rbf): 0.2000 (--)", "GG-P (rbf): 0.2000 (--)", "--", "--",
     ]
     for output in (metric_table, best_table):
         assert "unavailable estimate or Monte Carlo standard error" in output

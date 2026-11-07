@@ -211,7 +211,7 @@ def build_parser():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--mode", choices=("local", "cluster"), help="Run locally or submit to PBS (required).")
     parser.add_argument("--datasets", nargs="+", choices=DATASETS, default=list(DATASETS))
-    parser.add_argument("--stage", choices=STAGES, default="all", help="Use pilot for the simulation diagnostic pilot only; postprocess for existing experiment results.")
+    parser.add_argument("--stage", choices=STAGES, default="all", help="Use pilot for the selected simulation/robustness pilots only; postprocess for existing experiment results.")
     parser.add_argument("--python", default=sys.executable, help="Python executable with the experiment dependencies installed.")
     parser.add_argument("--workers", type=positive_int, help="Outer-holdout workers per task (local default: 1; cluster: PBS job defaults, at most 4).")
     parser.add_argument("--queue", help="PBS queue (cluster only; otherwise use the scheduler default).")

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import time
@@ -89,7 +90,7 @@ POLYNOMIAL_DEGREES = [
 
 POLYNOMIAL_COEF0 = 1.0
 
-WAVELET_A_VALUES = [0.50, 1.00, 2.00, 10]
+WAVELET_A_VALUES = [0.50, 1.00, 2.00, 10.00, 15.00, 20.00]
 
 BINOMIAL_K = 2
 
@@ -383,10 +384,43 @@ def _resolve_saved_path(path):
     return artifacts.resolve_saved_path(path, project_root=PROJECT_ROOT)
 
 
+def experiment_settings_hash():
+    """Identify the fitted design so changed tuning cannot reuse old holdouts."""
+    model_settings = {}
+    for name, factory in MODELS.items():
+        model = getattr(factory, "func", factory)
+        model_settings[name] = {
+            "class": f"{model.__module__}.{model.__qualname__}",
+            "fixed_parameters": dict(getattr(factory, "keywords", {}) or {}),
+        }
+    settings = {
+        "models": model_settings,
+        "kernel_grids": {
+            name: {kernel: kernel_parameter_grid(name, kernel) for kernel in KERNELS}
+            for name in sorted(KERNEL_MODELS)
+        },
+        "spline_grid": SPLINE_PARAMETER_GRID,
+        "outer_splits": N_OUTER_SPLITS,
+        "outer_test_size": OUTER_TEST_SIZE,
+        "inner_splits": N_INNER_SPLITS,
+        "inner_grid_points": INNER_GRID_POINTS,
+        "outer_grid_points": OUTER_GRID_POINTS,
+        "observed_time_quantile": OBSERVED_TIME_QUANTILE,
+        "minimum_censoring_survival": MINIMUM_CENSORING_SURVIVAL,
+        "master_seed": MASTER_SEED,
+        "preprocessor": (
+            f"{MelanomaSurvivalPreprocessor.__module__}."
+            f"{MelanomaSurvivalPreprocessor.__qualname__}"
+        ),
+    }
+    encoded = json.dumps(settings, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return hashlib.sha256(encoded.encode()).hexdigest()
+
+
 def load_valid_checkpoint(
     path, *, split_index, model_name, kernel, train_hash, test_hash
 ):
-    return artifacts.load_valid_checkpoint(
+    row = artifacts.load_valid_checkpoint(
         path,
         split_index=split_index,
         model_name=model_name,
@@ -395,7 +429,9 @@ def load_valid_checkpoint(
         test_hash=test_hash,
         resolve_path=_resolve_saved_path,
     )
-
+    if row is None or row.get("experiment_settings_hash") != experiment_settings_hash():
+        return None
+    return row
 
 # ============================================================
 # One complete outer split
@@ -721,6 +757,8 @@ def run_outer_split_worker(
     # Therefore a PBS timeout does not destroy already
     # completed outer splits.
     #
+    row["experiment_settings_hash"] = experiment_settings_hash()
+
     atomic_write_json(
         checkpoint_file,
         row,

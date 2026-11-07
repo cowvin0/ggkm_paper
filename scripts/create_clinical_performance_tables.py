@@ -1,8 +1,8 @@
-"""Regenerate melanoma and breast cancer LaTeX tables from saved split CSVs.
+"""Regenerate clinical LaTeX tables from saved split CSVs.
 
 Run on the cluster after the clinical experiments finish. Existing tables in
 sections/generated are replaced only after all selected inputs are validated
-and both tables are rendered. No models are fitted and no raw cohorts are read.
+and all tables are rendered. No models are fitted and no raw cohorts are read.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ MELANOMA_RESULTS_DIR = PROJECT_ROOT / "data" / "melanoma_results" / "grid_search
 BREAST_CANCER_RESULTS_DIR = (
     PROJECT_ROOT / "data" / "breast_cancer_results" / "grid_search_paired_50_melanoma_design"
 )
+FOSP_MELANOMA_RESULTS_DIR = PROJECT_ROOT / "data" / "fosp_melanoma_results" / "grid_search"
 OUTPUT_DIR = PROJECT_ROOT / "sections" / "generated"
 
 
@@ -52,13 +53,15 @@ def _write_tables(tables: dict[str, str], output_dir: Path) -> tuple[Path, ...]:
 def generate_tables(
     *, dataset="all", melanoma_results_dir=MELANOMA_RESULTS_DIR,
     breast_cancer_results_dir=BREAST_CANCER_RESULTS_DIR, output_dir=OUTPUT_DIR,
+    fosp_melanoma_results_dir=FOSP_MELANOMA_RESULTS_DIR,
     planned_splits=None,
 ):
-    if dataset not in ("all", "melanoma", "breast-cancer"):
-        raise ValueError("--dataset must be all, melanoma, or breast-cancer.")
+    if dataset not in ("all", "melanoma", "breast-cancer", "fosp-melanoma"):
+        raise ValueError("--dataset must be all, melanoma, breast-cancer, or fosp-melanoma.")
     tables = {}
     for selected, directory in (
         ("melanoma", melanoma_results_dir), ("breast-cancer", breast_cancer_results_dir),
+        ("fosp-melanoma", fosp_melanoma_results_dir),
     ):
         if dataset not in ("all", selected):
             continue
@@ -76,8 +79,8 @@ def generate_tables(
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--dataset", choices=("all", "melanoma", "breast-cancer"), default="all",
-        help="Table(s) to regenerate (default: both).",
+        "--dataset", choices=("all", "melanoma", "breast-cancer", "fosp-melanoma"), default="all",
+        help="Table(s) to regenerate (default: all clinical cohorts).",
     )
     parser.add_argument(
         "--melanoma-results-dir", type=Path, default=MELANOMA_RESULTS_DIR,
@@ -86,6 +89,10 @@ def main(argv=None):
     parser.add_argument(
         "--breast-cancer-results-dir", type=Path, default=BREAST_CANCER_RESULTS_DIR,
         help="Directory containing splits_breast_cancer_task*.csv (default: data/breast_cancer_results/grid_search_paired_50_melanoma_design).",
+    )
+    parser.add_argument(
+        "--fosp-melanoma-results-dir", type=Path, default=FOSP_MELANOMA_RESULTS_DIR,
+        help="Directory containing splits_fosp_melanoma_task*.csv.",
     )
     parser.add_argument(
         "--output-dir", type=Path, default=OUTPUT_DIR,

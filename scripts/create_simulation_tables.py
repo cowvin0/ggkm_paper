@@ -74,7 +74,9 @@ def render_tables(results, *, planned_replications):
         tables[f"{prefix}-best-table.tex"] = render.render_best_table(
             results, scenarios, primary=primary,
         )
-        for suffix, metric in (("ibs", "test_ibs"), ("cure-rmse", "cure_rmse")):
+        for suffix, metric in (
+            ("ibs", "test_ibs"), ("cure-rmse", "cure_rmse"), ("uno-c-index", "test_cindex"),
+        ):
             tables[f"{prefix}-{suffix}-table.tex"] = render.render_metric_tables(
                 results, scenarios, metric, primary=primary,
                 planned_replications=planned_replications,
@@ -139,7 +141,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--output-dir", type=Path, default=OUTPUT_DIR,
-        help="Directory for the nine .tex files (default: sections/generated).",
+        help="Directory for the eleven .tex files (default: sections/generated).",
     )
     parser.add_argument(
         "--planned-replications", type=int, default=None,

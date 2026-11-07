@@ -41,21 +41,21 @@ class ClinicalMethod:
 
 
 KERNELS = ("linear", "rbf", "laplacian", "exponential", "cauchy", "polynomial", "wavelet")
-METRICS = ("integrated_brier", "cure_auc", "mean_predicted_cure")
+METRICS = ("integrated_brier", "uno_c_index", "cure_auc", "mean_predicted_cure")
 _REQUIRED_COLUMNS = frozenset((
     "split", "status", "converged", "runtime_seconds", "train_index_hash",
     "test_index_hash", *METRICS,
 ))
 _READ_COLUMNS = _REQUIRED_COLUMNS | {"model_name", "kernel", "inner_seed", "training_size", "test_size"}
 _FILE_PATTERN = re.compile(
-    r"^splits_(?P<dataset>melanoma|breast_cancer)_task\d+_"
+    r"^splits_(?P<dataset>melanoma|breast_cancer|fosp_melanoma)_task\d+_"
     r"(?P<model>mixture_cure|promotion_time|spline_poisson|spline_bn|poisson|bn)"
     r"(?:_kernel_(?P<kernel>[^/]+))?\.csv$"
 )
 
 
 def methods() -> tuple[ClinicalMethod, ...]:
-    """Use the same seven-kernel comparison for both clinical cohorts."""
+    """Use the same seven-kernel comparison for all clinical cohorts."""
     return (
         ClinicalMethod("mixture_cure"), ClinicalMethod("promotion_time"),
         ClinicalMethod("spline_poisson"), ClinicalMethod("spline_bn"),
@@ -90,8 +90,8 @@ class ClinicalResults:
     """Validate complete paired holdouts and summarize successful finite values."""
 
     def __init__(self, results_dir: str | Path, dataset: str):
-        if dataset not in ("melanoma", "breast-cancer"):
-            raise ValueError("dataset must be 'melanoma' or 'breast-cancer'.")
+        if dataset not in ("melanoma", "breast-cancer", "fosp-melanoma"):
+            raise ValueError("dataset must be 'melanoma', 'breast-cancer', or 'fosp-melanoma'.")
         self.dataset = dataset
         self.results_dir = Path(results_dir).expanduser().resolve()
         self.methods = methods()
@@ -242,23 +242,27 @@ def _format_summary(values: tuple[float, float], digits: int) -> str:
 
 
 def render_performance_table(results: ClinicalResults, *, planned_splits: int) -> str:
-    """Preserve the supplied table's labels, seven columns, and row ordering."""
-    cohort = (
-        "melanoma cohort." if results.dataset == "melanoma"
-        else "breast cancer cohort\nfrom Paraíba State, Brazil."
-    )
+    """Add Uno's C-index while preserving the existing summaries and row order."""
+    cohort = {
+        "melanoma": "melanoma cohort.",
+        "breast-cancer": "breast cancer cohort\nfrom Paraíba State, Brazil.",
+        "fosp-melanoma": "FOSP melanoma cohort.",
+    }[results.dataset]
     lines = [
         r"\begin{table*}[tbp]",
         f"\\caption{{Predictive performance in {planned_splits} paired repeated holdouts of the {cohort}",
-        r"Values for the IPCW integrated Brier score (IBS), cure-discrimination area under the curve",
+        r"Values for the IPCW integrated Brier score (IBS), Uno's C-index, cure-discrimination area under the curve",
         r"($\mathrm{AUC}_{\mathrm{cure}}$), and mean predicted cure fraction are means across successful",
         r"splits, with sample split standard deviations in parentheses. Convergence is reported as the number",
         r"of converged fits among successful fits. Runtime is the mean across successful fits with the maximum",
         r"in parentheses. Nonfinite measurements are excluded from each summary; a dash indicates an undefined value.",
+        r"Uno's C-index uses negative restricted mean survival time as the risk score over the saved evaluation horizon,",
+        r"with censoring weights estimated from the corresponding training split; larger values indicate better discrimination.",
         "}", f"\\label{{tab:{results.dataset}-performance}}", r"\centering",
-        r"\begin{tabular}{llccccc}", r"\hline",
+        r"\resizebox{\textwidth}{!}{%",
+        r"\begin{tabular}{llcccccc}", r"\hline",
         r"Predictor & Count law & Converged & IPCW IBS &",
-        r"$\mathrm{AUC}_{\mathrm{cure}}$ & Mean cure prediction & Runtime (s) \\",
+        r"Uno's C-index & $\mathrm{AUC}_{\mathrm{cure}}$ & Mean cure prediction & Runtime (s) \\",
         r"\hline", "",
     ]
     for index, method in enumerate(results.methods):
@@ -268,9 +272,10 @@ def render_performance_table(results: ClinicalResults, *, planned_splits: int) -
         lines.extend((
             method.predictor, f"& {method.count_law}", f"& {converged}/{successful}",
             f"& {_format_summary(results.summary(method, 'integrated_brier'), 4)}",
+            f"& {_format_summary(results.summary(method, 'uno_c_index'), 4)}",
             f"& {_format_summary(results.summary(method, 'cure_auc'), 4)}",
             f"& {_format_summary(results.summary(method, 'mean_predicted_cure'), 3)}",
             f"& {_format_summary(results.runtime(method), 2)} " + r"\\", "",
         ))
-    lines.extend((r"\hline", r"\end{tabular}", r"\end{table*}", ""))
+    lines.extend((r"\hline", r"\end{tabular}", "}", r"\end{table*}", ""))
     return "\n".join(lines)

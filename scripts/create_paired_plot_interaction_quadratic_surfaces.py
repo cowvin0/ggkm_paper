@@ -69,6 +69,13 @@ IBS_ALIASES = [
 ]
 RMSE_ALIASES = ["cure_rmse", "test_cure_rmse", "rmse_cure", "Cure RMSE"]
 AUC_ALIASES = ["test_auc", "cure_auc", "auc_cure", "auc", "Cure AUC"]
+CINDEX_ALIASES = ["test_cindex", "uno_c_index"]
+METRIC_LABELS = {
+    "ibs": "Mean IPCW IBS difference",
+    "rmse": "Mean cure RMSE difference",
+    "auc": "Mean cure AUC difference",
+    "cindex": "Mean Uno's C-index difference",
+}
 
 GRID_COLOR = "#D7E0E5"
 ZERO_COLOR = "#90999E"
@@ -180,7 +187,7 @@ def locate_spline_file(
 
 def read_metric(path: Path, metric: str):
     df = pd.read_csv(path)
-    aliases = {"ibs": IBS_ALIASES, "rmse": RMSE_ALIASES, "auc": AUC_ALIASES}
+    aliases = {"ibs": IBS_ALIASES, "rmse": RMSE_ALIASES, "auc": AUC_ALIASES, "cindex": CINDEX_ALIASES}
     if metric not in aliases:
         raise ValueError(f"Unknown metric: {metric}")
     metric_column = find_column(df, aliases[metric])
@@ -249,7 +256,7 @@ def comparator_model(family: str, count_law: str):
     raise ValueError(f"Unknown GG-KM comparator family: {family}")
 
 
-def calculate_plot_data(files: pd.DataFrame) -> pd.DataFrame:
+def calculate_plot_data(files: pd.DataFrame, *, metrics=("ibs", "rmse", "auc")) -> pd.DataFrame:
     records = []
     for surface_id, surface_name in SURFACES.items():
         for x_position, (generating, generating_display, n) in enumerate(
@@ -275,7 +282,7 @@ def calculate_plot_data(files: pd.DataFrame) -> pd.DataFrame:
                             files, model=model, kernel=kernel, n=n,
                             surface_id=surface_id, generating=generating,
                         )
-                    for metric in ("ibs", "rmse", "auc"):
+                    for metric in metrics:
                         result = paired_difference(
                             focal_path, comparator_path, metric=metric,
                         )
@@ -383,8 +390,10 @@ def draw_panel(ax, plot_data: pd.DataFrame, *, surface_id: int, metric: str):
     ax.set_xlim(-0.45, 5.45)
 
 
-def create_figure(plot_data: pd.DataFrame, output_stem: Path = OUTPUT_STEM):
-    """Render all six panels with the supplied colors, layout, and intervals."""
+def create_figure(
+    plot_data: pd.DataFrame, output_stem: Path = OUTPUT_STEM, *, metrics=("ibs", "rmse", "auc"),
+):
+    """Render the original panels or a standalone metric with the same styles."""
     with plt.rc_context({
         "font.family": "DejaVu Sans", "font.size": 9.0,
         "axes.titlesize": 11.0, "axes.titleweight": "bold",
@@ -392,34 +401,33 @@ def create_figure(plot_data: pd.DataFrame, output_stem: Path = OUTPUT_STEM):
         "legend.fontsize": 8.3, "axes.linewidth": 1.0, "lines.linewidth": 1.15,
         "savefig.facecolor": "white", "figure.facecolor": "white",
     }):
-        fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(8.73, 8.10), sharex="col")
+        rows = len(metrics)
+        fig, axes = plt.subplots(
+            nrows=rows, ncols=2, figsize=(8.73, 8.10 if rows == 3 else 3.9),
+            sharex="col", squeeze=False,
+        )
         try:
             fig.patch.set_facecolor("white")
             for ax in axes.flat:
                 style_axis(ax)
-            metrics = ["ibs", "rmse", "auc"]
-            ylabels = [
-                "Mean IPCW IBS difference", "Mean cure RMSE difference",
-                "Mean cure AUC difference",
-            ]
             for row, metric in enumerate(metrics):
                 for col, (surface_id, surface_name) in enumerate(SURFACES.items()):
                     ax = axes[row, col]
                     draw_panel(ax, plot_data, surface_id=surface_id, metric=metric)
                     letter = chr(ord("A") + row * 2 + col)
                     ax.set_title(f"{letter}  {surface_name} cure surface", loc="left", pad=8)
-                axes[row, 0].set_ylabel(ylabels[row])
+                axes[row, 0].set_ylabel(METRIC_LABELS[metric])
             x_labels = [
                 "P\n300", "NB\n.25\n300", "NB\n1.00\n300",
                 "P\n600", "NB\n.25\n600", "NB\n1.00\n600",
             ]
-            for ax in axes[2, :]:
+            for ax in axes[-1, :]:
                 ax.set_xticks(np.arange(6))
                 ax.set_xticklabels(x_labels)
-            for ax in axes[:2, :].flat:
+            for ax in axes[:-1, :].flat:
                 ax.tick_params(axis="x", labelbottom=False)
             fig.text(
-                0.5, 0.105, "Generating count law and sample size",
+                0.5, 0.105 if rows == 3 else 0.17, "Generating count law and sample size",
                 ha="center", va="center", fontsize=9.5, color=TEXT_COLOR,
             )
             legend_handles = []
@@ -440,13 +448,16 @@ def create_figure(plot_data: pd.DataFrame, output_stem: Path = OUTPUT_STEM):
                 columnspacing=1.7, borderaxespad=0.0,
             )
             fig.subplots_adjust(
-                left=0.115, right=0.965, top=0.955, bottom=0.205,
+                left=0.115, right=0.965, top=0.955 if rows == 3 else 0.90,
+                bottom=0.205 if rows == 3 else 0.35,
                 wspace=0.19, hspace=0.28,
             )
             output_stem.parent.mkdir(parents=True, exist_ok=True)
             paths = [output_stem.with_suffix(f".{suffix}") for suffix in ("png", "pdf", "svg")]
             for path in paths:
                 kwargs = {"dpi": 300} if path.suffix == ".png" else {}
+                if rows == 1:
+                    kwargs.update(bbox_inches="tight", pad_inches=0.03)
                 fig.savefig(path, facecolor="white", **kwargs)
         finally:
             plt.close(fig)

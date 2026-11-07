@@ -8,7 +8,7 @@ import pandas as pd
 import pytest
 
 
-@pytest.fixture(params=["breast_cancer", "melanoma"])
+@pytest.fixture(params=["breast_cancer", "melanoma", "fosp_melanoma"])
 def clinical_script(request, monkeypatch, tmp_path):
     script = importlib.import_module(
         f"scripts.run_{request.param}_experiment"
@@ -64,8 +64,7 @@ def test_clinical_checkpoint_round_trip_and_resume_validation(clinical_script, k
         "status": "ok",
         "plot_data_file": relative_archive,
     }
-    if dataset == "breast_cancer":
-        row["experiment_settings_hash"] = script.experiment_settings_hash()
+    row["experiment_settings_hash"] = script.experiment_settings_hash()
     script.atomic_write_json(checkpoint, row)
     assert json.loads(checkpoint.read_text()) == row
     assert script.load_valid_checkpoint(checkpoint, **expected) == row

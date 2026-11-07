@@ -24,6 +24,7 @@ def _frame(method=METHOD):
         "converged": ["False", "True", "True", "1"],
         "integrated_brier": [0.1, 0.3, 999.0, np.nan],
         "cure_auc": [0.9, 0.7, 999.0, 0.8],
+        "uno_c_index": [0.6, 0.8, 999.0, np.nan],
         "mean_predicted_cure": [0.2, 0.4, 999.0, 0.6],
         "runtime_seconds": [1.0, 2.0, 1000.0, 4.0],
         "train_index_hash": ["train2", "train0", "train1", "train3"],
@@ -75,7 +76,7 @@ def test_nonfinite_and_singleton_metrics_have_undefined_sd(tmp_path, values, exp
 
 
 @pytest.mark.parametrize("column", [
-    "split", "status", "integrated_brier", "cure_auc", "mean_predicted_cure", "converged",
+    "split", "status", "integrated_brier", "uno_c_index", "cure_auc", "mean_predicted_cure", "converged",
     "runtime_seconds", "train_index_hash", "test_index_hash",
 ])
 def test_missing_essential_columns_fail_clearly(tmp_path, column):
@@ -198,11 +199,11 @@ def test_render_preserves_labels_columns_order_precision_and_sd(tmp_path):
     text = render_performance_table(results, planned_splits=results.validate())
 
     assert r"\label{tab:melanoma-performance}" in text
-    assert r"\begin{tabular}{llccccc}" in text
+    assert r"\begin{tabular}{llcccccc}" in text
     assert "4 paired repeated holdouts" in text
     assert "sample split standard deviations" in text
     assert "Runtime is the mean across successful fits" in text
-    assert text.count("& 2/3\n& 0.2000 (0.1414)\n& 0.8000 (0.1000)\n& 0.400 (0.200)\n& 2.33 (4.00)") == 18
+    assert text.count("& 2/3\n& 0.2000 (0.1414)\n& 0.7000 (0.1414)\n& 0.8000 (0.1000)\n& 0.400 (0.200)\n& 2.33 (4.00)") == 18
     assert text.index("Mixture cure\n& Mixture cure") < text.index("Promotion time\n& Poisson")
     assert text.index("Spline\n& Negative binomial") < text.index("GG-KM (linear)")
     assert text.index("GG-KM (Cauchy)") < text.index("GG-KM (polynomial)") < text.index("GG-KM (wavelet)")
@@ -216,7 +217,7 @@ def test_undefined_summaries_render_as_dashes(tmp_path):
     frame["status"] = "failed"
     _write(tmp_path, frame=frame)
     text = render_performance_table(ClinicalResults(tmp_path, "melanoma"), planned_splits=4)
-    assert "& 0/0\n& --\n& --\n& --\n& -- " in text
+    assert "& 0/0\n& --\n& --\n& --\n& --\n& -- " in text
     assert "nan" not in text
     frame.loc[0, "status"] = "ok"
     _write(tmp_path, frame=frame)
@@ -239,21 +240,23 @@ def test_breast_table_ignores_legacy_sigmoid_results(tmp_path):
     assert "Paraíba State, Brazil" in text
 
 
-def test_generator_writes_both_tables_and_replaces_old_values(tmp_path):
+def test_generator_writes_all_tables_and_replaces_old_values(tmp_path):
     melanoma = tmp_path / "melanoma"
     breast = tmp_path / "breast"
     output = tmp_path / "tables"
     _complete(melanoma)
     _complete(breast, dataset="breast-cancer")
+    fosp = tmp_path / "fosp"
+    _complete(fosp, dataset="fosp-melanoma")
     output.mkdir()
     (output / "melanoma-performance-table.tex").write_text("old data")
 
     paths = generate_tables(
         melanoma_results_dir=melanoma, breast_cancer_results_dir=breast,
-        output_dir=output, planned_splits=4,
+        fosp_melanoma_results_dir=fosp, output_dir=output, planned_splits=4,
     )
 
-    assert {path.name for path in paths} == {"melanoma-performance-table.tex", "breast-cancer-performance-table.tex"}
+    assert {path.name for path in paths} == {"melanoma-performance-table.tex", "breast-cancer-performance-table.tex", "fosp-melanoma-performance-table.tex"}
     for path in paths:
         assert "old data" not in path.read_text()
         assert "0.2000 (0.1414)" in path.read_text()
@@ -278,18 +281,19 @@ def test_error_in_second_cohort_preserves_every_existing_table(tmp_path):
     assert all(path.read_text() == "original table" for path in output.iterdir())
 
 
-def test_single_dataset_cli_needs_only_its_own_results(tmp_path):
+@pytest.mark.parametrize("dataset", ["breast-cancer", "fosp-melanoma"])
+def test_single_dataset_cli_needs_only_its_own_results(tmp_path, dataset):
     results = tmp_path / "results"
     output = tmp_path / "tables"
-    _complete(results, dataset="breast-cancer")
+    _complete(results, dataset=dataset)
 
     main([
-        "--dataset", "breast-cancer", "--breast-cancer-results-dir", str(results),
+        "--dataset", dataset, f"--{dataset}-results-dir", str(results),
         "--output-dir", str(output), "--planned-splits", "4",
     ])
 
-    assert [path.name for path in output.iterdir()] == ["breast-cancer-performance-table.tex"]
-    text = (output / "breast-cancer-performance-table.tex").read_text()
+    assert [path.name for path in output.iterdir()] == [f"{dataset}-performance-table.tex"]
+    text = (output / f"{dataset}-performance-table.tex").read_text()
     assert "sigmoid" not in text
     assert text.count("GG-KM (") == 14
 

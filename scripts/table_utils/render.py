@@ -24,9 +24,9 @@ KERNEL_ABBREVIATIONS = {
 }
 METRIC_NAMES = {
     "test_ibs": "IPCW integrated Brier score", "cure_rmse": "Cure RMSE",
-    "test_auc": "Cure AUC",
+    "test_auc": "Cure AUC", "test_cindex": "Uno's C-index",
 }
-METRIC_ALIASES = {"ibs": "test_ibs", "cure_auc": "test_auc"}
+METRIC_ALIASES = {"ibs": "test_ibs", "cure_auc": "test_auc", "uno_c_index": "test_cindex"}
 
 _KERNEL_LEGEND = (
     "lin, RBF, lap, exp, cau, poly, and wav denote the linear, radial-basis, "
@@ -38,7 +38,7 @@ _MISSING_ESTIMATE_NOTE = (
 )
 _PRIMARY_BEST_CAPTION = """Best observed mean predictive performance in each simulation scenario
 among Poisson and negative-binomial GG-KM and spline models.
-For IPCW IBS and cure RMSE, smaller values are better, whereas for cure AUC,
+For IPCW IBS and cure RMSE, smaller values are better, whereas for cure AUC and Uno's C-index,
 larger values are better. Parenthesized values are Monte Carlo standard errors.
 The displayed optimum is a descriptive comparison and is not a claim of
 superiority when paired uncertainty includes zero.
@@ -47,7 +47,7 @@ Poisson, and negative binomial, respectively.
 For GG-KM fits, the selected kernel is shown in parentheses."""
 _HIGHDIM_BEST_CAPTION = """Best observed mean predictive performance in each high-dimensional simulation
 scenario. For IPCW IBS and cure RMSE, smaller values are better, whereas for
-cure AUC, larger values are better. Parenthesized values are Monte Carlo
+cure AUC and Uno's C-index, larger values are better. Parenthesized values are Monte Carlo
 standard errors. The comparison includes Poisson and negative-binomial GG-KM
 models, Poisson and negative-binomial spline models, the mixture-cure model,
 and the promotion-time model. Int and Rad denote Interaction and Radial
@@ -59,7 +59,7 @@ scenarios for the Poisson and negative-binomial models.
 The comparison is restricted to spline models and GG-KM models using the RBF
 kernel. Within each scenario and metric, the reference is the retained method
 with the best finite mean. For IPCW integrated Brier score and cure RMSE,
-regret is the method value minus the reference value; for cure AUC, regret is
+regret is the method value minus the reference value; for cure AUC and Uno's C-index, regret is
 the reference value minus the method value, so that smaller regret is better
 for all metrics. Regret uses only replication pairs for which both methods are
 finite. The worst regret identifies its scenario and reports a 95\% Monte Carlo
@@ -154,6 +154,13 @@ def _metric_caption(metric: str, *, primary: bool, poisson: bool, planned: int) 
     elif metric == "cure_rmse":
         introduction = f"Mean cure-probability root mean squared errors across the {experiment} Monte Carlo experiment"
         explanation = "Lower values indicate more accurate estimation of the known individual cure probabilities."
+    elif metric == "test_cindex":
+        introduction = f"Mean Uno's C-indices across the {experiment} Monte Carlo experiment"
+        explanation = (
+            "Higher values indicate better discrimination. Risk scores are negative restricted mean "
+            "survival times over each saved evaluation horizon, with censoring weights estimated "
+            "from the corresponding training sample."
+        )
     else:
         raise ValueError(f"Unsupported metric table: {metric!r}")
     if poisson:
@@ -185,9 +192,9 @@ def render_metric_tables(
     primary: bool,
     planned_replications: int = 250,
 ) -> str:
-    """Render the Poisson and negative-binomial panels for IBS or cure RMSE."""
+    """Render the Poisson and negative-binomial panels for a saved metric."""
     metric = METRIC_ALIASES.get(metric, metric)
-    suffix = {"test_ibs": "ibs", "cure_rmse": "cure-rmse"}[metric]
+    suffix = {"test_ibs": "ibs", "cure_rmse": "cure-rmse", "test_cindex": "uno-c-index"}[metric]
     prefix = "simulation" if primary else "highdim"
     base_label = f"tab:supp-{prefix}-{suffix}"
     tables = []
@@ -223,11 +230,11 @@ def render_best_table(results: Results, scenarios: Sequence[Scenario], *, primar
     caption += "\n" + _MISSING_ESTIMATE_NOTE
     label = "tab:simulation-best" if primary else "tab:highdim-best"
     lines = _begin_table(
-        caption, [label], "lllccc", position="tbp", resize=not primary,
+        caption, [label], "lllcccc", position="tbp", resize=True,
         size="small" if primary else None,
     )
     lines.extend([
-        _row(["True surface", "Generating law", "$n$", "Lowest mean IPCW IBS", "Lowest mean cure RMSE", "Highest mean cure AUC"]),
+        _row(["True surface", "Generating law", "$n$", "Lowest mean IPCW IBS", "Lowest mean cure RMSE", "Highest mean cure AUC", "Highest mean Uno's C-index"]),
         r"\hline",
     ])
     previous_surface = None
@@ -235,7 +242,7 @@ def render_best_table(results: Results, scenarios: Sequence[Scenario], *, primar
         if previous_surface is not None and scenario.method != previous_surface:
             lines.append(r"\hline")
         cells = _scenario_cells(scenario)
-        for metric in ("test_ibs", "cure_rmse", "test_auc"):
+        for metric in ("test_ibs", "cure_rmse", "test_auc", "test_cindex"):
             candidates = []
             for method in methods:
                 mean, mcse, _ = results.summary(scenario, method, metric)
@@ -244,12 +251,12 @@ def render_best_table(results: Results, scenarios: Sequence[Scenario], *, primar
             if not candidates:
                 cells.append("--")
                 continue
-            best = (max if metric == "test_auc" else min)(candidates, key=lambda item: item[1])
+            best = (max if metric in {"test_auc", "test_cindex"} else min)(candidates, key=lambda item: item[1])
             method, mean, mcse = best
             cells.append(f"{_compact_method(method, best=True, primary=primary)}: {_estimate(mean, mcse)}")
         lines.append(_row(cells))
         previous_surface = scenario.method
-    lines.extend(_end_table(resize=not primary))
+    lines.extend(_end_table())
     return "\n".join(lines) + "\n"
 
 

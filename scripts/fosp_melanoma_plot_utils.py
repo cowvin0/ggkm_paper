@@ -1,0 +1,126 @@
+"""Read FOSP melanoma holdout results using the experiment's cohort and splits."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+from scripts import melanoma_plot_utils as shared
+from scripts.fosp_melanoma_data import load_fosp_melanoma
+
+PROJECT_ROOT = shared.PROJECT_ROOT
+DATA_PATH = PROJECT_ROOT / "data" / "melanoma_fosp_gomez2023.csv"
+RESULTS_DIR = (
+    PROJECT_ROOT / "data" / "fosp_melanoma_results" / "grid_search"
+)
+OUTPUT_DIR = PROJECT_ROOT / "figures" / "review"
+N_OUTER_SPLITS = shared.N_OUTER_SPLITS
+OUTER_TEST_SIZE = 0.30
+MASTER_SEED = shared.MASTER_SEED
+KERNELS = list(shared.KERNELS)
+KERNEL_LABELS = dict(shared.KERNEL_LABELS)
+index_hash = shared.index_hash
+parse_best_params = shared.parse_best_params
+read_split_file = shared.read_split_file
+
+
+def construct_outer_splits(
+    frame, n_splits=N_OUTER_SPLITS, test_size=OUTER_TEST_SIZE, random_state=MASTER_SEED,
+):
+    return shared.construct_outer_splits(frame, n_splits, test_size, random_state)
+
+
+def unique_result_file(pattern, results_dir=RESULTS_DIR):
+    return shared.unique_result_file(pattern, results_dir)
+
+
+def resolve_kernels(kernels=None):
+    """Use melanoma's seven kernels, optionally selecting a supported subset."""
+    selected = list(KERNELS) if kernels is None else list(dict.fromkeys(kernels))
+    unsupported = set(selected).difference(KERNELS)
+    if unsupported:
+        raise ValueError(f"Unsupported FOSP melanoma kernels: {sorted(unsupported)}")
+    if not selected:
+        raise ValueError("At least one FOSP melanoma kernel must be selected.")
+    return selected
+
+
+def verify_split_hashes(frame, outer_splits, model_name):
+    try:
+        shared.verify_split_hashes(frame, outer_splits, model_name)
+    except RuntimeError as error:
+        raise RuntimeError(str(error).replace("melanoma CSV", "FOSP melanoma CSV")) from error
+
+
+def choose_best_kernel(model_name, results_dir=RESULTS_DIR, *, kernels=None):
+    """Choose the highest mean saved cure AUC, with IBS then name breaking ties."""
+    rows = []
+    for kernel in resolve_kernels(kernels):
+        path = unique_result_file(
+            f"splits_fosp_melanoma_task*_{model_name}_kernel_{kernel}.csv", results_dir,
+        )
+        frame = read_split_file(path)
+        auc = frame.loc[frame["valid_auc"], "cure_auc"]
+        ibs = frame.loc[frame["valid_ibs"], "integrated_brier"]
+        if len(auc):
+            rows.append({
+                "kernel": kernel, "mean_auc": float(auc.mean()),
+                "mean_ibs": float(ibs.mean()) if len(ibs) else np.nan, "path": path,
+            })
+    if not rows:
+        raise RuntimeError(f"No successful FOSP melanoma GG-KM cure-AUC results for {model_name}.")
+    return pd.DataFrame(rows).sort_values(
+        ["mean_auc", "mean_ibs", "kernel"], ascending=[False, True, True], kind="mergesort",
+    ).iloc[0].to_dict()
+
+
+def load_split_predictions(
+    row, *, results_dir=RESULTS_DIR, project_root=PROJECT_ROOT,
+    expected_train_indices=None, expected_test_indices=None,
+):
+    """Reuse archive validation and portable paths with FOSP melanoma metadata."""
+    if hasattr(row, "keys"):
+        row = dict(row)
+    elif hasattr(row, "_asdict"):
+        row = dict(row._asdict())
+    else:
+        row = vars(row).copy()
+    if not shared._present(row.get("_result_file")) and shared._present(row.get("model_name")):
+        suffix = str(row["model_name"])
+        kernel = row.get("kernel")
+        if shared._present(kernel) and str(kernel) not in {"parametric", "none", "None"}:
+            suffix += f"_kernel_{kernel}"
+        matches = sorted(Path(results_dir).glob(f"splits_fosp_melanoma_task*_{suffix}.csv"))
+        if len(matches) > 1:
+            raise RuntimeError(f"Ambiguous FOSP melanoma result files for {suffix}.")
+        if matches:
+            row["_result_file"] = str(matches[0].resolve())
+        else:
+            filename = f"split_{int(row['split']):03d}.npz"
+            archives = sorted((Path(results_dir) / "plot_data").glob(
+                f"fosp_melanoma_task*_{suffix}/{filename}"
+            ))
+            if len(archives) > 1:
+                raise RuntimeError(f"Ambiguous FOSP melanoma prediction archives for {suffix}.")
+            if archives:
+                row["_result_file"] = str(
+                    Path(results_dir) / f"splits_{archives[0].parent.name}.csv"
+                )
+    try:
+        return shared.load_split_predictions(
+            row, results_dir=results_dir, project_root=project_root,
+            expected_train_indices=expected_train_indices, expected_test_indices=expected_test_indices,
+        )
+    except ValueError as error:
+        raise ValueError(str(error).replace("melanoma prediction", "FOSP melanoma prediction")) from error
+
+
+def full_cohort_times(frame):
+    """Extended FOSP follow-up is already measured in years."""
+    time = frame["tempo_ext"].to_numpy(dtype=float)
+    event = frame["delta"].to_numpy(dtype=int)
+    if np.any(~np.isfinite(time)) or np.any(time < 0):
+        raise ValueError("FOSP melanoma follow-up times must be finite and nonnegative.")
+    return time, event

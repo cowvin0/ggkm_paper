@@ -32,7 +32,7 @@ class Scenario:
 KERNELS = (
     "linear", "rbf", "laplacian", "exponential", "cauchy", "polynomial", "wavelet",
 )
-METRICS = ("test_ibs", "cure_rmse", "test_auc")
+METRICS = ("test_ibs", "cure_rmse", "test_auc", "test_cindex")
 POISSON_METHODS = tuple(Method("poisson", kernel) for kernel in KERNELS) + (
     Method("spline_poisson", "parametric"),
     Method("promotion_time", "parametric"),

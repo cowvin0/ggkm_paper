@@ -142,7 +142,7 @@ def test_cluster_postprocess_dry_run_needs_no_scheduler_and_creates_no_files(tmp
 
     assert process.returncode == 0, process.stderr
     assert "qsub" in process.stdout
-    for dataset in ("simulation", "melanoma", "breast-cancer"):
+    for dataset in ("simulation", "melanoma", "breast-cancer", "fosp-melanoma"):
         assert f"{dataset}-figures" in process.stdout
         assert f"{dataset}-tables" in process.stdout
     assert not capture.exists()
@@ -162,16 +162,17 @@ def test_local_complete_dataset_runs_each_task_before_figures_and_tables(fake_co
         "scripts.create_paired_plot_1_2_3_methods",
         "scripts.create_paired_plot_interaction_quadratic_surfaces",
         "scripts.recover_cure_surfaces_figure",
+        "scripts.create_score_plots",
         "scripts.create_simulation_tables",
     ]
-    assert [event["index"] for event in events] == ["0", "1", None, "0", "1", None, None, None, None]
+    assert [event["index"] for event in events] == ["0", "1", None, "0", "1", None, None, None, None, None]
     assert all(event["job_id"] is None for event in events)
     assert all(event["cwd"] == str(PROJECT_ROOT) for event in events)
     assert all(event["workers"] == "1" for event in events)
     assert list(fake["logs"].rglob("workflow.json"))
 
 
-@pytest.mark.parametrize("dataset", ["melanoma", "breast-cancer"])
+@pytest.mark.parametrize("dataset", ["melanoma", "breast-cancer", "fosp-melanoma"])
 def test_local_clinical_postprocess_uses_matching_figures_and_table(fake_commands, dataset):
     fake = fake_commands
     process = _with_fake_python(
@@ -184,9 +185,11 @@ def test_local_clinical_postprocess_uses_matching_figures_and_table(fake_command
     prefix = dataset.replace("-", "_")
     assert [event["argv"][2] for event in events] == [
         f"scripts.{prefix}_auc_plot", f"scripts.{prefix}_individual_cure_variation",
+        "scripts.create_score_plots",
         "scripts.create_clinical_performance_tables",
     ]
     assert events[-1]["argv"][3:] == ["--dataset", dataset]
+    assert events[-2]["argv"][3:] == ["--dataset", dataset]
     assert all(event["index"] is None and event["job_id"] is None for event in events)
     assert all(event["workers"] == "3" for event in events)
     assert not any(event["kind"] == "discovery" for event in _events(fake["calls"]))
@@ -233,11 +236,11 @@ def test_cluster_submits_dynamic_arrays_and_matching_dependents(fake_commands):
 
     assert process.returncode == 0, process.stderr
     submissions = _events(fake["qsub_calls"])
-    assert len(submissions) == 11
+    assert len(submissions) == 19
     arrays = [event for event in submissions if "-J" in event["argv"]]
     outputs = [event for event in submissions if "-J" not in event["argv"]]
-    assert len(arrays) == 4
-    assert len(outputs) == 7
+    assert len(arrays) == 7
+    assert len(outputs) == 12
     for event in arrays:
         arguments = event["argv"]
         assert arguments[arguments.index("-J") + 1] == "0-1"
@@ -248,7 +251,7 @@ def test_cluster_submits_dynamic_arrays_and_matching_dependents(fake_commands):
         assert event["project_root"] == str(PROJECT_ROOT)
         assert event["workers"] == "2"
     for parent in arrays:
-        expected_dependents = 1 if Path(parent["argv"][-1]).name == "run_simulation_pilot.pbs" else 2
+        expected_dependents = 1 if Path(parent["argv"][-1]).name in {"run_simulation_pilot.pbs", "run_latent_robustness_pilot.pbs"} else 2
         assert sum(parent["job_id"] in argument for event in outputs for argument in event["argv"]) == expected_dependents
     assert all(any("depend=afterok:" in argument for argument in event["argv"]) for event in outputs)
     by_script = {Path(event["argv"][-1]).name: event for event in submissions}
@@ -258,12 +261,20 @@ def test_cluster_submits_dynamic_arrays_and_matching_dependents(fake_commands):
     assert not any("depend=" in argument for argument in pilot["argv"])
     assert f"depend=afterok:{pilot['job_id']}" in summary["argv"]
     assert f"depend=afterok:{summary['job_id']}" in simulation["argv"]
-    for independent in ("run_melanoma_experiment.pbs", "run_breast_cancer_experiment.pbs"):
+    robustness_pilot = by_script["run_latent_robustness_pilot.pbs"]
+    robustness_summary = by_script["summarize_latent_robustness_pilot.pbs"]
+    robustness = by_script["run_latent_robustness_experiment.pbs"]
+    assert f"depend=afterok:{robustness_pilot['job_id']}" in robustness_summary["argv"]
+    assert f"depend=afterok:{robustness_summary['job_id']}" in robustness["argv"]
+    assert not any("depend=" in argument for argument in robustness_pilot["argv"])
+    for independent in ("run_melanoma_experiment.pbs", "run_breast_cancer_experiment.pbs", "run_fosp_melanoma_experiment.pbs"):
         assert not any("depend=" in argument for argument in by_script[independent]["argv"])
     for experiment, figures, tables in [
         ("run_experiment.pbs", "create_simulation_figures.pbs", "create_simulation_tables.pbs"),
         ("run_melanoma_experiment.pbs", "create_melanoma_figures.pbs", "create_melanoma_table.pbs"),
         ("run_breast_cancer_experiment.pbs", "create_breast_cancer_figures.pbs", "create_breast_cancer_table.pbs"),
+        ("run_fosp_melanoma_experiment.pbs", "create_fosp_melanoma_figures.pbs", "create_fosp_melanoma_table.pbs"),
+        ("run_latent_robustness_experiment.pbs", "create_latent_robustness_figures.pbs", "create_latent_robustness_tables.pbs"),
     ]:
         parent_id = by_script[experiment]["job_id"]
         assert f"depend=afterok:{parent_id}" in by_script[figures]["argv"]
@@ -291,7 +302,7 @@ def test_cluster_failure_preserves_prior_job_ids_and_stops_submitting(fake_comma
     fake = fake_commands
     fake["environment"]["WORKFLOW_TEST_QSUB_FAIL_AT"] = "102"
 
-    process = _with_fake_python(fake, "--mode", "cluster", "--qsub", str(fake["qsub"]))
+    process = _with_fake_python(fake, "--mode", "cluster", "--datasets", "simulation", "--qsub", str(fake["qsub"]))
 
     assert process.returncode != 0
     assert "synthetic scheduler rejection" in process.stderr
@@ -342,7 +353,7 @@ def test_pbs_postprocess_worker_clears_inherited_array_index(fake_commands):
 
     assert process.returncode == 0, process.stderr
     events = _modules(fake)
-    assert len(events) == 2
+    assert len(events) == 3
     assert all(event["index"] is None and event["job_id"] is None for event in events)
     assert not fake["logs"].exists()
 
@@ -399,7 +410,7 @@ def test_invalid_inherited_cluster_workers_fail_before_discovery_or_submission(f
 
 @pytest.mark.parametrize("stage, modules", [
     ("experiments", ["scripts.run_melanoma_experiment"] * 2),
-    ("figures", ["scripts.melanoma_auc_plot", "scripts.melanoma_individual_cure_variation"]),
+    ("figures", ["scripts.melanoma_auc_plot", "scripts.melanoma_individual_cure_variation", "scripts.create_score_plots"]),
     ("tables", ["scripts.create_clinical_performance_tables"]),
 ])
 def test_local_stage_selection_runs_only_requested_work(fake_commands, stage, modules):
@@ -484,7 +495,7 @@ def test_clinical_only_pilot_selection_fails_before_any_work(fake_commands):
     )
 
     assert process.returncode != 0
-    assert "--stage pilot requires simulation" in process.stderr
+    assert "--stage pilot requires simulation or latent-robustness" in process.stderr
     assert _events(fake["calls"]) == []
     assert not fake["logs"].exists()
 

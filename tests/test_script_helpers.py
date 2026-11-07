@@ -20,7 +20,7 @@ def test_breast_cancer_rejects_sigmoid_and_retains_em_limit():
     assert "sigmoid" not in script.KERNELS
     with pytest.raises(ValueError, match="^Unknown kernel: sigmoid$"):
         script.kernel_parameter_grid("bernoulli", "sigmoid")
-    assert [item["A"] for item in candidates] == [0.5, 0.5, 1.0, 1.0, 2.0, 2.0, 10, 10]
+    assert [item["A"] for item in candidates] == [0.5, 0.5, 1.0, 1.0, 2.0, 2.0, 10, 10, 15, 15, 20, 20]
     assert all(item["K_bin"] == 1 for item in candidates)
 
 
@@ -28,7 +28,7 @@ def test_melanoma_retains_extra_wavelet_scale_and_rejects_sigmoid():
     script = runner("melanoma")
     candidates = script.kernel_parameter_grid("poisson", "wavelet")
 
-    assert [item["A"] for item in candidates] == [0.5, 0.5, 1.0, 1.0, 2.0, 2.0, 10, 10]
+    assert [item["A"] for item in candidates] == [0.5, 0.5, 1.0, 1.0, 2.0, 2.0, 10, 10, 15, 15, 20, 20]
     assert "negative_binomial_max_em_iter" not in script.MODELS["bn"].keywords
     assert "sigmoid" not in script.KERNELS
     with pytest.raises(ValueError, match="^Unknown kernel: sigmoid$"):
@@ -56,7 +56,7 @@ def test_pcm_retains_distinct_spline_penalties(model_name):
         ]
 
 
-@pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma"])
+@pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma", "fosp_melanoma"])
 def test_clinical_grids_use_current_runner_settings(monkeypatch, dataset):
     script = runner(dataset)
     for name, value in (
@@ -99,7 +99,7 @@ def test_pcm_grid_uses_current_model_settings(monkeypatch):
     assert script.parameter_grid("binomial", "linear") == [{}]
 
 
-@pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma"])
+@pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma", "fosp_melanoma"])
 def test_spline_tuning_skips_failures_and_keeps_first_best(monkeypatch, dataset):
     script = runner(dataset)
     candidates = [{"lambda_reg": value} for value in (0.1, 1.0, 3.0, 10.0)]
@@ -130,7 +130,7 @@ def test_spline_tuning_skips_failures_and_keeps_first_best(monkeypatch, dataset)
     assert candidates[2]["lambda_reg"] == 3.0
 
 
-@pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma"])
+@pytest.mark.parametrize("dataset", ["breast_cancer", "melanoma", "fosp_melanoma"])
 @pytest.mark.parametrize("failure_kind", ["exception", "nonfinite"])
 def test_spline_tuning_retains_dataset_failure_messages(
     monkeypatch, dataset, failure_kind
@@ -153,7 +153,7 @@ def test_spline_tuning_retains_dataset_failure_messages(
     with pytest.raises(RuntimeError) as error:
         script.tune_spline_grid(None, estimator=object(), inner_seed=5)
 
-    if dataset == "breast_cancer":
+    if dataset in {"breast_cancer", "fosp_melanoma"}:
         expected = "All spline-grid candidates failed during inner tuning."
         if failure_kind == "exception":
             expected += " First failure: ValueError: candidate failed"

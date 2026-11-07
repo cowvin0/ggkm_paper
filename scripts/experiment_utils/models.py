@@ -144,7 +144,7 @@ def pcm_parameter_grid(model_name, kernel, *, kernel_models, binomial_k):
         gammas=(0.25, 1.00),
         polynomial_degrees=(2, 3),
         polynomial_coef0=1.0,
-        wavelet_a_values=(0.50, 1.00, 2.00),
+        wavelet_a_values=(0.50, 1.00, 2.00, 10.00, 15.00, 20.00),
         sigmoid_coef0=0.0,
         require_nonempty=False,
     )

@@ -155,6 +155,7 @@ REPLICATION_ALIASES = (
 IBS_ALIASES = ("test_ibs", "integrated_brier", "integrated_brier_score", "ibs")
 RMSE_ALIASES = ("cure_rmse", "test_cure_rmse", "rmse_cure")
 AUC_ALIASES = ("test_auc", "cure_auc", "auc_cure", "auc")
+CINDEX_ALIASES = ("test_cindex", "uno_c_index")
 METRICS = (
     ("integrated_brier", "Mean IPCW IBS difference"),
     ("cure_rmse", "Mean cure RMSE difference"),
@@ -233,6 +234,8 @@ def read_metric(path, metric):
         aliases = RMSE_ALIASES
     elif metric == "cure_auc":
         aliases = AUC_ALIASES
+    elif metric == "uno_c_index":
+        aliases = CINDEX_ALIASES
     else:
         raise ValueError(f"Unknown metric: {metric}")
 
@@ -295,7 +298,7 @@ def calculate_paired_difference(focal_path, comparator_path, *, metric):
     }
 
 
-def build_paired_summary(files: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+def build_paired_summary(files: pd.DataFrame, *, metrics=METRICS) -> tuple[pd.DataFrame, pd.DataFrame]:
     paired_rows = []
     audit_rows = []
     for method, surface in SURFACES.items():
@@ -318,7 +321,7 @@ def build_paired_summary(files: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFram
                     "focal_file": focal_path.name,
                     "comparator_file": comparator_path.name,
                 })
-                for metric, _ in METRICS:
+                for metric, _ in metrics:
                     result = calculate_paired_difference(
                         focal_path, comparator_path, metric=metric,
                     )
@@ -365,15 +368,17 @@ def style_axis(axis):
     axis.title.set_color(INK)
 
 
-def create_figure(paired_summary: pd.DataFrame):
-    """Create the supplied three-by-three paired-difference figure."""
+def create_figure(paired_summary: pd.DataFrame, *, metrics=METRICS):
+    """Create the original paired figure or a standalone metric row."""
     mpl.rcParams.update(FIGURE_STYLE)
+    rows = len(metrics)
     figure, axes = plt.subplots(
-        3, 3, figsize=(7.15, 7.0), sharex=True, constrained_layout=False,
+        rows, 3, figsize=(7.15, 7.0 if rows == 3 else 3.3),
+        sharex=True, constrained_layout=False, squeeze=False,
     )
     x_positions = np.arange(len(SCENARIOS), dtype=float)
     offsets = np.linspace(-0.18, 0.18, len(COMPARISONS))
-    for row_index, (metric, ylabel) in enumerate(METRICS):
+    for row_index, (metric, ylabel) in enumerate(metrics):
         for column_index, (method, surface) in enumerate(SURFACES.items()):
             axis = axes[row_index, column_index]
             for offset, comparison in zip(offsets, COMPARISONS, strict=True):
@@ -419,14 +424,14 @@ def create_figure(paired_summary: pd.DataFrame):
         for comparison in COMPARISONS
     ]
     figure.legend(
-        handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.050),
+        handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.050 if rows == 3 else 0.10),
         frameon=False, ncol=3, columnspacing=1.1, handletextpad=0.45,
     )
     figure.text(
-        0.5, 0.077, "Generating count law and sample size",
+        0.5, 0.077 if rows == 3 else 0.15, "Generating count law and sample size",
         ha="center", va="center", color=INK,
     )
-    figure.tight_layout(rect=(0.0, 0.105, 1.0, 1.0), h_pad=1.0, w_pad=1.0)
+    figure.tight_layout(rect=(0.0, 0.105 if rows == 3 else 0.20, 1.0, 1.0), h_pad=1.0, w_pad=1.0)
     return figure
 
 
