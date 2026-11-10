@@ -3,7 +3,7 @@
 \usepackage[a4paper,margin=25mm]{geometry}
 \usepackage{amsmath,amssymb,bm,booktabs,graphicx,hyperref}
 \hypersetup{hidelinks}
-\graphicspath{{figures/review/}}
+\graphicspath{{figures/}{figures/review/}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 
@@ -828,7 +828,7 @@ Covariates $x_1$ and $x_2$ are independently uniform on $[-1,1]$. The latency pa
 
 The reported comparison comprises 18 model configurations: GG-KM predictors with linear, radial-basis, Laplacian, exponential, Cauchy, polynomial, and wavelet kernels under Poisson and negative-binomial count laws; additive cubic-spline models under both count laws; and the mixture-cure and classical promotion-time comparators. All configurations use common simulated samples and common event-stratified 70/30 outer splits. Inner tuning uses two training folds and 24 evaluation points, with preprocessing fitted within each training fold.
 
-All tuned configurations use penalties $\lambda\in\{0.3,3\}$. Linear-kernel GG-KM has two candidates. Radial-basis, Laplacian, exponential, and Cauchy kernels additionally use $\gamma\in\{0.25,1\}$, giving four candidates per kernel and count law. Polynomial kernels use the same penalties and $\gamma$ values, degrees $q\in\{2,3\}$, and $c_0=1$, giving eight candidates per count law. Wavelet kernels use $A\in\{0.5,1,2\}$ with the same penalties, giving six candidates per count law. Cubic splines use three or five training-fold quantile knots with the same penalties, giving four candidates per count law. The mixture-cure and classical promotion-time comparators are fitted without a hyperparameter search. The primary evaluation grid contains 36 points and ends no later than the training 90th percentile of observed time or the last time at which estimated censoring survival remains at least 0.05.
+All tuned configurations use penalties $\lambda\in\{0.3,3\}$. Linear-kernel GG-KM has two candidates. Radial-basis, Laplacian, exponential, and Cauchy kernels additionally use $\gamma\in\{0.25,1\}$, giving four candidates per kernel and count law. Polynomial kernels use the same penalties and $\gamma$ values, degrees $q\in\{2,3\}$, and $c_0=1$, giving eight candidates per count law. Wavelet kernels use $A\in\{0.5,1,2,10,15,20\}$ with the same penalties, giving twelve candidates per count law. Cubic splines use three or five training-fold quantile knots with the same penalties, giving four candidates per count law. The mixture-cure and classical promotion-time comparators are fitted without a hyperparameter search. The primary evaluation grid contains 36 points and ends no later than the training 90th percentile of observed time or the last time at which estimated censoring survival remains at least 0.05.
 
 \section{Full simulation results}\label{sec:supp-simulation-results}
 
@@ -847,7 +847,11 @@ Tables~\ref{tab:supp-simulation-cure-rmse-poisson} and \ref{tab:supp-simulation-
 
 \input{sections/generated/simulation-cure-rmse-table}
 
-Table~\ref{tab:supp-simulation-diagnostics} aggregates numerical behavior over the 18 scenarios. Of the 81,000 final fits, 80,997 completed successfully and satisfied the convergence criterion, and three failed; method-specific convergence totals ranged from 4,497 to 4,500 of 4,500. Mean runtime ranged from 1.21 to 60.55 seconds per fit, and the maximum observed runtime was 660.24 seconds. No final successful fit contacted a generalized-gamma latency-parameter lower bound of $10^{-5}$ or the negative-binomial dispersion lower bound of $10^{-8}$.
+Tables~\ref{tab:supp-simulation-uno-c-index-poisson} and \ref{tab:supp-simulation-uno-c-index-negative-binomial} report Uno's C-index for the same configurations and scenarios.
+
+\input{sections/generated/simulation-uno-c-index-table}
+
+Table~\ref{tab:supp-simulation-diagnostics} aggregates numerical behavior over the 18 scenarios. Of the 81,000 final fits, 80,997 completed successfully, of which 80,996 satisfied the convergence criterion; one successful fit did not converge and three fits failed. Method-specific convergence totals ranged from 4,497 to 4,500 of 4,500. Mean runtime ranged from 1.14 to 67.84 seconds per fit, and the maximum observed runtime was 612.46 seconds. No final successful fit contacted a generalized-gamma latency-parameter lower bound of $10^{-5}$ or the negative-binomial dispersion lower bound of $10^{-8}$.
 
 \input{sections/generated/simulation-diagnostics-table}
 
@@ -869,6 +873,9 @@ Tables~\ref{tab:supp-highdim-ibs-poisson} and \ref{tab:supp-highdim-ibs-negative
 Tables~\ref{tab:supp-highdim-cure-rmse-poisson} and \ref{tab:supp-highdim-cure-rmse-negative-binomial} give the corresponding mean cure-probability root mean squared errors.
 \input{sections/generated/highdim-cure-rmse-table}
 
+Tables~\ref{tab:supp-highdim-uno-c-index-poisson} and \ref{tab:supp-highdim-uno-c-index-negative-binomial} give the corresponding Uno's C-indices.
+\input{sections/generated/highdim-uno-c-index-table}
+
 Table~\ref{tab:supp-highdim-diagnostics} aggregates the numerical diagnostics for each method over the 12 scenarios.
 \input{sections/generated/highdim-diagnostics-table}
 \section{Additional melanoma summaries}\label{sec:supp-melanoma}
@@ -877,7 +884,7 @@ The melanoma analysis compares the same 18 model configurations as the primary s
 
 Figure~\ref{fig:supp-melanoma-cure} shows the distribution of each patient's mean predicted cure fraction and the corresponding standard deviation across test-set appearances. The distributions differ across predictor structures, while Poisson and negative-binomial variants within GG-KM are visually similar. The across-split variation is a sensitivity summary for changing training samples, not a confidence interval for an individual's cure probability.
 
-The clinical kernel grids match the primary simulation grids except that the wavelet scale is extended to $A\in\{0.5,1,2,10\}$, giving eight candidates per count law. Clinical cubic splines use three or five training-fold quantile knots with $\lambda\in\{0.1,1\}$, giving four candidates per count law. The same grids are used in the breast-cancer analysis, with all selection confined to the inner training folds.
+The clinical kernel grids match the primary simulation grids, including wavelet scales $A\in\{0.5,1,2,10,15,20\}$, giving twelve candidates per count law. Clinical cubic splines use three or five training-fold quantile knots with $\lambda\in\{0.1,1\}$, giving four candidates per count law. The same grids are used in the breast-cancer analysis, with all selection confined to the inner training folds.
 
 \begin{figure}[tbp]
 \centering

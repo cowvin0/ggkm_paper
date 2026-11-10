@@ -1,0 +1,7 @@
+model,model_name,kernel,saved_successful,reconstructed,mean_ibs,mean_auc
+Mixture cure,mixture_cure,parametric,50,50,0.14316823085544864,0.8529155412409618
+Promotion time,promotion_time,parametric,50,50,0.14489736963366787,0.8234734636244981
+"Spline, Poisson",spline_poisson,parametric,50,50,0.14301493827783374,0.7909194731519156
+"Spline, negative binomial",spline_bn,parametric,50,50,0.14323686867909047,0.7911032900187582
+"GG-KM, Poisson (Linear)",poisson,linear,50,50,0.14261864386104559,0.8090712373214319
+"GG-KM, negative binomial (Polynomial)",bn,polynomial,50,50,0.14771188568380003,0.8117429632909807

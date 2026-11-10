@@ -128,7 +128,7 @@ candidates used $\lambda\in\{0.3,3\}$. Radial-basis, Laplacian, exponential, and
 Cauchy candidates used $\gamma\in\{0.25,1\}$ with
 $\lambda\in\{0.3,3\}$. Polynomial candidates additionally used
 degree $q\in\{2,3\}$ with $c_0=1$, while wavelet candidates used
-$A\in\{0.5,1,2\}$, in both cases with $\lambda\in\{0.3,3\}$.
+$A\in\{0.5,1,2,10,15,20\}$, in both cases with $\lambda\in\{0.3,3\}$.
 Spline candidates used three or five training-fold quantile knots with
 $\lambda\in\{0.3,3\}$. All tuned methods used the same two-fold inner tuning
 criterion and evaluation-grid size. The promotion-time support-vector method of
@@ -143,7 +143,8 @@ feature-map fitting, and preprocessing were confined to the training set,
 and the IPCW integration horizon was set from that set at the smaller of
 its 90th observed-time percentile and the limit at which estimated
 censoring survival remained at least 0.05. Primary test-set estimands were
-integrated Brier score, cure AUC, and cure-probability mean squared error.
+integrated Brier score, cure AUC, and cure-probability mean squared error;
+Uno's C-index was also reported.
 
 A target-size diagnostic pilot used five planned replicates in each of
 324 pilot cells and was not pooled with the final experiment; at least four
@@ -169,13 +170,13 @@ within each shared replication.
 The primary final experiment contained 81,000 method rows from
 250 replications in each of 18 scenarios. Monte Carlo standard errors
 accompany the reported metric means. Of the 81,000 fits, 80,997 completed
-successfully and three failed; all successful fits satisfied the explicit
-convergence criterion. Method-specific successful-fit totals ranged from
-4,497 to 4,500 of 4,500. Mean per-fit runtime ranged from 1.21 to 60.55 seconds
-across methods, with a maximum of 660.24 seconds.
+successfully and three failed; 80,996 successful fits satisfied the explicit
+convergence criterion and one did not. Method-specific successful-fit totals ranged from
+4,497 to 4,500 of 4,500. Mean per-fit runtime ranged from 1.14 to 67.84 seconds
+across methods, with a maximum of 612.46 seconds.
 
 Table~\ref{tab:simulation-best} reports the best observed mean IPCW
-integrated Brier score, cure root mean squared error, and cure AUC in each
+integrated Brier score, cure root mean squared error, cure AUC, and Uno's C-index in each
 scenario. For the linear surface, a linear-kernel GG-KM attained the lowest
 mean IPCW integrated Brier score and cure root mean squared error in all six
 scenarios. For the quadratic surface, a polynomial-kernel GG-KM attained the
@@ -186,9 +187,10 @@ periodic surface, an additive spline model attained the lowest integrated
 Brier score and cure root mean squared error in all six scenarios. For cure
 AUC, a polynomial-kernel GG-KM attained the highest mean in all six linear
 scenarios and all six periodic scenarios. On the quadratic surface,
-polynomial-kernel GG-KM models attained the highest mean cure AUC in four
-of six scenarios, whereas wavelet-kernel GG-KM models attained the highest
-mean in the remaining two.
+polynomial-kernel GG-KM models attained the highest mean cure AUC in all
+six scenarios. Uno's C-index favored linear-kernel GG-KM on the linear
+surface, polynomial-kernel GG-KM in five of six quadratic scenarios,
+and splines on the periodic surface.
 
 \GGKMTable{sections/generated/simulation-best-table}
 
@@ -254,10 +256,10 @@ and 0.0730 for the RBF GG-KM. On the quadratic surface, the
 RBF GG-KM attains the lowest mean error, 0.0806, followed
 closely by the additive spline at 0.0816 and the
 polynomial-kernel GG-KM at 0.0826, whereas the linear-kernel
-GG-KM increases to 0.1282. On the periodic surface, the
+GG-KM increases to 0.1283. On the periodic surface, the
 additive spline performs best at 0.0823, followed by the RBF
 GG-KM at 0.0960, while the linear- and polynomial-kernel GG-KM
-predictors increase to 0.1504 and 0.1497, respectively. The
+predictors increase to 0.1504 and 0.1502, respectively. The
 spatial pattern adds what these scalar summaries omit. A
 misaligned predictor does not spread its error evenly: the
 linear-kernel GG-KM shows concentrated error on the quadratic
@@ -299,10 +301,10 @@ squared error, both spline models had a maximum regret of
 0.00465 (half-width 0.00210), and the Poisson spline
 had the smallest mean regret, 0.00068 (half-width 0.00024). For
 cure AUC, the negative-binomial spline had the smallest maximum
-regret, 0.00687 (half-width 0.00529), whereas the negative-binomial
+regret, 0.00693 (half-width 0.00529), whereas the negative-binomial
 RBF GG-KM attained the smallest mean regret, 0.00131
-(half-width 0.00060), and the best descriptive mean rank of
-2.17. Thus, the regret summaries favor the spline models for
+(half-width 0.00060), and shared the best descriptive mean rank of
+2.28 with its Poisson counterpart. Thus, the regret summaries favor the spline models for
 prediction error but show greater competitiveness of the RBF
 GG-KM for cure discrimination.
 

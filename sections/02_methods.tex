@@ -1198,6 +1198,11 @@ Brier score is the time average obtained by trapezoidal integration of
 Equation~\eqref{eq:ipcw-brier} over the frozen grid and division by the
 horizon length, without renormalizing by the realized sum of weights.
 
+Time-to-event discrimination is assessed using Uno's IPCW C-index,\cite{uno2011}
+with negative restricted mean predicted survival over the same evaluation
+horizon as the risk score and censoring weights estimated from the training
+sample. Larger values indicate better discrimination.
+
 Discrimination with respect to long-term cure status is additionally
 assessed using an imputation-based area under the receiver operating
 characteristic curve for cure models, denoted by
@@ -1268,7 +1273,7 @@ individuals with higher and lower probabilities of belonging to the
 susceptible subpopulation.
 
 Evaluation summaries retain paired score differences, cure-fraction
-error in simulations, $\mathrm{AUC}_{\mathrm{cure}}$, calibration,
+error in simulations, Uno's C-index, $\mathrm{AUC}_{\mathrm{cure}}$, calibration,
 convergence, failures, and runtime. A common generalized gamma latency
 is used throughout the reported simulation so that the generating
 latency matches the fitted latency structure and predictor-shape

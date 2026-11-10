@@ -32,8 +32,8 @@ with Poisson and negative-binomial latent-count laws, together with
 additive cubic-spline Poisson and negative-binomial models and the
 classical mixture-cure and promotion-time comparators. Kernel and spline
 hyperparameters were selected from prespecified grids. The kernel grids
-followed Section~\ref{sec:simulation}, with the wavelet scale extended to
-$A\in\{0.5,1,2,10\}$. Cubic-spline candidates used three or five
+followed Section~\ref{sec:simulation}, including wavelet scales
+$A\in\{0.5,1,2,10,15,20\}$. Cubic-spline candidates used three or five
 training-fold quantile knots with $\lambda\in\{0.1,1\}$.
 
 \GGKMTable{sections/generated/melanoma-performance-table}
@@ -41,9 +41,10 @@ training-fold quantile knots with $\lambda\in\{0.1,1\}$.
 Table~\ref{tab:melanoma-performance} reports split-level means and
 variation. The Poisson and negative-binomial GG-KM models with the wavelet
 kernel attained the lowest mean IPCW integrated Brier score, both at
-0.1408 with split standard deviations 0.0207 and 0.0206, respectively,
+0.1381 with split standard deviations 0.0196 and 0.0195, respectively,
 followed by the RBF and Cauchy kernels under both count laws, with mean
-IBS values 0.1418 and 0.1419. The mixture-cure model had the highest mean
+IBS values 0.1418 and 0.1419. Both wavelet models also attained the highest
+mean Uno's C-index, 0.7251. The mixture-cure model had the highest mean
 cure AUC overall, 0.8529, while
 among the GG-KM models the negative-binomial polynomial kernel had the
 highest mean cure AUC, 0.8117. Across the 900 planned split-model fits,
@@ -95,7 +96,7 @@ For the IPCW integrated Brier score (Panel A), the distributions overlap
 substantially across kernels, and the differences between the Poisson and
 negative-binomial versions of the same kernel are generally small. Mean IBS
 values were relatively close across specifications, with both the Poisson
-and negative-binomial wavelet models attaining the lowest mean value, 0.1408.
+and negative-binomial wavelet models attaining the lowest mean value, 0.1381.
 The Poisson polynomial model had the largest mean IBS, 0.1507, and also
 showed comparatively large between-split variability. Although several
 kernels exhibited isolated splits with substantially higher Brier scores,
@@ -112,7 +113,7 @@ specifications, 0.8117, and showed a relatively concentrated distribution,
 whereas the corresponding Poisson polynomial model was substantially more
 variable across splits. The RBF, Laplacian, exponential, and Cauchy kernels
 generally produced lower mean cure AUCs, around 0.68--0.70, while
-the wavelet kernel attained mean cure AUCs of approximately 0.75 under
+the wavelet kernel attained mean cure AUCs of 0.7437 under
 both count laws. Thus, the results suggest that
 kernel specification has a stronger practical influence than the choice
 between Poisson and negative-binomial latent-count laws in this application.

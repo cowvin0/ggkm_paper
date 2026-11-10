@@ -19,15 +19,15 @@ linear-kernel GG-KM yet trailed the spline by a small margin, and on the linear 
 paid a small resolved penalty against the correctly specified linear-kernel GG-KM. Within
 the original three-surface design, Poisson and negative-binomial variants were generally
 close within a predictor family, although differences in reported means reached about
-0.010 in integrated Brier score and 0.042 in cure root mean squared error for the
+0.010 in integrated Brier score and 0.043 in cure root mean squared error for the
 polynomial kernel on the periodic surface at $n=600$. The melanoma cohort produced overlapping
 score distributions in which the wavelet GG-KM models had the lowest mean integrated
-Brier score, 0.1408, and the mixture-cure model had the highest mean cure AUC, 0.8529. The
+Brier score, 0.1381, and the mixture-cure model had the highest mean cure AUC, 0.8529. The
 breast-cancer cohort showed a complementary pattern: the spline models achieved the lowest
 mean integrated Brier score, 0.0877, whereas the mixture-cure model attained the
 highest mean cure AUC, 0.7862. Among the GG-KM specifications, the wavelet kernel had
-the lowest mean integrated Brier score, 0.0892, under both latent-count laws and the
-highest mean cure AUC, 0.7348 under Poisson and 0.7332 under negative-binomial counts. Together,
+the lowest mean integrated Brier score, 0.0879, under both latent-count laws and the
+highest mean cure AUC, 0.7219 under Poisson and 0.7216 under negative-binomial counts. Together,
 the two empirical applications reinforce the simulation message that no
 single predictor is uniformly best and that the preferred predictor and
 kernel depend on the predictive target and data structure.
@@ -60,7 +60,7 @@ factorization can require cubic time; nested tuning repeats those operations acr
 inner folds. Reusing a Gram matrix within a candidate and retained eigenspace avoids unnecessary work, but
 matrices cannot be shared across folds whose preprocessing and training subjects differ. In the primary
 simulation experiment, these costs remained manageable at the sample sizes studied, with mean per-fit
-runtimes across methods ranging from 1.21 to 60.55 seconds. The richer breast-cancer application was
+runtimes across methods ranging from 1.14 to 67.84 seconds. The richer breast-cancer application was
 substantially more computationally demanding, particularly for several nonlinear GG-KM kernels and the
 spline models, underscoring that computational burden can increase sharply with a larger and more complex
 predictor representation; these timings do not establish scalability to substantially larger cohorts.

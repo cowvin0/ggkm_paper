@@ -9,7 +9,7 @@
 \usepackage{placeins}
 \def\UrlBreaks{\do\/\do-\do.\do:\do_\do\~}
 
-\graphicspath{{./images/}{./figures/review/}}
+\graphicspath{{./images/}{./figures/}{./figures/review/}}
 \newif\ifggkmsubmission
 \ifdefined\GGKMSubmissionLayout
   \ggkmsubmissiontrue
@@ -73,7 +73,7 @@ experiments with linear, quadratic, and periodic covariate effects and a
 four-covariate mechanism design, and through applications to melanoma and
 breast-cancer cohorts, using event-stratified training and test splits,
 training-only tuning, and inverse-probability-of-censoring weighted integrated
-Brier scores together with calibration and cure-fraction accuracy. No single
+Brier scores together with concordance, calibration, and cure-fraction accuracy. No single
 predictor is uniformly best: a correctly specified simpler predictor performs
 best when the covariate structure matches its form, whereas GG-KM is competitive
 across mechanisms and, with a polynomial kernel, attains the lowest prediction

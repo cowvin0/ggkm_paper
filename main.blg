@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: WileyNJD-AMA.bst
 Database file #1: references.bib
-You've used 28 entries,
+You've used 29 entries,
             2481 wiz_defined-function locations,
-            760 strings with 10024 characters,
-and the built_in function-call counts, 11613 in all, are:
-= -- 1056
-> -- 538
+            767 strings with 10281 characters,
+and the built_in function-call counts, 12109 in all, are:
+= -- 1097
+> -- 571
 < -- 15
-+ -- 211
-- -- 154
-* -- 978
-:= -- 1837
-add.period$ -- 109
-call.type$ -- 28
-change.case$ -- 53
-chr.to.int$ -- 27
-cite$ -- 28
-duplicate$ -- 539
-empty$ -- 1058
-format.name$ -- 202
-if$ -- 2453
++ -- 223
+- -- 164
+* -- 1027
+:= -- 1919
+add.period$ -- 113
+call.type$ -- 29
+change.case$ -- 55
+chr.to.int$ -- 28
+cite$ -- 29
+duplicate$ -- 558
+empty$ -- 1098
+format.name$ -- 213
+if$ -- 2554
 int.to.chr$ -- 2
-int.to.str$ -- 29
-missing$ -- 30
-newline$ -- 172
-num.names$ -- 84
-pop$ -- 195
+int.to.str$ -- 30
+missing$ -- 31
+newline$ -- 178
+num.names$ -- 87
+pop$ -- 201
 preamble$ -- 1
-purify$ -- 28
+purify$ -- 29
 quote$ -- 0
-skip$ -- 310
+skip$ -- 320
 stack$ -- 0
-substring$ -- 698
-swap$ -- 68
+substring$ -- 731
+swap$ -- 70
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 187
+type$ -- 194
 warning$ -- 0
-while$ -- 104
+while$ -- 108
 width$ -- 0
-write$ -- 418
+write$ -- 433

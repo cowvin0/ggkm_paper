@@ -1,0 +1,71 @@
+\begin{table*}[p]
+\caption{
+Mean Uno's C-indices across the high-dimensional Monte Carlo experiment, with Monte Carlo standard errors in parentheses.
+Means and Monte Carlo standard errors are computed over successful replications
+with finite metric values, out of 250 planned replications per
+scenario-method configuration. Higher values indicate better discrimination. Risk scores are negative restricted mean survival times over each saved evaluation horizon, with censoring weights estimated from the corresponding training sample.
+This table includes all Poisson GG-KM kernel specifications, the Poisson spline, the promotion-time model, and the mixture-cure model. GG, P, Spl, PT, and Mix denote GG-KM, Poisson, spline, promotion time, and mixture cure, respectively; lin, RBF, lap, exp, cau, poly, and wav denote the linear, radial-basis, Laplacian, exponential, Cauchy, polynomial, and wavelet kernels.
+A dash indicates an unavailable estimate or Monte Carlo standard error. Standard errors require at least two finite replications.
+}
+\label{tab:supp-highdim-uno-c-index}
+\label{tab:supp-highdim-uno-c-index-poisson}
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllrrrrrrrrrr}
+\hline
+True surface & Generating law & $n$ & GG-P lin & GG-P RBF & GG-P lap & GG-P exp & GG-P cau & GG-P poly & GG-P wav & Spl-P & PT & Mix \\
+\hline
+Interaction & P & 300 & 0.5700 (0.0032) & 0.6010 (0.0033) & 0.5892 (0.0034) & 0.6010 (0.0033) & 0.6021 (0.0033) & 0.6083 (0.0035) & 0.5859 (0.0035) & 0.5607 (0.0035) & 0.5699 (0.0032) & 0.5696 (0.0033) \\
+Interaction & NB(0.25) & 300 & 0.5685 (0.0031) & 0.6052 (0.0032) & 0.5954 (0.0031) & 0.6039 (0.0030) & 0.6059 (0.0031) & 0.6152 (0.0032) & 0.5879 (0.0032) & 0.5623 (0.0032) & 0.5685 (0.0031) & 0.5660 (0.0032) \\
+Interaction & NB(1.00) & 300 & 0.5793 (0.0030) & 0.6233 (0.0030) & 0.6106 (0.0028) & 0.6197 (0.0029) & 0.6228 (0.0029) & 0.6299 (0.0034) & 0.6009 (0.0034) & 0.5712 (0.0030) & 0.5792 (0.0030) & 0.5772 (0.0030) \\
+Interaction & P & 600 & 0.5794 (0.0022) & 0.6186 (0.0023) & 0.6088 (0.0023) & 0.6145 (0.0023) & 0.6184 (0.0023) & 0.6255 (0.0023) & 0.6087 (0.0025) & 0.5713 (0.0024) & 0.5794 (0.0021) & 0.5781 (0.0022) \\
+Interaction & NB(0.25) & 600 & 0.5796 (0.0021) & 0.6259 (0.0021) & 0.6148 (0.0021) & 0.6224 (0.0021) & 0.6256 (0.0021) & 0.6339 (0.0021) & 0.6181 (0.0024) & 0.5729 (0.0022) & 0.5796 (0.0021) & 0.5803 (0.0021) \\
+Interaction & NB(1.00) & 600 & 0.5882 (0.0023) & 0.6408 (0.0020) & 0.6284 (0.0021) & 0.6354 (0.0020) & 0.6387 (0.0020) & 0.6501 (0.0020) & 0.6317 (0.0023) & 0.5820 (0.0022) & 0.5881 (0.0023) & 0.5872 (0.0023) \\
+\hline
+Radial & P & 300 & 0.5009 (0.0031) & 0.5550 (0.0031) & 0.5570 (0.0032) & 0.5532 (0.0032) & 0.5558 (0.0031) & 0.5440 (0.0033) & 0.5286 (0.0035) & 0.5622 (0.0033) & 0.5009 (0.0031) & 0.5008 (0.0031) \\
+Radial & NB(0.25) & 300 & 0.5003 (0.0032) & 0.5518 (0.0032) & 0.5519 (0.0033) & 0.5495 (0.0032) & 0.5529 (0.0032) & 0.5432 (0.0033) & 0.5265 (0.0033) & 0.5609 (0.0035) & 0.5003 (0.0032) & 0.5004 (0.0032) \\
+Radial & NB(1.00) & 300 & 0.4951 (0.0030) & 0.5630 (0.0030) & 0.5656 (0.0031) & 0.5613 (0.0031) & 0.5646 (0.0030) & 0.5533 (0.0033) & 0.5297 (0.0036) & 0.5729 (0.0032) & 0.4951 (0.0030) & 0.4957 (0.0030) \\
+Radial & P & 600 & 0.4994 (0.0022) & 0.5600 (0.0024) & 0.5627 (0.0023) & 0.5594 (0.0023) & 0.5612 (0.0023) & 0.5555 (0.0024) & 0.5376 (0.0029) & 0.5709 (0.0023) & 0.4994 (0.0022) & 0.4995 (0.0021) \\
+Radial & NB(0.25) & 600 & 0.4986 (0.0024) & 0.5693 (0.0023) & 0.5704 (0.0022) & 0.5676 (0.0021) & 0.5697 (0.0022) & 0.5648 (0.0025) & 0.5473 (0.0027) & 0.5787 (0.0022) & 0.4986 (0.0024) & 0.4996 (0.0024) \\
+Radial & NB(1.00) & 600 & 0.5012 (0.0022) & 0.5757 (0.0022) & 0.5769 (0.0023) & 0.5743 (0.0022) & 0.5766 (0.0022) & 0.5671 (0.0027) & 0.5525 (0.0028) & 0.5859 (0.0023) & 0.5011 (0.0022) & 0.5007 (0.0022) \\
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+
+\begin{table*}[p]
+\caption{
+Mean Uno's C-indices across the high-dimensional Monte Carlo experiment, with Monte Carlo standard errors in parentheses.
+Means and Monte Carlo standard errors are computed over successful replications
+with finite metric values, out of 250 planned replications per
+scenario-method configuration. Higher values indicate better discrimination. Risk scores are negative restricted mean survival times over each saved evaluation horizon, with censoring weights estimated from the corresponding training sample.
+This table includes all negative-binomial GG-KM kernel specifications and the negative-binomial spline. GG, NB, and Spl denote GG-KM, negative binomial, and spline, respectively; lin, RBF, lap, exp, cau, poly, and wav denote the linear, radial-basis, Laplacian, exponential, Cauchy, polynomial, and wavelet kernels.
+A dash indicates an unavailable estimate or Monte Carlo standard error. Standard errors require at least two finite replications.
+}
+\label{tab:supp-highdim-uno-c-index-negative-binomial}
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllrrrrrrrr}
+\hline
+True surface & Generating law & $n$ & GG-NB lin & GG-NB RBF & GG-NB lap & GG-NB exp & GG-NB cau & GG-NB poly & GG-NB wav & Spl-NB \\
+\hline
+Interaction & P & 300 & 0.5700 (0.0032) & 0.6011 (0.0033) & 0.5895 (0.0034) & 0.6011 (0.0033) & 0.6021 (0.0033) & 0.6126 (0.0033) & 0.5854 (0.0036) & 0.5606 (0.0035) \\
+Interaction & NB(0.25) & 300 & 0.5685 (0.0031) & 0.6052 (0.0032) & 0.5951 (0.0031) & 0.6039 (0.0030) & 0.6059 (0.0031) & 0.6187 (0.0030) & 0.5878 (0.0032) & 0.5623 (0.0032) \\
+Interaction & NB(1.00) & 300 & 0.5793 (0.0030) & 0.6232 (0.0030) & 0.6107 (0.0028) & 0.6197 (0.0029) & 0.6229 (0.0029) & 0.6351 (0.0030) & 0.6008 (0.0034) & 0.5712 (0.0030) \\
+Interaction & P & 600 & 0.5794 (0.0022) & 0.6186 (0.0023) & 0.6088 (0.0023) & 0.6144 (0.0023) & 0.6184 (0.0023) & 0.6267 (0.0022) & 0.6085 (0.0025) & 0.5713 (0.0024) \\
+Interaction & NB(0.25) & 600 & 0.5796 (0.0021) & 0.6259 (0.0021) & 0.6148 (0.0021) & 0.6224 (0.0021) & 0.6256 (0.0021) & 0.6345 (0.0020) & 0.6181 (0.0024) & 0.5729 (0.0022) \\
+Interaction & NB(1.00) & 600 & 0.5882 (0.0023) & 0.6408 (0.0020) & 0.6284 (0.0021) & 0.6354 (0.0020) & 0.6386 (0.0020) & 0.6501 (0.0020) & 0.6318 (0.0023) & 0.5820 (0.0022) \\
+\hline
+Radial & P & 300 & 0.5009 (0.0031) & 0.5552 (0.0031) & 0.5572 (0.0032) & 0.5532 (0.0032) & 0.5557 (0.0031) & 0.5504 (0.0033) & 0.5289 (0.0035) & 0.5623 (0.0034) \\
+Radial & NB(0.25) & 300 & 0.5003 (0.0032) & 0.5518 (0.0032) & 0.5519 (0.0033) & 0.5495 (0.0032) & 0.5529 (0.0032) & 0.5503 (0.0034) & 0.5264 (0.0033) & 0.5610 (0.0035) \\
+Radial & NB(1.00) & 300 & 0.4951 (0.0030) & 0.5631 (0.0030) & 0.5655 (0.0031) & 0.5613 (0.0031) & 0.5646 (0.0030) & 0.5631 (0.0032) & 0.5296 (0.0037) & 0.5729 (0.0032) \\
+Radial & P & 600 & 0.4994 (0.0022) & 0.5600 (0.0024) & 0.5627 (0.0023) & 0.5594 (0.0023) & 0.5612 (0.0023) & 0.5628 (0.0022) & 0.5376 (0.0029) & 0.5709 (0.0023) \\
+Radial & NB(0.25) & 600 & 0.4986 (0.0024) & 0.5693 (0.0023) & 0.5704 (0.0022) & 0.5676 (0.0021) & 0.5697 (0.0022) & 0.5708 (0.0022) & 0.5474 (0.0027) & 0.5787 (0.0022) \\
+Radial & NB(1.00) & 600 & 0.5012 (0.0022) & 0.5757 (0.0022) & 0.5769 (0.0023) & 0.5743 (0.0022) & 0.5766 (0.0022) & 0.5768 (0.0023) & 0.5529 (0.0028) & 0.5859 (0.0023) \\
+\hline
+\end{tabular}%
+}
+\end{table*}

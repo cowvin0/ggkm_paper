@@ -1,0 +1,361 @@
+surface_id,surface,x_position,generating,generating_display,n,count_law,comparator,metric,mean_difference,mcse,halfwidth_95,paired_n,focal_model,focal_kernel,focal_file,comparator_file
+4,Interaction,0,poisson,P,300,P,GG-KM linear,ibs,-0.005738390496921786,0.0008622761479520309,0.0016900612499859806,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task161_poisson_n300_method4_genpoisson_kernellinear.csv
+4,Interaction,0,poisson,P,300,P,GG-KM linear,rmse,-0.02584715559295437,0.001933232473393217,0.0037891356478507053,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task161_poisson_n300_method4_genpoisson_kernellinear.csv
+4,Interaction,0,poisson,P,300,P,GG-KM linear,auc,0.007812350602668112,0.003527100736992682,0.006913117444505657,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task161_poisson_n300_method4_genpoisson_kernellinear.csv
+4,Interaction,0,poisson,P,300,P,Spline,ibs,-0.007578324881043498,0.0008016768730041877,0.0015712866710882079,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task303_spline_poisson_n300_method4_genpoisson_kernelparametric.csv
+4,Interaction,0,poisson,P,300,P,Spline,rmse,-0.029752458050431713,0.001886656742577739,0.003697847215452368,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task303_spline_poisson_n300_method4_genpoisson_kernelparametric.csv
+4,Interaction,0,poisson,P,300,P,Spline,auc,0.02141621966243732,0.003425432469939692,0.006713847641081796,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task303_spline_poisson_n300_method4_genpoisson_kernelparametric.csv
+4,Interaction,0,poisson,P,300,P,GG-KM polynomial,ibs,0.0009655802837250796,0.0008981867430167047,0.0017604460163127412,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task166_poisson_n300_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,0,poisson,P,300,P,GG-KM polynomial,rmse,0.013178557372230774,0.0023087213102529775,0.004525093768095836,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task166_poisson_n300_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,0,poisson,P,300,P,GG-KM polynomial,auc,-0.0504943609784829,0.0035142561993142625,0.006887942150655954,250,poisson,rbf,replications_task162_poisson_n300_method4_genpoisson_kernelrbf.csv,replications_task166_poisson_n300_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,0,poisson,P,300,NB,GG-KM linear,ibs,-0.0057162527197839085,0.0008620930051778969,0.001689702290148678,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task231_bn_n300_method4_genpoisson_kernellinear.csv
+4,Interaction,0,poisson,P,300,NB,GG-KM linear,rmse,-0.02573970701891889,0.0019369410002215478,0.0037964043604342334,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task231_bn_n300_method4_genpoisson_kernellinear.csv
+4,Interaction,0,poisson,P,300,NB,GG-KM linear,auc,0.007717238861196753,0.003527133412548763,0.0069131814885955755,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task231_bn_n300_method4_genpoisson_kernellinear.csv
+4,Interaction,0,poisson,P,300,NB,Spline,ibs,-0.007585060467897065,0.0007975890403684143,0.001563274519122092,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task313_spline_bn_n300_method4_genpoisson_kernelparametric.csv
+4,Interaction,0,poisson,P,300,NB,Spline,rmse,-0.02969736320023548,0.0018840682093576313,0.0036927736903409575,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task313_spline_bn_n300_method4_genpoisson_kernelparametric.csv
+4,Interaction,0,poisson,P,300,NB,Spline,auc,0.021211722463856872,0.003412418023044874,0.006688339325167953,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task313_spline_bn_n300_method4_genpoisson_kernelparametric.csv
+4,Interaction,0,poisson,P,300,NB,GG-KM polynomial,ibs,0.002090593640442042,0.000852962269315394,0.0016718060478581721,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task236_bn_n300_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,0,poisson,P,300,NB,GG-KM polynomial,rmse,0.018090997740121254,0.0018911294112513167,0.003706613646052581,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task236_bn_n300_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,0,poisson,P,300,NB,GG-KM polynomial,auc,-0.057099898895744204,0.0030635711418972923,0.006004599438118693,250,bn,rbf,replications_task232_bn_n300_method4_genpoisson_kernelrbf.csv,replications_task236_bn_n300_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,GG-KM linear,ibs,-0.006476605695306042,0.0007908236528219603,0.0015500143595310423,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task481_poisson_n300_method4_gennb025_kernellinear.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,GG-KM linear,rmse,-0.032426498274951567,0.001608936563918202,0.0031535156652796755,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task481_poisson_n300_method4_gennb025_kernellinear.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,GG-KM linear,auc,0.0056687095838573644,0.0032509697355759515,0.006371900681728865,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task481_poisson_n300_method4_gennb025_kernellinear.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,Spline,ibs,-0.008048002301333923,0.0008012012980140004,0.0015703545441074407,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task623_spline_poisson_n300_method4_gennb025_kernelparametric.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,Spline,rmse,-0.037057422128043825,0.0017157062804361715,0.003362784309654896,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task623_spline_poisson_n300_method4_gennb025_kernelparametric.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,Spline,auc,0.019162432692182832,0.0035037503745088223,0.006867350734037291,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task623_spline_poisson_n300_method4_gennb025_kernelparametric.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,GG-KM polynomial,ibs,0.002440839632346976,0.0007623389176653418,0.00149418427862407,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task486_poisson_n300_method4_gennb025_kernelpolynomial.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,GG-KM polynomial,rmse,0.009667080190007669,0.001967312430670332,0.0038559323641138505,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task486_poisson_n300_method4_gennb025_kernelpolynomial.csv
+4,Interaction,1,nb025,"NB
+.25",300,P,GG-KM polynomial,auc,-0.05854244103571789,0.0033187404345430037,0.006504731251704287,250,poisson,rbf,replications_task482_poisson_n300_method4_gennb025_kernelrbf.csv,replications_task486_poisson_n300_method4_gennb025_kernelpolynomial.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,GG-KM linear,ibs,-0.006485815902550522,0.000789224621726833,0.0015468802585845928,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task551_bn_n300_method4_gennb025_kernellinear.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,GG-KM linear,rmse,-0.03246282457376913,0.0016123834672617586,0.0031602715958330466,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task551_bn_n300_method4_gennb025_kernellinear.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,GG-KM linear,auc,0.005350552574185658,0.0032457063939536276,0.00636158453214911,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task551_bn_n300_method4_gennb025_kernellinear.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,Spline,ibs,-0.008059260272347714,0.0008005361893236942,0.0015690509310744406,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task633_spline_bn_n300_method4_gennb025_kernelparametric.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,Spline,rmse,-0.03710036928093541,0.0017132707851663293,0.0033580107389260053,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task633_spline_bn_n300_method4_gennb025_kernelparametric.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,Spline,auc,0.018826784009293825,0.003503566417255755,0.00686699017782128,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task633_spline_bn_n300_method4_gennb025_kernelparametric.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,GG-KM polynomial,ibs,0.003054347599276895,0.0007229494571685304,0.0014169809360503197,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task556_bn_n300_method4_gennb025_kernelpolynomial.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,GG-KM polynomial,rmse,0.012806601476575473,0.0016503311521919885,0.0032346490582962975,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task556_bn_n300_method4_gennb025_kernelpolynomial.csv
+4,Interaction,1,nb025,"NB
+.25",300,NB,GG-KM polynomial,auc,-0.06526857662239814,0.002626877544503317,0.005148679987226502,250,bn,rbf,replications_task552_bn_n300_method4_gennb025_kernelrbf.csv,replications_task556_bn_n300_method4_gennb025_kernelpolynomial.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,GG-KM linear,ibs,-0.008739100066603063,0.0011064730078152374,0.002168687095317865,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task801_poisson_n300_method4_gennb100_kernellinear.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,GG-KM linear,rmse,-0.037346245182872,0.0018177786557667238,0.0035628461653027786,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task801_poisson_n300_method4_gennb100_kernellinear.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,GG-KM linear,auc,0.01358921084295671,0.0038168249889471715,0.0074809769783364555,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task801_poisson_n300_method4_gennb100_kernellinear.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,Spline,ibs,-0.009283243003739013,0.0010737710249471427,0.0021045912088963996,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task943_spline_poisson_n300_method4_gennb100_kernelparametric.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,Spline,rmse,-0.03973556490499126,0.0017472092161434421,0.0034245300636411465,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task943_spline_poisson_n300_method4_gennb100_kernelparametric.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,Spline,auc,0.03262466988515213,0.0035983774581782786,0.0070528198180294255,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task943_spline_poisson_n300_method4_gennb100_kernelparametric.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,GG-KM polynomial,ibs,0.0032336991636982768,0.0008232521473508654,0.001613574208807696,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task806_poisson_n300_method4_gennb100_kernelpolynomial.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,GG-KM polynomial,rmse,0.008864705113442919,0.002093030317504916,0.004102339422309635,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task806_poisson_n300_method4_gennb100_kernelpolynomial.csv
+4,Interaction,2,nb100,"NB
+1.00",300,P,GG-KM polynomial,auc,-0.050930136506203066,0.0036047172588093827,0.00706524582726639,250,poisson,rbf,replications_task802_poisson_n300_method4_gennb100_kernelrbf.csv,replications_task806_poisson_n300_method4_gennb100_kernelpolynomial.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,GG-KM linear,ibs,-0.008712425477303228,0.0011045855880552334,0.0021649877525882575,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task871_bn_n300_method4_gennb100_kernellinear.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,GG-KM linear,rmse,-0.03757013782996876,0.0018123777632586087,0.0035522604159868728,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task871_bn_n300_method4_gennb100_kernellinear.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,GG-KM linear,auc,0.013036790225299114,0.0037565847900924627,0.007362906188581227,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task871_bn_n300_method4_gennb100_kernellinear.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,Spline,ibs,-0.009256382530182279,0.0010718321528687407,0.0021007910196227317,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task953_spline_bn_n300_method4_gennb100_kernelparametric.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,Spline,rmse,-0.03996525178610062,0.0017397418783668852,0.0034098940815990952,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task953_spline_bn_n300_method4_gennb100_kernelparametric.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,Spline,auc,0.03206981801526722,0.0035474345317906704,0.006952971682309714,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task953_spline_bn_n300_method4_gennb100_kernelparametric.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,GG-KM polynomial,ibs,0.004316421665350217,0.0007833064988794374,0.0015352807378036972,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task876_bn_n300_method4_gennb100_kernelpolynomial.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,GG-KM polynomial,rmse,0.014082589393081242,0.0016745726466991608,0.0032821623875303554,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task876_bn_n300_method4_gennb100_kernelpolynomial.csv
+4,Interaction,2,nb100,"NB
+1.00",300,NB,GG-KM polynomial,auc,-0.06014515492186348,0.002889213777840639,0.005662859004567652,250,bn,rbf,replications_task872_bn_n300_method4_gennb100_kernelrbf.csv,replications_task876_bn_n300_method4_gennb100_kernelpolynomial.csv
+4,Interaction,3,poisson,P,600,P,GG-KM linear,ibs,-0.008544902013071733,0.0006003914839729484,0.0011767673085869789,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task196_poisson_n600_method4_genpoisson_kernellinear.csv
+4,Interaction,3,poisson,P,600,P,GG-KM linear,rmse,-0.04714173181775523,0.0012303621024241517,0.002411509720751337,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task196_poisson_n600_method4_genpoisson_kernellinear.csv
+4,Interaction,3,poisson,P,600,P,GG-KM linear,auc,0.033390401566032714,0.002055314415361793,0.004028416254109114,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task196_poisson_n600_method4_genpoisson_kernellinear.csv
+4,Interaction,3,poisson,P,600,P,Spline,ibs,-0.010214424732994736,0.0005577364908007864,0.0010931635219695412,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task308_spline_poisson_n600_method4_genpoisson_kernelparametric.csv
+4,Interaction,3,poisson,P,600,P,Spline,rmse,-0.05251928549674532,0.0011963169116771886,0.0023447811468872894,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task308_spline_poisson_n600_method4_genpoisson_kernelparametric.csv
+4,Interaction,3,poisson,P,600,P,Spline,auc,0.03806589712271076,0.0019932745153326166,0.003906818050051928,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task308_spline_poisson_n600_method4_genpoisson_kernelparametric.csv
+4,Interaction,3,poisson,P,600,P,GG-KM polynomial,ibs,0.001624811666516731,0.00039719342553063737,0.0007784991140400492,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task201_poisson_n600_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,3,poisson,P,600,P,GG-KM polynomial,rmse,0.013464573020305714,0.0014764233557313996,0.002893789777233543,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task201_poisson_n600_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,3,poisson,P,600,P,GG-KM polynomial,auc,-0.03950339098182877,0.0017790061681696708,0.0034868520896125547,250,poisson,rbf,replications_task197_poisson_n600_method4_genpoisson_kernelrbf.csv,replications_task201_poisson_n600_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,3,poisson,P,600,NB,GG-KM linear,ibs,-0.008546336626719093,0.0006002669407811984,0.001176523203931149,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task266_bn_n600_method4_genpoisson_kernellinear.csv
+4,Interaction,3,poisson,P,600,NB,GG-KM linear,rmse,-0.04715201916173128,0.0012300178951610732,0.0024108350745157036,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task266_bn_n600_method4_genpoisson_kernellinear.csv
+4,Interaction,3,poisson,P,600,NB,GG-KM linear,auc,0.033385662056399264,0.002054280241878935,0.004026389274082713,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task266_bn_n600_method4_genpoisson_kernellinear.csv
+4,Interaction,3,poisson,P,600,NB,Spline,ibs,-0.010215426960570845,0.0005576359035043553,0.0010929663708685365,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task318_spline_bn_n600_method4_genpoisson_kernelparametric.csv
+4,Interaction,3,poisson,P,600,NB,Spline,rmse,-0.052527297111451335,0.0011959324280989355,0.0023440275590739133,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task318_spline_bn_n600_method4_genpoisson_kernelparametric.csv
+4,Interaction,3,poisson,P,600,NB,Spline,auc,0.038061111329553685,0.001992844142583838,0.0039059745194643227,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task318_spline_bn_n600_method4_genpoisson_kernelparametric.csv
+4,Interaction,3,poisson,P,600,NB,GG-KM polynomial,ibs,0.0018988683278536147,0.00036143694386857154,0.0007084164099824003,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task271_bn_n600_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,3,poisson,P,600,NB,GG-KM polynomial,rmse,0.015302580163051768,0.0011432813497087595,0.0022408314454291684,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task271_bn_n600_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,3,poisson,P,600,NB,GG-KM polynomial,auc,-0.04135290435987442,0.0013590880500168015,0.0026638125780329308,250,bn,rbf,replications_task267_bn_n600_method4_genpoisson_kernelrbf.csv,replications_task271_bn_n600_method4_genpoisson_kernelpolynomial.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,GG-KM linear,ibs,-0.00985326675804597,0.0005514824000662985,0.001080905504129945,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task516_poisson_n600_method4_gennb025_kernellinear.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,GG-KM linear,rmse,-0.05047943149939617,0.0013143727803391065,0.0025761706494646488,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task516_poisson_n600_method4_gennb025_kernellinear.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,GG-KM linear,auc,0.034136865087554466,0.0020874522915497393,0.0040914064914374885,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task516_poisson_n600_method4_gennb025_kernellinear.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,Spline,ibs,-0.011079077456978887,0.0005202648150873394,0.0010197190375711852,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task628_spline_poisson_n600_method4_gennb025_kernelparametric.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,Spline,rmse,-0.054223723380173214,0.0012643728350885597,0.002478170756773577,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task628_spline_poisson_n600_method4_gennb025_kernelparametric.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,Spline,auc,0.041350560858476736,0.001892882599694865,0.0037100498954019353,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task628_spline_poisson_n600_method4_gennb025_kernelparametric.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,GG-KM polynomial,ibs,0.002591439122149288,0.00037212758557581883,0.0007293700677286049,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task521_poisson_n600_method4_gennb025_kernelpolynomial.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,GG-KM polynomial,rmse,0.01720055205115663,0.0011485050384154837,0.002251069875294348,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task521_poisson_n600_method4_gennb025_kernelpolynomial.csv
+4,Interaction,4,nb025,"NB
+.25",600,P,GG-KM polynomial,auc,-0.04059159860923989,0.0014557717486972115,0.0028533126274465346,250,poisson,rbf,replications_task517_poisson_n600_method4_gennb025_kernelrbf.csv,replications_task521_poisson_n600_method4_gennb025_kernelpolynomial.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,GG-KM linear,ibs,-0.009853445850853695,0.0005515018390666069,0.0010809436045705494,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task586_bn_n600_method4_gennb025_kernellinear.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,GG-KM linear,rmse,-0.050478049324157614,0.001314054628559689,0.0025755470719769904,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task586_bn_n600_method4_gennb025_kernellinear.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,GG-KM linear,auc,0.034147465035007145,0.002089038738880543,0.0040945159282058646,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task586_bn_n600_method4_gennb025_kernellinear.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,Spline,ibs,-0.011079992049349225,0.0005202366877755478,0.0010196639080400736,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task638_spline_bn_n600_method4_gennb025_kernelparametric.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,Spline,rmse,-0.05422285958483125,0.0012643188557865045,0.002478064957341549,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task638_spline_bn_n600_method4_gennb025_kernelparametric.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,Spline,auc,0.041351831258938515,0.0018925550461184521,0.0037094078903921663,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task638_spline_bn_n600_method4_gennb025_kernelparametric.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,GG-KM polynomial,ibs,0.0026803231578947056,0.0003736868794362521,0.0007324262836950541,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task591_bn_n600_method4_gennb025_kernelpolynomial.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,GG-KM polynomial,rmse,0.017685958523675317,0.001109096757399615,0.0021738296445032454,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task591_bn_n600_method4_gennb025_kernelpolynomial.csv
+4,Interaction,4,nb025,"NB
+.25",600,NB,GG-KM polynomial,auc,-0.04129279934808633,0.0012973186293685581,0.002542744513562374,250,bn,rbf,replications_task587_bn_n600_method4_gennb025_kernelrbf.csv,replications_task591_bn_n600_method4_gennb025_kernelpolynomial.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,GG-KM linear,ibs,-0.013654436165112426,0.0005976880155298594,0.0011714685104385243,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task836_poisson_n600_method4_gennb100_kernellinear.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,GG-KM linear,rmse,-0.05838543314766683,0.00109450238614067,0.002145224676835713,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task836_poisson_n600_method4_gennb100_kernellinear.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,GG-KM linear,auc,0.032712637206749835,0.0020218180138453904,0.003962763307136965,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task836_poisson_n600_method4_gennb100_kernellinear.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,Spline,ibs,-0.014715797775763777,0.0005755735235669501,0.0011281241061912221,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task948_spline_poisson_n600_method4_gennb100_kernelparametric.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,Spline,rmse,-0.06192163921215642,0.001039230766344392,0.0020368923020350083,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task948_spline_poisson_n600_method4_gennb100_kernelparametric.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,Spline,auc,0.04115021885589604,0.001807384729760925,0.003542474070331413,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task948_spline_poisson_n600_method4_gennb100_kernelparametric.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,GG-KM polynomial,ibs,0.0029756384478452206,0.0003556549446803,0.0006970836915733879,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task841_poisson_n600_method4_gennb100_kernelpolynomial.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,GG-KM polynomial,rmse,0.014584934546810239,0.0011117742569557425,0.0021790775436332553,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task841_poisson_n600_method4_gennb100_kernelpolynomial.csv
+4,Interaction,5,nb100,"NB
+1.00",600,P,GG-KM polynomial,auc,-0.043687509968312596,0.0013585049621586318,0.0026626697258309183,250,poisson,rbf,replications_task837_poisson_n600_method4_gennb100_kernelrbf.csv,replications_task841_poisson_n600_method4_gennb100_kernelpolynomial.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,GG-KM linear,ibs,-0.01365510679863021,0.0005976402635201092,0.001171374916499414,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task906_bn_n600_method4_gennb100_kernellinear.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,GG-KM linear,rmse,-0.058379615348184685,0.0010946206781568787,0.002145456529187482,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task906_bn_n600_method4_gennb100_kernellinear.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,GG-KM linear,auc,0.032721197051268525,0.002021772684659861,0.003962674461933328,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task906_bn_n600_method4_gennb100_kernellinear.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,Spline,ibs,-0.014716336661922543,0.0005755383686585917,0.0011280552025708399,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task958_spline_bn_n600_method4_gennb100_kernelparametric.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,Spline,rmse,-0.06191695659432933,0.001039288502449649,0.0020370054648013117,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task958_spline_bn_n600_method4_gennb100_kernelparametric.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,Spline,auc,0.04115127446203523,0.001807231451851339,0.0035421736456286244,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task958_spline_bn_n600_method4_gennb100_kernelparametric.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,GG-KM polynomial,ibs,0.0029743862596704816,0.0003558448787943877,0.0006974559624369999,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task911_bn_n600_method4_gennb100_kernelpolynomial.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,GG-KM polynomial,rmse,0.014579851880839068,0.0011121679243090332,0.002179849131645705,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task911_bn_n600_method4_gennb100_kernelpolynomial.csv
+4,Interaction,5,nb100,"NB
+1.00",600,NB,GG-KM polynomial,auc,-0.043692393492888955,0.0013585668301779404,0.002662790987148763,250,bn,rbf,replications_task907_bn_n600_method4_gennb100_kernelrbf.csv,replications_task911_bn_n600_method4_gennb100_kernelpolynomial.csv
+5,Radial,0,poisson,P,300,P,GG-KM linear,ibs,-0.006146712790099598,0.000700285009127308,0.0013725586178895237,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task168_poisson_n300_method5_genpoisson_kernellinear.csv
+5,Radial,0,poisson,P,300,P,GG-KM linear,rmse,-0.029362923385730644,0.0018738466198233421,0.0036727393748537504,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task168_poisson_n300_method5_genpoisson_kernellinear.csv
+5,Radial,0,poisson,P,300,P,GG-KM linear,auc,0.022084912117975728,0.003161270846612286,0.00619609085936008,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task168_poisson_n300_method5_genpoisson_kernellinear.csv
+5,Radial,0,poisson,P,300,P,Spline,ibs,0.0009132871196905498,0.0006264771761769673,0.0012278952653068558,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task304_spline_poisson_n300_method5_genpoisson_kernelparametric.csv
+5,Radial,0,poisson,P,300,P,Spline,rmse,0.00648917314071264,0.001805747857160905,0.003539265800035374,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task304_spline_poisson_n300_method5_genpoisson_kernelparametric.csv
+5,Radial,0,poisson,P,300,P,Spline,auc,-0.016929078981681934,0.0029702569434942264,0.005821703609248684,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task304_spline_poisson_n300_method5_genpoisson_kernelparametric.csv
+5,Radial,0,poisson,P,300,P,GG-KM polynomial,ibs,-0.005863440037346314,0.0007325653165440908,0.0014358280204264178,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task173_poisson_n300_method5_genpoisson_kernelpolynomial.csv
+5,Radial,0,poisson,P,300,P,GG-KM polynomial,rmse,-0.026599604665252585,0.002421571918646644,0.004746280960547422,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task173_poisson_n300_method5_genpoisson_kernelpolynomial.csv
+5,Radial,0,poisson,P,300,P,GG-KM polynomial,auc,-0.025227627227501336,0.003670880190751741,0.007194925173873412,250,poisson,rbf,replications_task169_poisson_n300_method5_genpoisson_kernelrbf.csv,replications_task173_poisson_n300_method5_genpoisson_kernelpolynomial.csv
+5,Radial,0,poisson,P,300,NB,GG-KM linear,ibs,-0.006146044911877123,0.0007000587742089322,0.0013721151974495072,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task238_bn_n300_method5_genpoisson_kernellinear.csv
+5,Radial,0,poisson,P,300,NB,GG-KM linear,rmse,-0.02909610155136084,0.0019405683198740141,0.0038035139069530675,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task238_bn_n300_method5_genpoisson_kernellinear.csv
+5,Radial,0,poisson,P,300,NB,GG-KM linear,auc,0.022390416317101203,0.003215980481374717,0.006303321743494445,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task238_bn_n300_method5_genpoisson_kernellinear.csv
+5,Radial,0,poisson,P,300,NB,Spline,ibs,0.000947123927861744,0.000618993926547969,0.001213228096034019,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task314_spline_bn_n300_method5_genpoisson_kernelparametric.csv
+5,Radial,0,poisson,P,300,NB,Spline,rmse,0.006790522672689178,0.0018619686702673478,0.0036494585937240018,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task314_spline_bn_n300_method5_genpoisson_kernelparametric.csv
+5,Radial,0,poisson,P,300,NB,Spline,auc,-0.01630918145756607,0.0030035702620511964,0.005886997713620345,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task314_spline_bn_n300_method5_genpoisson_kernelparametric.csv
+5,Radial,0,poisson,P,300,NB,GG-KM polynomial,ibs,-0.004313080284461572,0.0006614523197413499,0.0012964465466930458,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task243_bn_n300_method5_genpoisson_kernelpolynomial.csv
+5,Radial,0,poisson,P,300,NB,GG-KM polynomial,rmse,-0.016787142368222322,0.0017624467892621905,0.0034543957069538933,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task243_bn_n300_method5_genpoisson_kernelpolynomial.csv
+5,Radial,0,poisson,P,300,NB,GG-KM polynomial,auc,-0.04226606168348897,0.0024890166106554127,0.004878472556884609,250,bn,rbf,replications_task239_bn_n300_method5_genpoisson_kernelrbf.csv,replications_task243_bn_n300_method5_genpoisson_kernelpolynomial.csv
+5,Radial,1,nb025,"NB
+.25",300,P,GG-KM linear,ibs,-0.00573112965043501,0.0006699110802874838,0.0013130257173634683,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task488_poisson_n300_method5_gennb025_kernellinear.csv
+5,Radial,1,nb025,"NB
+.25",300,P,GG-KM linear,rmse,-0.03320479084574307,0.0016203869994597857,0.00317595851894118,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task488_poisson_n300_method5_gennb025_kernellinear.csv
+5,Radial,1,nb025,"NB
+.25",300,P,GG-KM linear,auc,0.02135569727468149,0.00260563737140194,0.005107049247947803,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task488_poisson_n300_method5_gennb025_kernellinear.csv
+5,Radial,1,nb025,"NB
+.25",300,P,Spline,ibs,0.0005607303258372731,0.0006211880147112113,0.0012175285088339741,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task624_spline_poisson_n300_method5_gennb025_kernelparametric.csv
+5,Radial,1,nb025,"NB
+.25",300,P,Spline,rmse,0.0042346431740399645,0.001521670595155752,0.002982474366505274,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task624_spline_poisson_n300_method5_gennb025_kernelparametric.csv
+5,Radial,1,nb025,"NB
+.25",300,P,Spline,auc,-0.017013635338934546,0.0025318522410201065,0.004962430392399408,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task624_spline_poisson_n300_method5_gennb025_kernelparametric.csv
+5,Radial,1,nb025,"NB
+.25",300,P,GG-KM polynomial,ibs,-0.007065394200560962,0.0007061522399287055,0.0013840583902602628,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task493_poisson_n300_method5_gennb025_kernelpolynomial.csv
+5,Radial,1,nb025,"NB
+.25",300,P,GG-KM polynomial,rmse,-0.03328631385798812,0.002145007892978985,0.00420421547023881,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task493_poisson_n300_method5_gennb025_kernelpolynomial.csv
+5,Radial,1,nb025,"NB
+.25",300,P,GG-KM polynomial,auc,-0.0344136901375503,0.003654121662952221,0.007162078459386353,250,poisson,rbf,replications_task489_poisson_n300_method5_gennb025_kernelrbf.csv,replications_task493_poisson_n300_method5_gennb025_kernelpolynomial.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,GG-KM linear,ibs,-0.005619859312356797,0.0006744997321392662,0.0013220194749929616,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task558_bn_n300_method5_gennb025_kernellinear.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,GG-KM linear,rmse,-0.03258031261780631,0.0016586853635701796,0.003251023312597552,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task558_bn_n300_method5_gennb025_kernellinear.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,GG-KM linear,auc,0.02240557971381622,0.0027280096434395616,0.005346898901141541,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task558_bn_n300_method5_gennb025_kernellinear.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,Spline,ibs,0.0006698409252968401,0.0006175092555471668,0.001210318140872447,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task634_spline_bn_n300_method5_gennb025_kernelparametric.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,Spline,rmse,0.004821632773041896,0.0015510297988426164,0.003040018405731528,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task634_spline_bn_n300_method5_gennb025_kernelparametric.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,Spline,auc,-0.015980520262085733,0.0025791549572521852,0.005055143716214283,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task634_spline_bn_n300_method5_gennb025_kernelparametric.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,GG-KM polynomial,ibs,-0.005112283945325203,0.0007065482574567472,0.0013848345846152244,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task563_bn_n300_method5_gennb025_kernelpolynomial.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,GG-KM polynomial,rmse,-0.023362419516596948,0.0016305886198646551,0.003195953694934724,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task563_bn_n300_method5_gennb025_kernelpolynomial.csv
+5,Radial,1,nb025,"NB
+.25",300,NB,GG-KM polynomial,auc,-0.05110247520217518,0.002206801156138824,0.004325330266032095,250,bn,rbf,replications_task559_bn_n300_method5_gennb025_kernelrbf.csv,replications_task563_bn_n300_method5_gennb025_kernelpolynomial.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,GG-KM linear,ibs,-0.008158828026188636,0.0007809807724557853,0.0015307223140133392,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task808_poisson_n300_method5_gennb100_kernellinear.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,GG-KM linear,rmse,-0.035423580724656074,0.0016134521946967791,0.003162366301605687,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task808_poisson_n300_method5_gennb100_kernellinear.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,GG-KM linear,auc,0.02689102928210354,0.0025952044997587264,0.0050866008195271034,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task808_poisson_n300_method5_gennb100_kernellinear.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,Spline,ibs,0.002046027898441932,0.0006967232199628566,0.001365577511127199,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task944_spline_poisson_n300_method5_gennb100_kernelparametric.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,Spline,rmse,0.005962771291510901,0.001530946955957848,0.003000656033677382,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task944_spline_poisson_n300_method5_gennb100_kernelparametric.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,Spline,auc,-0.019342164928890876,0.002602468779283012,0.005100838807394703,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task944_spline_poisson_n300_method5_gennb100_kernelparametric.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,GG-KM polynomial,ibs,-0.005825221962340433,0.0007998424317829083,0.0015676911662945003,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task813_poisson_n300_method5_gennb100_kernelpolynomial.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,GG-KM polynomial,rmse,-0.029786193338570285,0.001993536741407396,0.003907332013158496,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task813_poisson_n300_method5_gennb100_kernelpolynomial.csv
+5,Radial,2,nb100,"NB
+1.00",300,P,GG-KM polynomial,auc,-0.027620900053849602,0.0038335434940352225,0.007513745248309036,250,poisson,rbf,replications_task809_poisson_n300_method5_gennb100_kernelrbf.csv,replications_task813_poisson_n300_method5_gennb100_kernelpolynomial.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,GG-KM linear,ibs,-0.00817353825972383,0.0007814109149896619,0.0015315653933797373,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task878_bn_n300_method5_gennb100_kernellinear.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,GG-KM linear,rmse,-0.03553296109800488,0.0016140293486657867,0.0031634975233849416,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task878_bn_n300_method5_gennb100_kernellinear.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,GG-KM linear,auc,0.02704852072483058,0.0025875449352128882,0.005071588073017261,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task878_bn_n300_method5_gennb100_kernellinear.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,Spline,ibs,0.002029486847958024,0.0006977034054944637,0.0013674986747691487,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task954_spline_bn_n300_method5_gennb100_kernelparametric.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,Spline,rmse,0.005832990092909718,0.001527932200174214,0.0029947471123414593,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task954_spline_bn_n300_method5_gennb100_kernelparametric.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,Spline,auc,-0.01918474245607043,0.002604351352789574,0.005104528651467565,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task954_spline_bn_n300_method5_gennb100_kernelparametric.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,GG-KM polynomial,ibs,-0.004512729941504607,0.0007696548218138167,0.0015085234507550807,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task883_bn_n300_method5_gennb100_kernelpolynomial.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,GG-KM polynomial,rmse,-0.02188989565226091,0.0016045951426858383,0.003145006479664243,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task883_bn_n300_method5_gennb100_kernelpolynomial.csv
+5,Radial,2,nb100,"NB
+1.00",300,NB,GG-KM polynomial,auc,-0.048778305125162506,0.002101236871457286,0.00411842426805628,250,bn,rbf,replications_task879_bn_n300_method5_gennb100_kernelrbf.csv,replications_task883_bn_n300_method5_gennb100_kernelpolynomial.csv
+5,Radial,3,poisson,P,600,P,GG-KM linear,ibs,-0.00556939330604571,0.00047028170318936505,0.0009217521382511555,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task203_poisson_n600_method5_genpoisson_kernellinear.csv
+5,Radial,3,poisson,P,600,P,GG-KM linear,rmse,-0.038409083541026956,0.001238748657290689,0.00242794736828975,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task203_poisson_n600_method5_genpoisson_kernellinear.csv
+5,Radial,3,poisson,P,600,P,GG-KM linear,auc,0.06018420229776157,0.0015451631765244437,0.0030285198259879095,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task203_poisson_n600_method5_genpoisson_kernellinear.csv
+5,Radial,3,poisson,P,600,P,Spline,ibs,0.0013030359802946175,0.0003679690844218146,0.0007212194054667566,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task309_spline_poisson_n600_method5_genpoisson_kernelparametric.csv
+5,Radial,3,poisson,P,600,P,Spline,rmse,0.008897712746966427,0.001140109593958739,0.0022346148041591284,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task309_spline_poisson_n600_method5_genpoisson_kernelparametric.csv
+5,Radial,3,poisson,P,600,P,Spline,auc,-0.0036993412839867405,0.0017144961987358917,0.003360412549522348,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task309_spline_poisson_n600_method5_genpoisson_kernelparametric.csv
+5,Radial,3,poisson,P,600,P,GG-KM polynomial,ibs,-0.003540608183371329,0.0004781484074953986,0.0009371708786909813,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task208_poisson_n600_method5_genpoisson_kernelpolynomial.csv
+5,Radial,3,poisson,P,600,P,GG-KM polynomial,rmse,-0.019327772937678015,0.002301596983778031,0.004511130088204941,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task208_poisson_n600_method5_genpoisson_kernelpolynomial.csv
+5,Radial,3,poisson,P,600,P,GG-KM polynomial,auc,-0.004524247712388776,0.002913510444481806,0.00571048047118434,250,poisson,rbf,replications_task204_poisson_n600_method5_genpoisson_kernelrbf.csv,replications_task208_poisson_n600_method5_genpoisson_kernelpolynomial.csv
+5,Radial,3,poisson,P,600,NB,GG-KM linear,ibs,-0.005569609061592612,0.0004702634465061566,0.0009217163551520669,250,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task273_bn_n600_method5_genpoisson_kernellinear.csv
+5,Radial,3,poisson,P,600,NB,GG-KM linear,rmse,-0.03840510039405842,0.0012387922220824263,0.0024280327552815553,250,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task273_bn_n600_method5_genpoisson_kernellinear.csv
+5,Radial,3,poisson,P,600,NB,GG-KM linear,auc,0.06018594497487591,0.001545022147943238,0.0030282434099687464,250,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task273_bn_n600_method5_genpoisson_kernellinear.csv
+5,Radial,3,poisson,P,600,NB,Spline,ibs,0.00130320543182876,0.0003679699390615167,0.0007212210805605727,250,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task319_spline_bn_n600_method5_genpoisson_kernelparametric.csv
+5,Radial,3,poisson,P,600,NB,Spline,rmse,0.00891553871269524,0.001140877605723976,0.0022361201072189927,250,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task319_spline_bn_n600_method5_genpoisson_kernelparametric.csv
+5,Radial,3,poisson,P,600,NB,Spline,auc,-0.0036960119438244495,0.001714298488041791,0.00336002503656191,250,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task319_spline_bn_n600_method5_genpoisson_kernelparametric.csv
+5,Radial,3,poisson,P,600,NB,GG-KM polynomial,ibs,-0.0017407400304420308,0.00041468506842831453,0.0008127827341194965,249,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task278_bn_n600_method5_genpoisson_kernelpolynomial.csv
+5,Radial,3,poisson,P,600,NB,GG-KM polynomial,rmse,-0.007124779301308495,0.001216497004320293,0.0023843341284677743,249,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task278_bn_n600_method5_genpoisson_kernelpolynomial.csv
+5,Radial,3,poisson,P,600,NB,GG-KM polynomial,auc,-0.0189565619626014,0.001346053724016984,0.0026382652990732886,249,bn,rbf,replications_task274_bn_n600_method5_genpoisson_kernelrbf.csv,replications_task278_bn_n600_method5_genpoisson_kernelpolynomial.csv
+5,Radial,4,nb025,"NB
+.25",600,P,GG-KM linear,ibs,-0.00670693084272188,0.0005616759914647785,0.001100884943270966,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task523_poisson_n600_method5_gennb025_kernellinear.csv
+5,Radial,4,nb025,"NB
+.25",600,P,GG-KM linear,rmse,-0.039160813145862304,0.0012246729833713132,0.002400359047407774,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task523_poisson_n600_method5_gennb025_kernellinear.csv
+5,Radial,4,nb025,"NB
+.25",600,P,GG-KM linear,auc,0.06305417435517834,0.0017332392569854064,0.0033971489436913963,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task523_poisson_n600_method5_gennb025_kernellinear.csv
+5,Radial,4,nb025,"NB
+.25",600,P,Spline,ibs,0.0013362861211721885,0.00045456187042851776,0.0008909412660398948,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task629_spline_poisson_n600_method5_gennb025_kernelparametric.csv
+5,Radial,4,nb025,"NB
+.25",600,P,Spline,rmse,0.010547003379719684,0.0012356288166947263,0.0024218324807216635,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task629_spline_poisson_n600_method5_gennb025_kernelparametric.csv
+5,Radial,4,nb025,"NB
+.25",600,P,Spline,auc,-0.0032584110308414333,0.0017026400715483053,0.003337174540234678,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task629_spline_poisson_n600_method5_gennb025_kernelparametric.csv
+5,Radial,4,nb025,"NB
+.25",600,P,GG-KM polynomial,ibs,-0.0035707453096586947,0.0005632307956185072,0.0011039323594122742,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task528_poisson_n600_method5_gennb025_kernelpolynomial.csv
+5,Radial,4,nb025,"NB
+.25",600,P,GG-KM polynomial,rmse,-0.017538262168605233,0.001967166099770879,0.0038556455555509225,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task528_poisson_n600_method5_gennb025_kernelpolynomial.csv
+5,Radial,4,nb025,"NB
+.25",600,P,GG-KM polynomial,auc,-0.009043565085014558,0.002875439548582226,0.005635861515221163,250,poisson,rbf,replications_task524_poisson_n600_method5_gennb025_kernelrbf.csv,replications_task528_poisson_n600_method5_gennb025_kernelpolynomial.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,GG-KM linear,ibs,-0.006706120483921527,0.0005617092137349707,0.0011009500589205426,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task593_bn_n600_method5_gennb025_kernellinear.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,GG-KM linear,rmse,-0.03917491962079552,0.0012219928076159837,0.002395105902927328,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task593_bn_n600_method5_gennb025_kernellinear.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,GG-KM linear,auc,0.06305233469049737,0.0017333968487425677,0.0033974578235354326,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task593_bn_n600_method5_gennb025_kernellinear.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,Spline,ibs,0.001336415818600106,0.0004546616836526568,0.0008911368999592074,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task639_spline_bn_n600_method5_gennb025_kernelparametric.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,Spline,rmse,0.010530627529296158,0.0012339598088432437,0.0024185612253327577,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task639_spline_bn_n600_method5_gennb025_kernelparametric.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,Spline,auc,-0.0032625206671749916,0.0017025177160544707,0.0033369347234667624,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task639_spline_bn_n600_method5_gennb025_kernelparametric.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,GG-KM polynomial,ibs,-0.0018965076278533814,0.0004555571104106617,0.0008928919364048969,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task598_bn_n600_method5_gennb025_kernelpolynomial.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,GG-KM polynomial,rmse,-0.009219141914191225,0.0012105926578685991,0.0023727616094224545,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task598_bn_n600_method5_gennb025_kernelpolynomial.csv
+5,Radial,4,nb025,"NB
+.25",600,NB,GG-KM polynomial,auc,-0.021656853624120984,0.0014492367778168047,0.0028405040845209373,250,bn,rbf,replications_task594_bn_n600_method5_gennb025_kernelrbf.csv,replications_task598_bn_n600_method5_gennb025_kernelpolynomial.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,GG-KM linear,ibs,-0.008364035015189841,0.0005172440439174151,0.0010137983260781337,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task843_poisson_n600_method5_gennb100_kernellinear.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,GG-KM linear,rmse,-0.042990607581904705,0.001145431447226105,0.0022450456365631657,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task843_poisson_n600_method5_gennb100_kernellinear.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,GG-KM linear,auc,0.06865559596678275,0.0016640583852429638,0.003261554435076209,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task843_poisson_n600_method5_gennb100_kernellinear.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,Spline,ibs,0.0014159744524502873,0.00040079559047184976,0.0007855593573248256,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task949_spline_poisson_n600_method5_gennb100_kernelparametric.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,Spline,rmse,0.007660555540612775,0.001166431540075967,0.0022862058185488953,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task949_spline_poisson_n600_method5_gennb100_kernelparametric.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,Spline,auc,-0.00349409684221413,0.001709626575994902,0.003350868088950008,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task949_spline_poisson_n600_method5_gennb100_kernelparametric.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,GG-KM polynomial,ibs,-0.0038951798164010864,0.0005498838889436822,0.001077772422329617,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task848_poisson_n600_method5_gennb100_kernelpolynomial.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,GG-KM polynomial,rmse,-0.020728432926003983,0.0020578792892291167,0.004033443406889069,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task848_poisson_n600_method5_gennb100_kernelpolynomial.csv
+5,Radial,5,nb100,"NB
+1.00",600,P,GG-KM polynomial,auc,-0.00044114065435435057,0.0032426913013536354,0.006355674950653125,250,poisson,rbf,replications_task844_poisson_n600_method5_gennb100_kernelrbf.csv,replications_task848_poisson_n600_method5_gennb100_kernelpolynomial.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,GG-KM linear,ibs,-0.00836333276534682,0.0005172133452736393,0.001013738156736333,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task913_bn_n600_method5_gennb100_kernellinear.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,GG-KM linear,rmse,-0.04298932506815436,0.0011449445946997436,0.0022440914056114977,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task913_bn_n600_method5_gennb100_kernellinear.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,GG-KM linear,auc,0.06866284890531713,0.001664269320541845,0.003261967868262016,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task913_bn_n600_method5_gennb100_kernellinear.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,Spline,ibs,0.0014158334481524499,0.00040081567656259073,0.0007855987260626778,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task959_spline_bn_n600_method5_gennb100_kernelparametric.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,Spline,rmse,0.007660087518949068,0.001166227274439884,0.0022858054579021725,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task959_spline_bn_n600_method5_gennb100_kernelparametric.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,Spline,auc,-0.0034932058290298826,0.0017097005044359452,0.0033510129886944527,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task959_spline_bn_n600_method5_gennb100_kernelparametric.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,GG-KM polynomial,ibs,-0.0017627920667314,0.00040860773954724973,0.0008008711695126094,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task918_bn_n600_method5_gennb100_kernelpolynomial.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,GG-KM polynomial,rmse,-0.009485283019433343,0.0011254519853706717,0.0022058858913265164,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task918_bn_n600_method5_gennb100_kernelpolynomial.csv
+5,Radial,5,nb100,"NB
+1.00",600,NB,GG-KM polynomial,auc,-0.018266351601224032,0.0013364983234591963,0.0026195367139800244,250,bn,rbf,replications_task914_bn_n600_method5_gennb100_kernelrbf.csv,replications_task918_bn_n600_method5_gennb100_kernelpolynomial.csv

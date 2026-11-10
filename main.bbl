@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{29}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -180,6 +180,13 @@ Erika Graf, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher.
 \newblock \emph{Stat Med}, 18\penalty0 (17--18):\penalty0 2529--2545, 1999.
 \newblock
   \doi{https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5}.
+
+\bibitem[Uno et~al.(2011)Uno, Cai, Pencina, D'Agostino, and Wei]{uno2011}
+Hajime Uno, Tianxi Cai, Michael~J. Pencina, Ralph~B. D'Agostino, and L.~J. Wei.
+\newblock On the {C}-statistics for evaluating overall adequacy of risk
+  prediction procedures with censored survival data.
+\newblock \emph{Stat Med}, 30\penalty0 (10):\penalty0 1105--1117, 2011.
+\newblock \doi{https://doi.org/10.1002/sim.4154}.
 
 \bibitem[Canty et~al.(2025)Canty, Ripley, and Brazzale]{boot2025}
 Angelo Canty, Brian Ripley, and Alessandra~R. Brazzale.
