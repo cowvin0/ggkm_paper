@@ -199,6 +199,12 @@ requests one CPU, `4gb`, and one hour.
 
 ## Latent-count misspecification study
 
+The separate [confirmatory robustness workflow](../docs/latent_robustness_confirmatory.md)
+adds a fitting audit, independent precision pilot, simultaneous noninferiority
+bounds, and convergence sensitivity analyses. Start it with
+`python scripts/run_confirmatory_workflow.py --mode cluster --stage audit`.
+The original study described below retains its existing settings and outputs.
+
 The robustness workflow is independent of the existing paper experiments:
 
 ```bash

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "margins": {"integrated_brier": 0.002, "cure_rmse": 0.01},
+  "margin_justification": "Study-specific research tolerances for mean paired deterioration: 0.002 absolute IPCW IBS and 0.010 absolute cure-probability RMSE. The primary paper's quadratic-surface simulations report RBF GG-KM improvements over linear-kernel GG-KM of approximately 0.007-0.012 IBS and 0.04-0.07 cure RMSE (sections/06_discussion.tex, principal simulation results). The selected tolerances allow losing approximately 17-29% and 14-25% of those benchmark improvements, respectively, preserving at least approximately 71% of the IBS gain and 75% of the cure-RMSE gain over that reported range. A cure-RMSE increase of 0.010 is one percentage point on the probability-error scale, not a bound on every individual's prediction error. These benchmark gains motivate common absolute tolerances across the prespecified robustness cells; they do not assert the same gains in every cell. This is a research judgment informed by the paper and the already inspected exploratory misspecification study, fixed before the new independent pilot/final outcomes. The values were not selected to make every historical comparison pass and are not clinically validated or universal cutoffs.",
+  "alpha": 0.05,
+  "primary_metrics": ["integrated_brier", "cure_rmse"],
+  "analyses": ["all_finite", "jointly_converged"],
+  "audit_replications": 5,
+  "pilot_replications": 30,
+  "final_replications": null,
+  "minimum_final_replications": 356,
+  "halfwidth_margin_fraction": 0.25,
+  "seeds": {"audit": 20261120, "pilot": 20261121, "final": 20261122},
+  "fitting": {
+    "dispersion_starts": [0.0001, 0.25, 1.0, 2.0],
+    "latency_starts": [[1.0, 1.0, 1.0], [1.6, 1.3, 1.1]],
+    "retries": 1,
+    "retry_multiplier": 2,
+    "profile_dispersion": [0.0, 0.0001, 0.25, 0.5, 1.0, 2.0, 4.0],
+    "profile_improvement_tolerance": 0.01
+  }
+}

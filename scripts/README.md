@@ -453,6 +453,11 @@ RBF. The original `*_ibs_auc` and `*_with_auc` files remain unchanged.
 
 ## Latent-count robustness workflow
 
+For the separate optimization audit and confirmatory noninferiority study, see
+[the confirmatory protocol and PBS instructions](../docs/latent_robustness_confirmatory.md).
+Its entry point is `run_confirmatory_workflow.py`; it preserves the exploratory
+workflow below and requires scientifically justified margins before its pilot.
+
 ```bash
 python scripts/run_workflow.py --mode cluster --datasets latent-robustness
 ```

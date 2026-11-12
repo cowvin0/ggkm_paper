@@ -64,7 +64,7 @@ ggkm_run_job() {
     fi
 
     case "$job_key" in
-        simulation-experiments|latent-robustness-experiments|latent-robustness-pilot) default_workers="${PBS_NCPUS:-4}" ;;
+        simulation-experiments|latent-robustness-experiments|latent-robustness-pilot|confirmatory-audit|confirmatory-pilot|confirmatory-final) default_workers="${PBS_NCPUS:-4}" ;;
         melanoma-experiments) default_workers="${PBS_NCPUS:-4}" ;;
         breast-cancer-experiments|fosp-melanoma-experiments) default_workers=2 ;;
     esac
@@ -74,10 +74,14 @@ ggkm_run_job() {
         return 1
     fi
     export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
-    export PYTHONHASHSEED=0
+    export PYTHONHASHSEED=0 PYTHONDONTWRITEBYTECODE=1
     export MPLBACKEND=Agg
 
     printf 'Python: %s\nWorkers: %s\n' "$(command -v "$GGKM_PYTHON")" "$PBS_NCPUS"
     "$GGKM_PYTHON" --version
-    "$GGKM_PYTHON" -u scripts/run_workflow.py --run-job "$job_key"
+    if [[ "$job_key" == confirmatory-* ]]; then
+        "$GGKM_PYTHON" -u -m scripts.confirmatory_robustness --stage "${job_key#confirmatory-}"
+    else
+        "$GGKM_PYTHON" -u scripts/run_workflow.py --run-job "$job_key"
+    fi
 }
