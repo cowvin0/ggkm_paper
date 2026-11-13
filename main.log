@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.3.28)  10 NOV 2026 08:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.3.28)  12 NOV 2026 16:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1255,7 +1255,7 @@ Package epstopdf Info: Source file: <./images//Wiley_logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
 (epstopdf)                    size: 10191 bytes
 (epstopdf)             Command: <repstopdf --outfile=./images//Wiley_logo-eps-converted-to.pdf ./images//Wiley_logo.eps>
-(epstopdf)             \includegraphics on input line 91.
+(epstopdf)             \includegraphics on input line 93.
 Package epstopdf Info: Output file is already uptodate.
 
 
@@ -1263,43 +1263,43 @@ pdfTeX warning: pdflatex (file ./images//Wiley_logo-eps-converted-to.pdf): PDF i
 <./images//Wiley_logo-eps-converted-to.pdf, id=7, 611.28375pt x 127.47626pt>
 File: ./images//Wiley_logo-eps-converted-to.pdf Graphic file (type pdf)
 <use ./images//Wiley_logo-eps-converted-to.pdf>
-Package pdftex.def Info: ./images//Wiley_logo-eps-converted-to.pdf  used on input line 91.
+Package pdftex.def Info: ./images//Wiley_logo-eps-converted-to.pdf  used on input line 93.
 (pdftex.def)             Requested size: 75.3998pt x 15.72246pt.
-LaTeX Font Info:    Trying to load font information for LS1+stix2scr on input line 91.
+LaTeX Font Info:    Trying to load font information for LS1+stix2scr on input line 93.
 (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls1stix2scr.fd
 File: ls1stix2scr.fd 2018/04/02 v2.0.0-latex stix2 script LS1 font definitions
 )
-LaTeX Font Info:    Trying to load font information for LS2+stix2ex on input line 91.
+LaTeX Font Info:    Trying to load font information for LS2+stix2ex on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls2stix2ex.fd
 File: ls2stix2ex.fd 2018/04/02 v2.0.0-latex stix2 extentions LS2 font definitions
 )
-LaTeX Font Info:    Trying to load font information for LS1+stix2frak on input line 91.
+LaTeX Font Info:    Trying to load font information for LS1+stix2frak on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls1stix2frak.fd
 File: ls1stix2frak.fd 2018/04/02 v2.0.0-latex stix2 fraktur LS1 font definitions
 )
-LaTeX Font Info:    Trying to load font information for LS1+stix2bb on input line 91.
+LaTeX Font Info:    Trying to load font information for LS1+stix2bb on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls1stix2bb.fd
 File: ls1stix2bb.fd 2018/04/02 v2.0.0-latex stix2 blackboard LS1 font definitions
 )
-LaTeX Font Info:    Trying to load font information for LS2+stix2cal on input line 91.
+LaTeX Font Info:    Trying to load font information for LS2+stix2cal on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls2stix2cal.fd
 File: ls2stix2cal.fd 2018/04/02 v2.0.0-latex stix2 calligraphic LS2 font definitions
 )
-LaTeX Font Info:    Trying to load font information for LS1+stix2sf on input line 91.
+LaTeX Font Info:    Trying to load font information for LS1+stix2sf on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls1stix2sf.fd
 File: ls1stix2sf.fd 2018/04/02 v2.0.0-latex stix2 sans-serif LS1 font definitions
 )
-LaTeX Font Info:    Trying to load font information for LS2+stix2tt on input line 91.
+LaTeX Font Info:    Trying to load font information for LS2+stix2tt on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ls2stix2tt.fd
 File: ls2stix2tt.fd 2018/04/02 v2.0.0-latex stix2 typewriter LS2 font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 91.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 91.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 93.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
@@ -1312,7 +1312,7 @@ Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
 (epstopdf)                    size: 11676 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ORCID_Logo-eps-converted-to.pdf images/ORCID_Logo.eps>
-(epstopdf)             \includegraphics on input line 91.
+(epstopdf)             \includegraphics on input line 93.
 Package epstopdf Info: Output file is already uptodate.
 
 
@@ -1320,7 +1320,7 @@ pdfTeX warning: pdflatex (file ./images/ORCID_Logo-eps-converted-to.pdf): PDF in
 <images/ORCID_Logo-eps-converted-to.pdf, id=9, 256.96pt x 256.96pt>
 File: images/ORCID_Logo-eps-converted-to.pdf Graphic file (type pdf)
 <use images/ORCID_Logo-eps-converted-to.pdf>
-Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 91.
+Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 93.
 (pdftex.def)             Requested size: 7.02623pt x 7.02625pt.
 Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
@@ -1329,11 +1329,11 @@ Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
 (epstopdf)                    size: 11676 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ORCID_Logo-eps-converted-to.pdf images/ORCID_Logo.eps>
-(epstopdf)             \includegraphics on input line 91.
+(epstopdf)             \includegraphics on input line 93.
 Package epstopdf Info: Output file is already uptodate.
 File: images/ORCID_Logo-eps-converted-to.pdf Graphic file (type pdf)
 <use images/ORCID_Logo-eps-converted-to.pdf>
-Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 91.
+Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 93.
 (pdftex.def)             Requested size: 7.02623pt x 7.02625pt.
 Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
@@ -1342,11 +1342,11 @@ Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
 (epstopdf)                    size: 11676 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ORCID_Logo-eps-converted-to.pdf images/ORCID_Logo.eps>
-(epstopdf)             \includegraphics on input line 91.
+(epstopdf)             \includegraphics on input line 93.
 Package epstopdf Info: Output file is already uptodate.
 File: images/ORCID_Logo-eps-converted-to.pdf Graphic file (type pdf)
 <use images/ORCID_Logo-eps-converted-to.pdf>
-Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 91.
+Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 93.
 (pdftex.def)             Requested size: 7.02623pt x 7.02625pt.
 Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
@@ -1355,11 +1355,11 @@ Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
 (epstopdf)                    size: 11676 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ORCID_Logo-eps-converted-to.pdf images/ORCID_Logo.eps>
-(epstopdf)             \includegraphics on input line 91.
+(epstopdf)             \includegraphics on input line 93.
 Package epstopdf Info: Output file is already uptodate.
 File: images/ORCID_Logo-eps-converted-to.pdf Graphic file (type pdf)
 <use images/ORCID_Logo-eps-converted-to.pdf>
-Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 91.
+Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 93.
 (pdftex.def)             Requested size: 7.02623pt x 7.02625pt.
 Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
@@ -1368,13 +1368,13 @@ Package epstopdf Info: Source file: <images/ORCID_Logo.eps>
 (epstopdf)                    date: 2026-10-16 13:58:08
 (epstopdf)                    size: 11676 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ORCID_Logo-eps-converted-to.pdf images/ORCID_Logo.eps>
-(epstopdf)             \includegraphics on input line 91.
+(epstopdf)             \includegraphics on input line 93.
 Package epstopdf Info: Output file is already uptodate.
 File: images/ORCID_Logo-eps-converted-to.pdf Graphic file (type pdf)
 <use images/ORCID_Logo-eps-converted-to.pdf>
-Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 91.
+Package pdftex.def Info: images/ORCID_Logo-eps-converted-to.pdf  used on input line 93.
 (pdftex.def)             Requested size: 7.02623pt x 7.02625pt.
-LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 91.
+LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 93.
 (./sections/01_introduction.tex
 LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 11.
 
@@ -1503,6 +1503,9 @@ LaTeX Font Warning: Font shape `LS2/stix2tt/b/n' in size <4.51686> not available
 (Font)              Font shape `LS2/stix2tt/m/n' tried instead on input line 16.
 
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
@@ -1510,10 +1513,10 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 [2
 
 ]
-<./figures//gg-latency-flexibility.pdf, id=105, 503.24385pt x 220.04584pt>
-File: ./figures//gg-latency-flexibility.pdf Graphic file (type pdf)
-<use ./figures//gg-latency-flexibility.pdf>
-Package pdftex.def Info: ./figures//gg-latency-flexibility.pdf  used on input line 75.
+<./figures/review//gg-latency-flexibility.pdf, id=108, 503.24385pt x 220.04584pt>
+File: ./figures/review//gg-latency-flexibility.pdf Graphic file (type pdf)
+<use ./figures/review//gg-latency-flexibility.pdf>
+Package pdftex.def Info: ./figures/review//gg-latency-flexibility.pdf  used on input line 75.
 (pdftex.def)             Requested size: 506.45908pt x 221.45885pt.
 
 Underfull \hbox (badness 1122) in paragraph at lines 80--89
@@ -1580,7 +1583,7 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[4 <./figures//gg-latency-flexibility.pdf>]
+[4 <./figures/review//gg-latency-flexibility.pdf>]
 Underfull \hbox (badness 1881) in paragraph at lines 592--631
 \T1/stix2/m/n/9.03374 la-tent num-ber of causes $\LS1/stix2/m/it/9.03374 N[]$\T1/stix2/m/n/9.03374 . The pa-ram-e-ter vec-tors for the
  []
@@ -1591,19 +1594,18 @@ Underfull \hbox (badness 1237) in paragraph at lines 632--637
  []
 
 
-Underfull \hbox (badness 1661) in paragraph at lines 850--859
-\T1/stix2/m/n/9.03374 i-fi-ca-tion con-tains the ad-di-tional dis-per-sion pa-ram-e-ter $\LS1/stix2/m/it/9.03374 ^^^$\T1/stix2/m/n/9.03374 . Its
- []
-
-
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
 [5]
+Underfull \hbox (badness 1661) in paragraph at lines 850--859
+\T1/stix2/m/n/9.03374 i-fi-ca-tion con-tains the ad-di-tional dis-per-sion pa-ram-e-ter $\LS1/stix2/m/it/9.03374 ^^^$\T1/stix2/m/n/9.03374 . Its
+ []
+
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 890.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 892.
- (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 Package microtype Info: Loading generic protrusion settings for font family
@@ -1638,11 +1640,6 @@ Underfull \hbox (badness 1629) in paragraph at lines 1215--1235
  []
 
 
-Underfull \hbox (badness 3029) in paragraph at lines 1275--1283
-[]\T1/stix2/m/n/9.03374 Evaluation sum-maries re-tain paired score dif-fer-ences, cure-
- []
-
-
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
@@ -1652,7 +1649,12 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[7]) (./sections/03_simulation.tex
+[7]
+Underfull \hbox (badness 3029) in paragraph at lines 1275--1283
+[]\T1/stix2/m/n/9.03374 Evaluation sum-maries re-tain paired score dif-fer-ences, cure-
+ []
+
+) (./sections/03_simulation.tex
 Underfull \hbox (badness 1132) in paragraph at lines 3--16
 \T1/stix2/m/n/9.03374 per-for-mance of the pro-posed GG-KM model un-der dif-fer-ent
  []
@@ -1682,10 +1684,10 @@ Underfull \hbox (badness 5908) in paragraph at lines 48--54
 \LS1/stix2/m/n/9.03374 ^\LS1/stix2/m/it/9.03374 p[]\LS1/stix2/m/n/9.03374 .[]/[] * 1`_\LS1/stix2/m/it/9.03374 ^^^$\T1/stix2/m/n/9.03374 . This map-ping pre-serves the same cure-
  []
 
-<./figures//cure-surfaces.pdf, id=226, 519.89423pt x 190.06506pt>
-File: ./figures//cure-surfaces.pdf Graphic file (type pdf)
-<use ./figures//cure-surfaces.pdf>
-Package pdftex.def Info: ./figures//cure-surfaces.pdf  used on input line 85.
+<./figures/review//cure-surfaces.pdf, id=230, 519.89423pt x 190.06506pt>
+File: ./figures/review//cure-surfaces.pdf Graphic file (type pdf)
+<use ./figures/review//cure-surfaces.pdf>
+Package pdftex.def Info: ./figures/review//cure-surfaces.pdf  used on input line 85.
 (pdftex.def)             Requested size: 506.45908pt x 185.15752pt.
 
 LaTeX Font Warning: Font shape `LS2/stix2ex/b/n' in size <8> not available
@@ -1758,11 +1760,6 @@ Underfull \hbox (badness 1348) in paragraph at lines 116--117
  []
 
 
-Underfull \hbox (badness 1087) in paragraph at lines 149--167
-[]\T1/stix2/m/n/9.03374 A target-size di-ag-nos-tic pi-lot used five planned repli-cates in
- []
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1771,6 +1768,11 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
  []
 
 [8]
+Underfull \hbox (badness 1087) in paragraph at lines 149--167
+[]\T1/stix2/m/n/9.03374 A target-size di-ag-nos-tic pi-lot used five planned repli-cates in
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1781,15 +1783,15 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[9 <./figures//cure-surfaces.pdf>] (./sections/generated/simulation-best-table.tex)
+[9 <./figures/review//cure-surfaces.pdf>] (./sections/generated/simulation-best-table.tex)
 Underfull \hbox (badness 4846) in paragraph at lines 197--204
 \T1/stix2/m/n/9.03374 and polynomial-kernel GG-KM com-para-tors across the six
  []
 
-<./figures//simulation_rbf_paired_differences_with_auc.pdf, id=271, 504.39984pt x 502.4923pt>
-File: ./figures//simulation_rbf_paired_differences_with_auc.pdf Graphic file (type pdf)
-<use ./figures//simulation_rbf_paired_differences_with_auc.pdf>
-Package pdftex.def Info: ./figures//simulation_rbf_paired_differences_with_auc.pdf  used on input line 238.
+<./figures/review//simulation_rbf_paired_differences_with_auc.pdf, id=274, 504.39984pt x 502.4923pt>
+File: ./figures/review//simulation_rbf_paired_differences_with_auc.pdf Graphic file (type pdf)
+<use ./figures/review//simulation_rbf_paired_differences_with_auc.pdf>
+Package pdftex.def Info: ./figures/review//simulation_rbf_paired_differences_with_auc.pdf  used on input line 238.
 (pdftex.def)             Requested size: 506.45908pt x 504.56125pt.
 
 Underfull \hbox (badness 1014) in paragraph at lines 240--281
@@ -1799,10 +1801,10 @@ Underfull \hbox (badness 1014) in paragraph at lines 240--281
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<./figures//simulation_cure_surface_recovery.pdf, id=275, 504.13301pt x 435.23357pt>
-File: ./figures//simulation_cure_surface_recovery.pdf Graphic file (type pdf)
-<use ./figures//simulation_cure_surface_recovery.pdf>
-Package pdftex.def Info: ./figures//simulation_cure_surface_recovery.pdf  used on input line 282.
+<./figures/review//simulation_cure_surface_recovery.pdf, id=278, 504.13301pt x 435.23357pt>
+File: ./figures/review//simulation_cure_surface_recovery.pdf Graphic file (type pdf)
+<use ./figures/review//simulation_cure_surface_recovery.pdf>
+Package pdftex.def Info: ./figures/review//simulation_cure_surface_recovery.pdf  used on input line 282.
 (pdftex.def)             Requested size: 506.45908pt x 437.24475pt.
  (./sections/generated/simulation-regret-table.tex)
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
@@ -1810,21 +1812,15 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
  []
 
 [10] (./sections/generated/highdim-best-table.tex)
-<./figures//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf, id=289, 630.9171pt x 585.38701pt>
-File: ./figures//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf Graphic file (type pdf)
-<use ./figures//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf>
-Package pdftex.def Info: ./figures//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf  used on input line 354.
+<./figures/review//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf, id=292, 630.9171pt x 585.38701pt>
+File: ./figures/review//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf Graphic file (type pdf)
+<use ./figures/review//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf>
+Package pdftex.def Info: ./figures/review//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf  used on input line 354.
 (pdftex.def)             Requested size: 506.45908pt x 469.90912pt.
 ) (./sections/04_melanoma_application.tex
 Underfull \hbox (badness 1048) in paragraph at lines 3--23
 \T1/stix2/m/n/9.03374 The em-pir-i-cal ap-pli-ca-tion used the ma-lig-nant melanoma co-
  []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
@@ -1842,12 +1838,12 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[12 <./figures//simulation_rbf_paired_differences_with_auc.pdf>]
+[12 <./figures/review//simulation_rbf_paired_differences_with_auc.pdf>]
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[13 <./figures//simulation_cure_surface_recovery.pdf>] (./sections/generated/melanoma-performance-table.tex)
+[13 <./figures/review//simulation_cure_surface_recovery.pdf>] (./sections/generated/melanoma-performance-table.tex)
 Underfull \hbox (badness 1490) in paragraph at lines 41--53
 \T1/stix2/m/n/9.03374 poly-no-mial ker-nel had the high-est mean cure AUC, 0.8117.
  []
@@ -1863,21 +1859,24 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[14 <./figures//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf>]
-<./figures//melanoma_predictive_assessment_ibs_auc.pdf, id=527, 1208.75626pt x 428.05824pt>
-File: ./figures//melanoma_predictive_assessment_ibs_auc.pdf Graphic file (type pdf)
-<use ./figures//melanoma_predictive_assessment_ibs_auc.pdf>
-Package pdftex.def Info: ./figures//melanoma_predictive_assessment_ibs_auc.pdf  used on input line 65.
+[14 <./figures/review//highdim_rbf_vs_linear_spline_polynomial_paired_differences_with_auc.pdf>]
+<./figures/review//melanoma_predictive_assessment_ibs_auc.pdf, id=530, 1208.75626pt x 428.05824pt>
+File: ./figures/review//melanoma_predictive_assessment_ibs_auc.pdf Graphic file (type pdf)
+<use ./figures/review//melanoma_predictive_assessment_ibs_auc.pdf>
+Package pdftex.def Info: ./figures/review//melanoma_predictive_assessment_ibs_auc.pdf  used on input line 65.
 (pdftex.def)             Requested size: 506.45908pt x 179.35214pt.
-<./figures//melanoma_ggkm_kernel_comparison_ibs_auc.pdf, id=528, 1016.39471pt x 387.80786pt>
-File: ./figures//melanoma_ggkm_kernel_comparison_ibs_auc.pdf Graphic file (type pdf)
-<use ./figures//melanoma_ggkm_kernel_comparison_ibs_auc.pdf>
-Package pdftex.def Info: ./figures//melanoma_ggkm_kernel_comparison_ibs_auc.pdf  used on input line 66.
+<./figures/review//melanoma_ggkm_kernel_comparison_ibs_auc.pdf, id=531, 1016.39471pt x 387.80786pt>
+File: ./figures/review//melanoma_ggkm_kernel_comparison_ibs_auc.pdf Graphic file (type pdf)
+<use ./figures/review//melanoma_ggkm_kernel_comparison_ibs_auc.pdf>
+Package pdftex.def Info: ./figures/review//melanoma_ggkm_kernel_comparison_ibs_auc.pdf  used on input line 66.
 (pdftex.def)             Requested size: 506.45908pt x 193.24069pt.
 
 Underfull \hbox (badness 1521) in paragraph at lines 95--105
 \T1/stix2/m/n/9.03374 ker-nel are gen-er-ally small. Mean IBS val-ues were rel-a-tively
  []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 ) (./sections/05_breast_cancer_application.tex
 Underfull \hbox (badness 1838) in paragraph at lines 106--1
@@ -1888,9 +1887,6 @@ Underfull \hbox (badness 1838) in paragraph at lines 106--1
 Underfull \hbox (badness 1024) in paragraph at lines 106--1
 \T1/stix2/m/n/9.03374 binomial poly-no-mial model achieved the high-est mean cure
  []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1911,7 +1907,7 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[16 <./figures//melanoma_predictive_assessment_ibs_auc.pdf> <./figures//melanoma_ggkm_kernel_comparison_ibs_auc.pdf>]
+[16 <./figures/review//melanoma_predictive_assessment_ibs_auc.pdf> <./figures/review//melanoma_ggkm_kernel_comparison_ibs_auc.pdf>]
 Underfull \hbox (badness 1590) in paragraph at lines 43--52
 \T1/stix2/m/n/9.03374 to-gether with the orig-i-nal trans-formed con-tin-u-ous vari-ables,
  []
@@ -1931,23 +1927,26 @@ Underfull \hbox (badness 1540) in paragraph at lines 83--93
 []\T1/stix2/m/n/9.03374 Figure [][]8[][] sum-ma-rizes out-of-sample sur-vival cal-i-bra-tion, pre-
  []
 
-<./figures//breast_cancer_predictive_assessment_ibs_auc.pdf, id=748, 1208.75626pt x 428.05824pt>
-File: ./figures//breast_cancer_predictive_assessment_ibs_auc.pdf Graphic file (type pdf)
-<use ./figures//breast_cancer_predictive_assessment_ibs_auc.pdf>
-Package pdftex.def Info: ./figures//breast_cancer_predictive_assessment_ibs_auc.pdf  used on input line 108.
+<./figures/review//breast_cancer_predictive_assessment_ibs_auc.pdf, id=751, 1208.75626pt x 428.05824pt>
+File: ./figures/review//breast_cancer_predictive_assessment_ibs_auc.pdf Graphic file (type pdf)
+<use ./figures/review//breast_cancer_predictive_assessment_ibs_auc.pdf>
+Package pdftex.def Info: ./figures/review//breast_cancer_predictive_assessment_ibs_auc.pdf  used on input line 108.
 (pdftex.def)             Requested size: 506.45908pt x 179.35214pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<./figures//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf, id=750, 1022.77794pt x 387.80786pt>
-File: ./figures//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf Graphic file (type pdf)
-<use ./figures//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf>
-Package pdftex.def Info: ./figures//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf  used on input line 140.
+<./figures/review//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf, id=753, 1022.77794pt x 387.80786pt>
+File: ./figures/review//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf Graphic file (type pdf)
+<use ./figures/review//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf>
+Package pdftex.def Info: ./figures/review//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf  used on input line 140.
 (pdftex.def)             Requested size: 506.45908pt x 192.03354pt.
-) (./sections/06_discussion.tex
-Underfull \hbox (badness 1005) in paragraph at lines 43--56
-\T1/stix2/m/n/9.03374 rapidly the fit-ted sur-face may change. In the pri-mary three-
+) (./sections/05_fosp_melanoma_application.tex
+Underfull \hbox (badness 1097) in paragraph at lines 3--15
+\T1/stix2/m/n/9.03374 who de-vel-oped a gen-eral class of promotion-time cure mod-
  []
+
+(./sections/generated/fosp-melanoma-performance-table.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
@@ -1955,6 +1954,51 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
  []
 
 [17]
+Underfull \hbox (badness 1199) in paragraph at lines 67--76
+[]\T1/stix2/m/n/9.03374 Figure [][]10[][] com-bines de-scrip-tive sur-vival cal-i-bra-tion with the
+ []
+
+
+Underfull \hbox (badness 1946) in paragraph at lines 67--76
+\T1/stix2/m/n/9.03374 paired prediction-error and cure-discrimination dis-tri-bu-tions.
+ []
+
+
+Underfull \hbox (badness 3128) in paragraph at lines 67--76
+\T1/stix2/m/n/9.03374 The six dis-played mean sur-vival curves fol-lowed the early
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+<./figures/review//fosp_melanoma_predictive_assessment_ibs_auc.pdf, id=767, 1208.75626pt x 428.05824pt>
+File: ./figures/review//fosp_melanoma_predictive_assessment_ibs_auc.pdf Graphic file (type pdf)
+<use ./figures/review//fosp_melanoma_predictive_assessment_ibs_auc.pdf>
+Package pdftex.def Info: ./figures/review//fosp_melanoma_predictive_assessment_ibs_auc.pdf  used on input line 91.
+(pdftex.def)             Requested size: 506.45908pt x 179.35214pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (261.76537pt too wide) has occurred while \output is active
+[]| 
+ []
+
+[18 <./figures/review//breast_cancer_predictive_assessment_ibs_auc.pdf>]
+<./figures/review//fosp_melanoma_ggkm_kernel_comparison_ibs_auc.pdf, id=874, 1022.77794pt x 387.80786pt>
+File: ./figures/review//fosp_melanoma_ggkm_kernel_comparison_ibs_auc.pdf Graphic file (type pdf)
+<use ./figures/review//fosp_melanoma_ggkm_kernel_comparison_ibs_auc.pdf>
+Package pdftex.def Info: ./figures/review//fosp_melanoma_ggkm_kernel_comparison_ibs_auc.pdf  used on input line 117.
+(pdftex.def)             Requested size: 506.45908pt x 192.03354pt.
+) (./sections/06_discussion.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (261.76537pt too wide) has occurred while \output is active
+[]| 
+ []
+
+[19 <./figures/review//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1965,52 +2009,47 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[18 <./figures//breast_cancer_predictive_assessment_ibs_auc.pdf>]
-Underfull \hbox (badness 1389) in paragraph at lines 72--85
+[20 <./figures/review//fosp_melanoma_predictive_assessment_ibs_auc.pdf> <./figures/review//fosp_melanoma_ggkm_kernel_comparison_ibs_auc.pdf>]
+Underfull \hbox (badness 1005) in paragraph at lines 46--59
+\T1/stix2/m/n/9.03374 rapidly the fit-ted sur-face may change. In the pri-mary three-
+ []
+
+
+Underfull \hbox (badness 1389) in paragraph at lines 75--89
 []\T1/stix2/m/n/9.03374 Censoring and the event definition fur-ther bound the in-ter-
  []
 
 
-Underfull \hbox (badness 2096) in paragraph at lines 72--85
-\T1/stix2/m/n/9.03374 The in-ter-pre-ta-tion re-lies on the cor-re-spond-ing independent-
+Underfull \hbox (badness 1097) in paragraph at lines 75--89
+\T1/stix2/m/n/9.03374 as a pre-cise mea-sure of overdis-per-sion. No dispersion-lower-
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 ) (./sections/07_declarations.tex
-Underfull \hbox (badness 10000) in paragraph at lines 3--5
-\T1/stix2/b/n/9.03374 Data and code avail-abil-ity. \T1/stix2/m/n/9.03374 The ma-lig-nant melanoma
+Underfull \hbox (badness 1735) in paragraph at lines 3--5
+\T1/stix2/m/n/9.03374 are dis-tributed as \T1/cmtt/m/n/9 boot::melanoma \T1/stix2/m/n/9.03374 in ver-sion 1.3-32 of the
  []
 
 
-Underfull \hbox (badness 5008) in paragraph at lines 3--5
-\T1/stix2/m/n/9.03374 data are dis-tributed as \T1/cmtt/m/n/9 boot::melanoma \T1/stix2/m/n/9.03374 in ver-sion 1.3-32
+Underfull \hbox (badness 2717) in paragraph at lines 3--5
+\T1/cmtt/m/n/9 boot \T1/stix2/m/n/9.03374 R pack-age, whose of-fi-cial CRAN meta-data re-port an
  []
 
 
-Underfull \hbox (badness 2384) in paragraph at lines 3--5
-\T1/stix2/m/n/9.03374 of the \T1/cmtt/m/n/9 boot \T1/stix2/m/n/9.03374 R pack-age, whose of-fi-cial CRAN meta-data re-
+Underfull \hbox (badness 1314) in paragraph at lines 3--5
+\T1/stix2/m/n/9.03374 Un-lim-ited li-cense, and are cited to the pack-age doc-u-men-ta-
  []
 
 
-Underfull \hbox (badness 5847) in paragraph at lines 3--5
-\T1/stix2/m/n/9.03374 port an Un-lim-ited li-cense, and are cited to the pack-age
+Underfull \hbox (badness 2326) in paragraph at lines 3--5
+\T1/stix2/m/n/9.03374 the up-dated RHC/-FOSP ex-tract de-scribed in Section [][]6[][], fol-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3--5
-\T1/stix2/m/n/9.03374 doc-u-men-ta-tion and orig-i-nal source. The re-pro-ducible ar-
- []
-
-
-Underfull \hbox (badness 4429) in paragraph at lines 3--5
-\T1/stix2/m/n/9.03374 ti-cle workspace and code used in this study are pub-licly
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3--5
-\T1/stix2/m/n/9.03374 avail-able at [][]\T1/cmtt/m/n/9 https://github.com/cowvin0/ggkm_paper[][]\T1/stix2/m/n/9.03374 .
+Underfull \hbox (badness 3039) in paragraph at lines 3--5
+\T1/stix2/m/n/9.03374 low-ing the co-hort definition of Gómez et al.$[]$ The re-pro-
  []
 
 
@@ -2028,17 +2067,8 @@ Underfull \hbox (badness 7595) in paragraph at lines 3--5
 \T1/stix2/m/n/9.03374 frame-work used in the anal-y-ses, is pub-licly avail-able at
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (261.76537pt too wide) has occurred while \output is active
-[]| 
- []
-
-[19 <./figures//breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+stix2 on input line 8.
- (/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ts1stix2.fd
+(/usr/share/texlive/texmf-dist/tex/latex/stix2-type1/ts1stix2.fd
 File: ts1stix2.fd 2018/04/02 v2.0.0-latex stix2 TS1 font definitions
 )
 Package microtype Info: Character `textflorin ' is missing
@@ -2049,7 +2079,12 @@ Underfull \hbox (badness 1024) in paragraph at lines 8--15
 \T1/stix2/m/n/9.03374 com-pu-ta-tional re-sources of the Cen-ter for Math-e-mat-i-cal Sci-
  []
 
-) (./main.bbl
+
+Overfull \hbox (261.76537pt too wide) has occurred while \output is active
+[]| 
+ []
+
+[21]) (./main.bbl
 LaTeX Font Info:    Calculating math sizes for size <8.5> on input line 12.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2059,27 +2094,27 @@ Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[20])
+[22])
 Overfull \hbox (261.76537pt too wide) has occurred while \output is active
 []| 
  []
 
-[21
+[23
 
 ] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 36382 strings out of 478287
- 660096 string characters out of 5849289
- 976674 words of memory out of 5000000
- 53737 multiletter control sequences out of 15000+600000
+ 36428 strings out of 478287
+ 662500 string characters out of 5849289
+ 980183 words of memory out of 5000000
+ 53768 multiletter control sequences out of 15000+600000
  739259 words of font info for 270 fonts, out of 8000000 for 9000
  1167 hyphenation exceptions out of 8191
  98i,13n,94p,2701b,695s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathrm-bold.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathscr.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathsf.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathbb.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathfrak.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathit-bold.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathcal.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathrm.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathit.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-t1.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/stix2-type1/stix2-mathex.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/stix2-type1/STIX2Math.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/stix2-type1/STIX2Text-Bold.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/stix2-type1/STIX2Text-BoldItalic.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/stix2-type1/STIX2Text-Italic.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/stix2-type1/STIX2Text-Regular.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt0800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt0900.pfb>
-Output written on main.pdf (21 pages, 1721117 bytes).
+Output written on main.pdf (23 pages, 1833358 bytes).
 PDF statistics:
- 1118 PDF objects out of 1200 (max. 8388607)
- 482 compressed objects within 5 object streams
- 112 named destinations out of 1000 (max. 500000)
- 13500 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 1352 PDF objects out of 1440 (max. 8388607)
+ 525 compressed objects within 6 object streams
+ 119 named destinations out of 1000 (max. 500000)
+ 13518 words of extra memory for PDF output out of 14400 (max. 10000000)
 

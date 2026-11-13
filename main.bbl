@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{30}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -206,5 +206,14 @@ In-Kwon Yeo and Richard~A Johnson.
 \newblock A new family of power transformations to improve normality or
   symmetry.
 \newblock \emph{Biometrika}, 87\penalty0 (4):\penalty0 954--959, 2000.
+
+\bibitem[G{\'o}mez et~al.(2023)G{\'o}mez, Gallardo, Bourguignon, Bertolli, and
+  Calsavara]{gomez2023promotion}
+Yolanda~M. G{\'o}mez, Diego~I. Gallardo, Marcelo Bourguignon, Eduardo Bertolli,
+  and Vinicius~F. Calsavara.
+\newblock A general class of promotion time cure rate models with a new
+  biological interpretation.
+\newblock \emph{Lifetime Data Anal}, 29\penalty0 (1):\penalty0 66--86, 2023.
+\newblock \doi{https://doi.org/10.1007/s10985-022-09575-3}.
 
 \end{thebibliography}

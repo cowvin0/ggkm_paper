@@ -1,0 +1,114 @@
+\section{FOSP melanoma application}\label{sec:fosp-melanoma}
+
+The third empirical application considered cutaneous melanoma records from
+the Hospital Cancer Registry of S\~ao Paulo (RHC/FOSP), Brazil. The present analysis used
+an updated registry extract from July 2026, retaining diagnoses from
+2000--2014, clinical stages I--IV, valid positive observation times, and
+positive recorded age. The resulting cohort comprised 7,137 patients,
+compared with 6,749 in the published application; it is an updated
+reconstruction rather than the identical historical analysis sample.
+There were 3,626 women (50.8\%), mean age was 57.80 years with standard
+deviation 16.33, and 4,864 patients (68.2\%) had stage I or II disease.
+
+The analysis used the extended follow-up fields, with time measured in
+years from diagnosis to the last recorded information and death from
+cancer as the event of interest. There were 2,239 recorded cancer deaths
+and 4,898 censored observations. Deaths from other causes and patients
+without a recorded cancer death were treated as censored, giving a
+cause-specific analysis rather than an all-cause or competing-risks
+analysis. The median and maximum observed times were 7.60 and 25.86 years,
+respectively. The alternative fields with administrative censoring in
+July 2018, provided for comparison with the earlier application, were not
+used in these fits.
+
+The predictor set comprised age at diagnosis, diagnosis year, sex,
+clinical stage, primary tumour topography, histological type, and separate
+indicators for surgery, radiotherapy, chemotherapy, hormone therapy, and
+immunotherapy. Age and diagnosis year were standardized within each
+training sample. Clinical stage, topography, and histological type were
+represented by smoothed survival-target encodings based on restricted
+mean survival time, using five-fold out-of-fold encoding for the training
+observations. Validation and test observations received mappings
+estimated exclusively from the corresponding training sample. This
+followed the training-only preprocessing principle used in the
+breast-cancer application.
+
+Predictive performance was assessed using 50 event-stratified paired
+outer holdouts with 70\% training and 30\% testing. All methods shared
+the same outer splits, and tuning was confined to three inner training
+folds using IPCW integrated Brier score and the horizon rule in
+Section~\ref{sec:prediction-evaluation}. The comparison included the seven
+GG-KM kernels under Poisson and negative-binomial counts, additive
+cubic-spline models under both count laws, and the mixture-cure and
+promotion-time comparators. Kernel and spline candidates used the same
+grids as in Section~\ref{sec:melanoma}, including wavelet scales
+$A\in\{0.5,1,2,10,15,20\}$ and three or five spline knots with
+$\lambda\in\{0.1,1\}$.
+
+\GGKMTable{sections/generated/fosp-melanoma-performance-table}
+
+Table~\ref{tab:fosp-melanoma-performance} reports the split-level means
+and variation. The Poisson and negative-binomial wavelet GG-KM models
+attained the lowest mean IPCW integrated Brier score, both 0.1218 with
+split standard deviation 0.0036, and the highest mean Uno's C-index,
+both 0.8161. The spline models had mean IBS 0.1238, compared with 0.1242
+for mixture cure and 0.1248 for promotion time. The mixture-cure model
+attained the highest mean cure AUC overall, 0.8743; the wavelet models
+had the highest mean cure AUC among GG-KM specifications, both 0.8698.
+The table summarizes 865 successful fits, all of which met the recorded
+convergence criteria. The negative-binomial linear model contributed
+only 15 successful holdouts, whereas every other specification
+contributed 50; its summary therefore represents a smaller subset of
+training samples.
+
+Figure~\ref{fig:fosp-melanoma-performance} combines descriptive survival
+calibration with the paired prediction-error and cure-discrimination
+distributions. The six displayed mean survival curves followed the early
+Kaplan--Meier decline and lay slightly below it later in the common
+supported horizon. The wavelet models had lower mean IBS than the
+classical and spline comparators, whereas mixture cure had the highest
+mean cure AUC. As in the preceding applications, overlapping repeated
+holdouts describe variation across training samples and do not provide
+independent-sample confidence intervals.
+
+\GGKMWideFigure{fosp_melanoma_predictive_assessment_ibs_auc.pdf}
+{Predictive assessment in 50 paired repeated holdouts of the FOSP melanoma
+cohort using extended follow-up. Panel A compares the full-cohort
+Kaplan--Meier curve with split-averaged out-of-sample survival predictions
+over the common supported horizon. Panel B shows split-level IPCW
+integrated Brier scores and Panel C the cure-discrimination area under
+the curve ($\mathrm{AUC}_{\mathrm{cure}}$). Each point represents one
+outer split; lower IBS and higher cure AUC values indicate better
+prediction and discrimination, respectively. The selected GG-KM models
+use the wavelet kernel.}
+{fig:fosp-melanoma-performance}
+{Three-panel FOSP melanoma assessment showing the Kaplan--Meier curve and
+six mean predicted survival curves, followed by box-and-strip plots of
+IBS and cure AUC for mixture cure, promotion time, Poisson and
+negative-binomial splines, and wavelet GG-KM under both count laws.}
+
+Figure~\ref{fig:fosp-melanoma-performance-ggkm-kernel} shows that kernel
+choice materially affected prediction. Wavelet GG-KM had the lowest mean
+IBS. The Laplacian models and the negative-binomial polynomial model
+followed at 0.1229. The Poisson polynomial and
+linear specifications had larger mean errors, 0.1429 and 0.1488.
+Poisson and negative-binomial results were close for the RBF, Laplacian,
+exponential, Cauchy, and wavelet kernels, whereas the polynomial models
+differed substantially. Mean predicted cure probabilities ranged from
+0.592 to 0.733 across specifications; these remain model-based
+extrapolations rather than observed individual cure status. The results
+therefore favor wavelet GG-KM for IBS and concordance in this cohort,
+while retaining a different preferred model for cure discrimination.
+
+\GGKMWideFigure{fosp_melanoma_ggkm_kernel_comparison_ibs_auc.pdf}
+{Kernel-specific GG-KM performance in the FOSP melanoma cohort. Panel A
+shows IPCW integrated Brier scores and Panel B cure-discrimination area
+under the curve ($\mathrm{AUC}_{\mathrm{cure}}$) across seven kernels,
+with Poisson and negative-binomial specifications distinguished by color
+and hatching. Points represent successful outer holdouts. The
+negative-binomial linear model contributes 15 successful fits; all other
+kernel/count combinations contribute 50.}
+{fig:fosp-melanoma-performance-ggkm-kernel}
+{Two-panel comparison of split-level IBS and cure AUC for linear, RBF,
+Laplacian, exponential, Cauchy, polynomial, and wavelet GG-KM models under
+Poisson and negative-binomial counts in the FOSP melanoma cohort.}

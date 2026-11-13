@@ -4,8 +4,8 @@
 The generalized gamma kernel-machine promotion-time cure model extends the promotion-time
 framework by placing the latent-cause log-intensity in a reproducing-kernel Hilbert space
 while retaining a flexible generalized gamma latency and both Poisson and negative-binomial
-latent counts. The primary and secondary simulations and the melanoma and breast-cancer
-applications evaluate this construction against simpler predictors under a shared protocol.
+latent counts. The primary and secondary simulations and the melanoma, breast-cancer,
+and FOSP melanoma applications evaluate this construction against simpler predictors under a shared protocol.
 Their interpretation is limited to the evaluated designs. Kernel families were compared
 within prespecified grids, although robustness to broader kernel and hyperparameter choices
 remains for future work.
@@ -27,8 +27,11 @@ breast-cancer cohort showed a complementary pattern: the spline models achieved 
 mean integrated Brier score, 0.0877, whereas the mixture-cure model attained the
 highest mean cure AUC, 0.7862. Among the GG-KM specifications, the wavelet kernel had
 the lowest mean integrated Brier score, 0.0879, under both latent-count laws and the
-highest mean cure AUC, 0.7219 under Poisson and 0.7216 under negative-binomial counts. Together,
-the two empirical applications reinforce the simulation message that no
+highest mean cure AUC, 0.7219 under Poisson and 0.7216 under negative-binomial counts.
+In the FOSP melanoma cohort, wavelet GG-KM attained the lowest mean integrated
+Brier score (0.1218) and highest Uno's C-index (0.8161), whereas mixture cure
+had the highest mean cure AUC (0.8743). Together,
+the three empirical applications reinforce the simulation message that no
 single predictor is uniformly best and that the preferred predictor and
 kernel depend on the predictive target and data structure.
 
@@ -74,7 +77,8 @@ inverse-probability-of-censoring weighting with a horizon confined to the region
 support, which controls bias from dependent censoring only to the extent that the censoring model is
 adequate. In the melanoma cohort, deaths from other causes were treated as censored. In the breast-cancer
 cohort, death from breast cancer was treated as the event, while observations without a recorded
-breast-cancer death were censored. Accordingly, both empirical analyses are cause specific in their event
+breast-cancer death were censored. The FOSP analysis used death from cancer as the event
+and censored deaths from other causes. Accordingly, all three empirical analyses are cause specific in their event
 definition and are not competing-risks analyses. Within these latent cause-specific processes,
 $p_c(\bm{x})$ describes the probability of no disease-specific death from the modelled process; it is
 neither an all-cause survival probability nor a competing-risks cumulative incidence. The interpretation
@@ -83,7 +87,7 @@ weakly identified from cure and latency information, which cautions against inte
 dispersion as a precise measure of overdispersion. No dispersion-lower-bound contacts were recorded
 in either simulation experiment.
 
-Both empirical applications are observational, and no causal interpretation is attached to the covariate effects
+The three empirical applications are observational, and no causal interpretation is attached to the covariate effects
 or to the predicted cure fractions. The reported associations describe out-of-sample predictive behaviour under
 a fixed analysis protocol, not the effect of intervening on any covariate.
 
