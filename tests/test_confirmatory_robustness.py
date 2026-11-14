@@ -6,6 +6,7 @@ import os
 import shlex
 import subprocess
 import sys
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -64,6 +65,7 @@ def test_estimated_phi_initialization_does_not_fix_phi_and_fixed_latency_stays_f
 
 def test_multistart_retries_and_selects_likelihood_not_test_metrics(monkeypatch, config):
     calls = []
+    config["fitting"]["profile_restart"] = False  # Isolate the prescribed cold starts.
 
     class FakeModel:
         def __init__(self, **parameters):
@@ -112,9 +114,104 @@ def test_profile_reoptimizes_at_fixed_phi_and_includes_exact_poisson(monkeypatch
     assert all(row["gamma"] == .25 and row["lambda_reg"] == .3 and row["fixed_latency"] is None for row in received)
 
 
+@pytest.mark.parametrize("phi", [0., .5])
+@pytest.mark.parametrize("freeze_latency", [False, True])
+def test_profile_continuation_preserves_full_state_and_frees_phi(monkeypatch, phi, freeze_latency):
+    case = {**original.build_experiments()[28], "n": 32}
+    data, _ = original.generate_replication(case, 0, original.build_design(replications=2), 3.5)
+    X = StandardScaler().fit_transform(data["X"])
+    seed = fitting.InitializedGGKM(latent_distribution="poisson" if phi == 0 else "negative_binomial",
+                                   phi=None if phi == 0 else phi, a=1.6, d=1.3, p=1.1, max_em_iter=3)
+    seed.freeze_latency, seed.dispersion_start = freeze_latency, None
+    with warnings.catch_warnings(action="ignore"):
+        seed.fit(X, Surv.from_arrays(data["event"].astype(bool), data["time"]))
+    coefficients, seed_ll = seed.alpha_.copy(), seed.final_loglik_
+    assert np.linalg.norm(coefficients) > 0  # A reset to zeros would change this start.
+    original_run_em = fitting.run_em
+
+    def inspect_start(parameters, **kwargs):
+        assert parameters[0] == seed.beta0_
+        np.testing.assert_array_equal(parameters[1], coefficients)
+        assert kwargs["state"].model.estimate_phi
+        assert not kwargs["state"].model.converged_  # Never inherit fixed-profile convergence.
+        assert kwargs["state"].model.phi is None
+        np.testing.assert_array_equal(kwargs["state"].model.K_, seed.K_)
+        assert [kwargs["state"].model.a_, kwargs["state"].model.d_, kwargs["state"].model.p_] == [seed.a_, seed.d_, seed.p_]
+        return original_run_em(parameters, **kwargs)
+
+    monkeypatch.setattr(fitting, "run_em", inspect_start)
+    with warnings.catch_warnings(action="ignore"):
+        resumed = fitting._resume_free_nb(seed, phi, data["time"], data["event"], 8)
+    assert resumed.final_loglik_ >= resumed.continuation_initial_loglik_ - 1e-8
+    assert resumed.estimate_phi
+    assert resumed.phi_ > 0
+    if freeze_latency:
+        assert (resumed.a_, resumed.d_, resumed.p_) == (1.6, 1.3, 1.1)
+    assert any(row["stage"] == "latency" for row in resumed.optimizer_results_) != freeze_latency
+    np.testing.assert_array_equal(seed.alpha_, coefficients)
+    assert seed.final_loglik_ == seed_ll
+    assert seed.latent_distribution == ("poisson" if phi == 0 else "negative_binomial")
+
+    def worsened_dispersion(steps, parameters, expected):
+        steps.model._latent_model.phi = 1e12
+        return parameters
+
+    monkeypatch.setattr(fitting._GGKMSteps, "maximize_dispersion", worsened_dispersion)
+    with pytest.raises(RuntimeError, match="decreased the penalized objective"):
+        fitting._resume_free_nb(seed, phi, data["time"], data["event"], 8)
+    np.testing.assert_array_equal(seed.alpha_, coefficients)
+    assert seed.final_loglik_ == seed_ll
+
+
+def test_profile_restart_is_selected_only_after_a_real_free_fit(monkeypatch, config):
+    config["fitting"].update(latency_starts=[[1., 1., 1.]], dispersion_starts=[1.], retries=0)
+
+    class FakeModel:
+        def __init__(self, **parameters):
+            self.a_ = self.d_ = self.p_ = 1.
+            self.phi_, self.final_loglik_ = 1., -12.
+            self.converged_, self.n_iter_ = True, 1
+            self.termination_reason_, self.loglik_history_, self.optimizer_results_ = "converged", [-12.], []
+
+        def fit(self, X, time, event):
+            return self
+
+    seed = FakeModel()
+    seed.beta0_, seed.alpha_, seed.final_loglik_ = 2., np.array([.1, .2]), -10.
+    calls = []
+
+    def resume(model, phi, time, event, budget):
+        calls.append((model, phi))
+        result = FakeModel()
+        result.final_loglik_, result.continuation_initial_loglik_ = -9., -10.
+        result.loglik_history_ = [-9.]
+        return result
+
+    monkeypatch.setattr(fitting, "InitializedGGKM", FakeModel)
+    monkeypatch.setattr(fitting, "profile_dispersion", lambda *args, **kwargs: ([{"phi": .5}], [(.5, seed)]))
+    monkeypatch.setattr(fitting, "_resume_free_nb", resume)
+    fit = fitting.MultiStartGGKM(fitting=config["fitting"], latent_distribution="negative_binomial", max_em_iter=10)
+    fit.fit(None, None, None)
+    assert calls == [(seed, .5)]
+    assert fit.model_.final_loglik_ == -9.
+    assert fit.attempts_[fit.selected_attempt_]["source"] == "profile_restart"
+    assert fit.attempts_[fit.selected_attempt_]["initial_loglik"] == -10.
+    json.dumps(fit.attempts_, allow_nan=False)
+
+    def failed_resume(*args):
+        raise RuntimeError("Continuation did not succeed")
+
+    monkeypatch.setattr(fitting, "_resume_free_nb", failed_resume)
+    fit.fit(None, None, None)
+    assert fit.model_.final_loglik_ == -12.  # The better fixed profile is never a free-fit fallback.
+    assert fit.attempts_[-1]["status"] == "failed"
+    assert not fit.attempts_[-1]["converged"]
+
+
 @pytest.mark.parametrize("model,mode", [("poisson", "estimated"), ("bn", "estimated"), ("bn", "fixed"), ("bn", "phi_fixed"), ("binomial", "estimated")])
 def test_real_inner_tuning_refit_scoring_and_diagnostic_serialization(tmp_path, config, model, mode):
-    config["fitting"].update(latency_starts=[[1.6, 1.3, 1.1]], dispersion_starts=[1.], retries=0)
+    config["fitting"].update(latency_starts=[[1.6, 1.3, 1.1]], dispersion_starts=[1.],
+                             profile_dispersion=[0., .5], retries=0)
     design = runner.build_design("audit", tmp_path, config)
     design["stage"] = "pilot"  # The numerical smoke test omits the expensive audit profile.
     design["truth_grid_points"] = 3
@@ -131,6 +228,10 @@ def test_real_inner_tuning_refit_scoring_and_diagnostic_serialization(tmp_path, 
     diagnostic = json.loads((tmp_path / row["diagnostic_path"]).read_text())
     assert len(diagnostic["fits"]) == 3  # Two inner folds and the held-out refit.
     assert all(fit["attempts"] for fit in diagnostic["fits"])
+    if model == "bn" and mode != "phi_fixed":
+        assert all(fit["profile"] for fit in diagnostic["fits"])
+        assert all(any(attempt.get("source") == "profile_restart" for attempt in fit["attempts"])
+                   for fit in diagnostic["fits"])
     if mode == "fixed":
         assert [row[key] for key in ("fitted_a", "fitted_d", "fitted_p")] == [1.6, 1.3, 1.1]
     if mode == "phi_fixed":

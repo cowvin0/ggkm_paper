@@ -18,6 +18,18 @@ python scripts/run_confirmatory_workflow.py --mode cluster --stage audit --dry-r
 python scripts/run_confirmatory_workflow.py --mode cluster --stage audit
 ```
 
+If you already ran the original audit, keep its results and use a new directory
+for the revised profile-restart fitting procedure:
+
+```bash
+python scripts/run_confirmatory_workflow.py --mode cluster --stage audit \
+  --output-dir data/latent_robustness/confirmatory_v2
+```
+
+Use that same `--output-dir data/latent_robustness/confirmatory_v2` for every
+subsequent pilot, final, or report command below. Updated source hashes prevent
+mixing revised fits with the previous audit. There is no need to delete data.
+
 Use `--mode local --workers 1` for local execution. Cluster execution uses the
 same module/virtual-environment settings as the other PBS jobs; `GGKM_PYTHON`,
 `GGKM_VENV`, `GGKM_MODULES`, and `GGKM_PROJECT_ROOT` retain their usual meanings.
@@ -39,10 +51,29 @@ retried once from the same initialization at twice its original EM budget.
 Objectives are compared only within the same kernel and penalty. Inner IBS
 still selects the tuning configuration. Test data never select starts or tuning.
 
+With `fitting.profile_restart: true`, every free-NB fit also evaluates the
+declared fixed-dispersion/Poisson profile on its own training data, including
+each inner fold. It then restarts the free-NB ECME updates from the complete
+best profile solution: intercept, kernel coefficients, latency, and dispersion.
+Dispersion is estimated again; a fixed-profile convergence flag is never
+inherited. The Poisson endpoint initializes NB at the existing numerical lower
+bound, phi=1e-8, with the initial NB objective recomputed. The ordinary starts
+remain candidates, and selection still uses the highest finite objective.
+This adds training fits and therefore increases runtime.
+
+Continuation rejects objective decreases larger than 1e-8 and invalid training
+survival/cure predictions. Failed continuations are recorded and cannot replace
+the free fit with a fixed-profile solution. Diagnostics include restart sources,
+the initial/final objectives, a hash of the transferred predictor coefficients,
+solver histories, and flags for latency/dispersion at their existing lower
+bounds. A boundary flag is descriptive, not by itself an audit failure. No upper
+latency bound or change to the audit tolerance is introduced.
+
 For each selected audit NB configuration, the profile refits the other
 parameters with phi fixed at 0.0001, 0.25, 0.5, 1, 2, and 4, and fits an exact
 Poisson model for the phi=0 point. Both estimated- and fixed-latency profiles
-are available. Profile objectives share the same selected kernel and penalty.
+are available. The selected fit's training profile is reused when already
+computed. Profile objectives share the same selected kernel and penalty.
 
 **NB approaching Poisson as phi approaches zero is expected. A small fitted
 dispersion does not itself fail the audit.** The audit stops progression if a

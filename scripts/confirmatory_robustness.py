@@ -163,13 +163,14 @@ def fit_one(model_name, mode, case, design, context, base, directory):
             raise RuntimeError("Fixed dispersion changed")
         diagnostic.update(selected_attempt=fit.selected_attempt_, selected_final_loglik=float(model.final_loglik_))
         if design["stage"] == "audit" and model_name == "bn" and mode != "phi_fixed":
-            diagnostic["profile"] = profile_dispersion(
+            diagnostic["profile"] = fit.profile_ or profile_dispersion(
                 {**parameters, **tuned}, protocol["fitting"], context["X_train"], time, event, fixed_latency=fixed_latency,
             )
     except Exception as error:
         row.update(status="failed", failure_reason=f"{type(error).__name__}: {error}")
     diagnostic["fits"] = [{"parameters": item.parameters, "fixed_latency": item.fixed_latency,
-                            "attempts": item.attempts_, "selected_attempt": getattr(item, "selected_attempt_", None)} for item in journal]
+                            "attempts": item.attempts_, "profile": item.profile_,
+                            "selected_attempt": getattr(item, "selected_attempt_", None)} for item in journal]
     path = Path(directory) / "diagnostics" / f"case_{case['task_id']:03d}" / f"replication_{base['replication']:04d}_{mode}_{model_name}.json"
     atomic_write_json(path, diagnostic)
     row.update(diagnostic_path=str(path.relative_to(directory)), diagnostic_sha256=original.checksum(path), runtime_seconds=perf_counter() - start)

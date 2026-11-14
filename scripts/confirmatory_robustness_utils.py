@@ -57,6 +57,8 @@ def load_protocol(path=None):
         raise ValueError("Each latency start must contain three positive finite values")
     if type(fitting["retries"]) is not int or fitting["retries"] < 0 or type(fitting["retry_multiplier"]) is not int or fitting["retry_multiplier"] < 2:
         raise ValueError("Invalid retry policy")
+    if type(fitting.get("profile_restart")) is not bool:
+        raise ValueError("Declare whether full-state profile restarts are enabled")
     profile = fitting["profile_dispersion"]
     if not profile or 0 not in profile or any(not np.isfinite(x) or x < 0 for x in profile):
         raise ValueError("The profile must include exact Poisson (0) and nonnegative finite dispersions")

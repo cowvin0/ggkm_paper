@@ -3,3 +3,9 @@
 /tmp
 figures/latent_robustness
 presentation/
+data/latent_robustness/*
+data/melanoma_results/*
+data/breast_cancer_results/*
+data/fosp_melanoma_results/*
+data/results/*
+/logs/pbs
