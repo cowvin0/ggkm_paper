@@ -1203,77 +1203,8 @@ with negative restricted mean predicted survival over the same evaluation
 horizon as the risk score and censoring weights estimated from the training
 sample. Larger values indicate better discrimination.
 
-Discrimination with respect to long-term cure status is additionally
-assessed using an imputation-based area under the receiver operating
-characteristic curve for cure models, denoted by
-$\mathrm{AUC}_{\mathrm{cure}}$ \cite{medina2024}. Let
-\begin{equation}
-	\widehat\pi_i
-	=
-	\lim_{t\to\infty}
-	\widehat S_i(t)
-\end{equation}
-denote the estimated cure probability for subject $i$. For the Poisson
-GG-KM model,
-$
-\widehat\pi_i
-=
-\exp\{-\exp(\widehat\eta_i)\},
-$
-whereas for the negative-binomial GG-KM model,
-$
-\widehat\pi_i
-=
-\left(
-1+\widehat\phi\exp(\widehat\eta_i)
-\right)^{-1/\widehat\phi}
-$.
-Because cure status is not directly observed for censored individuals,
-$\widehat\pi_i$ and $1-\widehat\pi_i$ are used as imputation weights for
-the cured and susceptible states, respectively. For a cut-off
-$c\in[0,1]$, the estimated true-positive and false-positive rates are
-\begin{equation}
-	\widehat{\mathrm{TPR}}(c)
-	=
-	\frac{
-		\displaystyle
-		\sum_{i=1}^{m}
-		I(\widehat\pi_i\leq c)
-		(1-\widehat\pi_i)
-	}{
-		\displaystyle
-		\sum_{i=1}^{m}
-		(1-\widehat\pi_i)
-	},
-	\label{eq:auc-cure-tpr}
-\end{equation}
-\begin{equation}
-	\widehat{\mathrm{FPR}}(c)
-	=
-	\frac{
-		\displaystyle
-		\sum_{i=1}^{m}
-		I(\widehat\pi_i\leq c)
-		\widehat\pi_i
-	}{
-		\displaystyle
-		\sum_{i=1}^{m}
-		\widehat\pi_i
-	}.
-	\label{eq:auc-cure-fpr}
-\end{equation}
-Here, lower values of $\widehat\pi_i$ correspond to stronger evidence
-that an individual is susceptible, so susceptibility is treated as the
-positive class. The $\mathrm{AUC}_{\mathrm{cure}}$ is obtained by
-trapezoidal integration of the receiver operating characteristic curve
-formed by Equations~\eqref{eq:auc-cure-tpr} and \eqref{eq:auc-cure-fpr}, that is
-		$\{\widehat{\mathrm{FPR}}(c),\widehat{\mathrm{TPR}}(c)\}$
-over $c\in[0,1]$. Larger values indicate better discrimination between
-individuals with higher and lower probabilities of belonging to the
-susceptible subpopulation.
-
 Evaluation summaries retain paired score differences, cure-fraction
-error in simulations, Uno's C-index, $\mathrm{AUC}_{\mathrm{cure}}$, calibration,
+error in simulations, Uno's C-index, calibration,
 convergence, failures, and runtime. A common generalized gamma latency
 is used throughout the reported simulation so that the generating
 latency matches the fitted latency structure and predictor-shape

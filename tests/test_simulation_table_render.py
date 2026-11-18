@@ -90,14 +90,15 @@ def test_best_table_compares_existing_model_set(primary, expected_count, label):
     assert (promotion in compared) is (not primary)
     assert (mixture in compared) is (not primary)
     assert re.findall(r"\\label\{([^}]+)\}", output) == [label]
-    assert r"\begin{tabular}{lllcccc}" in output
+    assert r"\begin{tabular}{lllccc}" in output
+    assert "AUC" not in output
     if primary:
-        assert _data_rows(output)[0][3:] == ["GG-P (linear): 0.5000 (0.0100)"] * 4
+        assert _data_rows(output)[0][3:] == ["GG-P (linear): 0.5000 (0.0100)"] * 3
         assert r"\small" in output
         assert r"\resizebox{\textwidth}{!}" in output
     else:
         assert _data_rows(output)[0][3:] == [
-            "PT: 0.0100 (0.0020)", "Mix: 0.0200 (0.0030)", "PT: 0.9900 (0.0040)",
+            "PT: 0.0100 (0.0020)", "Mix: 0.0200 (0.0030)",
             "GG-P (linear): 0.5000 (0.0100)",
         ]
         assert r"\resizebox{\textwidth}{!}" in output
@@ -122,7 +123,6 @@ def test_best_selection_uses_unrounded_means_and_metric_direction(primary, kerne
     assert _data_rows(output)[0][3:] == [
         "GG-NB (linear): 0.2000 (0.0020)",
         f"GG-NB ({kernel_name}): 0.1000 (0.0040)",
-        f"GG-NB ({kernel_name}): 0.7000 (0.0060)",
         "GG-NB (linear): 0.9000 (0.0070)",
     ]
 
@@ -140,7 +140,7 @@ def test_missing_means_and_single_replication_mcse_are_explained():
 
     assert _data_rows(metric_table)[0][3:5] == ["--", "0.2000 (--)"]
     assert _data_rows(best_table)[0][3:] == [
-        "GG-P (rbf): 0.2000 (--)", "GG-P (rbf): 0.2000 (--)", "--", "--",
+        "GG-P (rbf): 0.2000 (--)", "GG-P (rbf): 0.2000 (--)", "--",
     ]
     for output in (metric_table, best_table):
         assert "unavailable estimate or Monte Carlo standard error" in output

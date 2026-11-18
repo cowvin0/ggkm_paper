@@ -46,7 +46,7 @@
     "tables": {
       "best": {
         "path": "sections/generated/highdim-best-table.tex",
-        "sha256": "8831d01b4c0571a1348234853a2c0c53a7a5da502f0440441b6de6171dbd7ee1"
+        "sha256": "9d3320a7fbe24790cf5f61eeeab5ca6a2911e048c1369ab22e5984a9ddb6ff14"
       },
       "cure_rmse": {
         "path": "sections/generated/highdim-cure-rmse-table.tex",
@@ -113,7 +113,7 @@
     "tables": {
       "performance": {
         "path": "sections/generated/melanoma-performance-table.tex",
-        "sha256": "a93795110bcc4ed0b3b294343049a125417f1a082cff45bcee2280fbff42eba4"
+        "sha256": "d96fb95c7ade2d42d3292db5cc141f6d3c33b9c5e830f63d83c4e7ff6f2e9c4c"
       }
     }
   },
@@ -176,7 +176,7 @@
     "tables": {
       "best": {
         "path": "sections/generated/simulation-best-table.tex",
-        "sha256": "d1ef7d3e747e95aaad4caf2a9672d7a8203af99026c7ce14863194166d50e812"
+        "sha256": "3ed25323824a2b4fa27fadaea2ee5d6b4cb11412b0cffacc79fa1bf1b3012e87"
       },
       "cure_rmse": {
         "path": "sections/generated/simulation-cure-rmse-table.tex",
@@ -192,7 +192,7 @@
       },
       "regret": {
         "path": "sections/generated/simulation-regret-table.tex",
-        "sha256": "2edee6adb429f1f052420073940429f74378a424a0ac21f6dc704f7e83e5d85a"
+        "sha256": "ad72f0f6ef5d48de4f852a77e28464d76c826af59ad2df8d6c0d382e45601ef9"
       }
     }
   }

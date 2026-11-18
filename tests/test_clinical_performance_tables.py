@@ -199,11 +199,12 @@ def test_render_preserves_labels_columns_order_precision_and_sd(tmp_path):
     text = render_performance_table(results, planned_splits=results.validate())
 
     assert r"\label{tab:melanoma-performance}" in text
-    assert r"\begin{tabular}{llcccccc}" in text
+    assert r"\begin{tabular}{llccccc}" in text
+    assert "AUC" not in text
     assert "4 paired repeated holdouts" in text
     assert "sample split standard deviations" in text
     assert "Runtime is the mean across successful fits" in text
-    assert text.count("& 2/3\n& 0.2000 (0.1414)\n& 0.7000 (0.1414)\n& 0.8000 (0.1000)\n& 0.400 (0.200)\n& 2.33 (4.00)") == 18
+    assert text.count("& 2/3\n& 0.2000 (0.1414)\n& 0.7000 (0.1414)\n& 0.400 (0.200)\n& 2.33 (4.00)") == 18
     assert text.index("Mixture cure\n& Mixture cure") < text.index("Promotion time\n& Poisson")
     assert text.index("Spline\n& Negative binomial") < text.index("GG-KM (linear)")
     assert text.index("GG-KM (Cauchy)") < text.index("GG-KM (polynomial)") < text.index("GG-KM (wavelet)")
@@ -217,7 +218,7 @@ def test_undefined_summaries_render_as_dashes(tmp_path):
     frame["status"] = "failed"
     _write(tmp_path, frame=frame)
     text = render_performance_table(ClinicalResults(tmp_path, "melanoma"), planned_splits=4)
-    assert "& 0/0\n& --\n& --\n& --\n& --\n& -- " in text
+    assert "& 0/0\n& --\n& --\n& --\n& -- " in text
     assert "nan" not in text
     frame.loc[0, "status"] = "ok"
     _write(tmp_path, frame=frame)

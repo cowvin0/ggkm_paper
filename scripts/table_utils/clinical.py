@@ -242,7 +242,7 @@ def _format_summary(values: tuple[float, float], digits: int) -> str:
 
 
 def render_performance_table(results: ClinicalResults, *, planned_splits: int) -> str:
-    """Add Uno's C-index while preserving the existing summaries and row order."""
+    """Render the paper's metrics, preserving summaries and model row order."""
     cohort = {
         "melanoma": "melanoma cohort.",
         "breast-cancer": "breast cancer cohort\nfrom Paraíba State, Brazil.",
@@ -251,8 +251,8 @@ def render_performance_table(results: ClinicalResults, *, planned_splits: int) -
     lines = [
         r"\begin{table*}[tbp]",
         f"\\caption{{Predictive performance in {planned_splits} paired repeated holdouts of the {cohort}",
-        r"Values for the IPCW integrated Brier score (IBS), Uno's C-index, cure-discrimination area under the curve",
-        r"($\mathrm{AUC}_{\mathrm{cure}}$), and mean predicted cure fraction are means across successful",
+        r"Values for the IPCW integrated Brier score (IBS), Uno's C-index,",
+        r"and mean predicted cure fraction are means across successful",
         r"splits, with sample split standard deviations in parentheses. Convergence is reported as the number",
         r"of converged fits among successful fits. Runtime is the mean across successful fits with the maximum",
         r"in parentheses. Nonfinite measurements are excluded from each summary; a dash indicates an undefined value.",
@@ -260,9 +260,9 @@ def render_performance_table(results: ClinicalResults, *, planned_splits: int) -
         r"with censoring weights estimated from the corresponding training split; larger values indicate better discrimination.",
         "}", f"\\label{{tab:{results.dataset}-performance}}", r"\centering",
         r"\resizebox{\textwidth}{!}{%",
-        r"\begin{tabular}{llcccccc}", r"\hline",
+        r"\begin{tabular}{llccccc}", r"\hline",
         r"Predictor & Count law & Converged & IPCW IBS &",
-        r"Uno's C-index & $\mathrm{AUC}_{\mathrm{cure}}$ & Mean cure prediction & Runtime (s) \\",
+        r"Uno's C-index & Mean cure prediction & Runtime (s) \\",
         r"\hline", "",
     ]
     for index, method in enumerate(results.methods):
@@ -273,7 +273,6 @@ def render_performance_table(results: ClinicalResults, *, planned_splits: int) -
             method.predictor, f"& {method.count_law}", f"& {converged}/{successful}",
             f"& {_format_summary(results.summary(method, 'integrated_brier'), 4)}",
             f"& {_format_summary(results.summary(method, 'uno_c_index'), 4)}",
-            f"& {_format_summary(results.summary(method, 'cure_auc'), 4)}",
             f"& {_format_summary(results.summary(method, 'mean_predicted_cure'), 3)}",
             f"& {_format_summary(results.runtime(method), 2)} " + r"\\", "",
         ))

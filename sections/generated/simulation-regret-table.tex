@@ -5,7 +5,7 @@ scenarios for the Poisson and negative-binomial models.
 The comparison is restricted to spline models and GG-KM models using the RBF
 kernel. Within each scenario and metric, the reference is the retained method
 with the best finite mean. For IPCW integrated Brier score and cure RMSE,
-regret is the method value minus the reference value; for cure AUC and Uno's C-index, regret is
+regret is the method value minus the reference value; for Uno's C-index, regret is
 the reference value minus the method value, so that smaller regret is better
 for all metrics. Regret uses only replication pairs for which both methods are
 finite. The worst regret identifies its scenario and reports a 95\% Monte Carlo
@@ -28,11 +28,6 @@ Cure RMSE & Spline Negative binomial & 0.00465 $\pm$ 0.00210 (Quadratic, NB(1.00
 Cure RMSE & Spline Poisson & 0.00465 $\pm$ 0.00210 (Quadratic, NB(1.00), $n=600$) & 0.00068 $\pm$ 0.00024 & 1.78 \\
 Cure RMSE & GG-KM Poisson (RBF) & 0.01645 $\pm$ 0.00274 (Periodic, NB(1.00), $n=300$) & 0.00634 $\pm$ 0.00053 & 2.94 \\
 Cure RMSE & GG-KM Negative binomial (RBF) & 0.01626 $\pm$ 0.00274 (Periodic, NB(1.00), $n=300$) & 0.00633 $\pm$ 0.00054 & 3.17 \\
-\hline
-Cure AUC & Spline Negative binomial & 0.00693 $\pm$ 0.00529 (Quadratic, P, $n=300$) & 0.00203 $\pm$ 0.00069 & 2.72 \\
-Cure AUC & Spline Poisson & 0.00711 $\pm$ 0.00524 (Quadratic, P, $n=300$) & 0.00206 $\pm$ 0.00069 & 2.72 \\
-Cure AUC & GG-KM Poisson (RBF) & 0.00749 $\pm$ 0.00460 (Periodic, P, $n=300$) & 0.00141 $\pm$ 0.00060 & 2.28 \\
-Cure AUC & GG-KM Negative binomial (RBF) & 0.00750 $\pm$ 0.00463 (Periodic, P, $n=300$) & 0.00131 $\pm$ 0.00060 & 2.28 \\
 \hline
 Uno's C-index & Spline Negative binomial & 0.00265 $\pm$ 0.00211 (Quadratic, NB(1.00), $n=600$) & 0.00053 $\pm$ 0.00036 & 2.00 \\
 Uno's C-index & Spline Poisson & 0.00266 $\pm$ 0.00211 (Quadratic, NB(1.00), $n=600$) & 0.00053 $\pm$ 0.00036 & 2.11 \\

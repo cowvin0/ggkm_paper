@@ -195,7 +195,7 @@ The calculations live in `table_utils/`:
 Means and Monte Carlo standard errors use successful fits with a finite value
 for that metric; MCSE is the sample standard deviation divided by the square
 root of the valid count. The best-method table selects the unrounded minimum
-IBS/RMSE or maximum AUC/Uno's C-index. The primary best-method comparison includes GG-KM and
+IBS/RMSE or maximum Uno's C-index. The primary best-method comparison includes GG-KM and
 spline Poisson/NB models; the high-dimensional best-method comparison additionally
 includes promotion time and mixture cure, following its supplied caption. The
 detailed metric and diagnostic tables include all 18 configurations.
@@ -405,7 +405,7 @@ Missing estimates or undefined standard deviations appear as
 `--`; missing convergence information raises an error.
 Uno's C-index is read from the existing `uno_c_index` split CSV column. It uses
 negative RMST risk scores up to the saved evaluation horizon and censoring
-weights fitted on the training sample. AUC cure remains alongside it. Simulation
+weights fitted on the training sample. Cure AUC is omitted from the manuscript tables. Simulation
 tables read the corresponding `test_cindex` column; the best-method and regret
 tables treat higher concordance as better. Older CSVs missing these metrics
 must be regenerated; table generation does not invent missing scores.
@@ -450,6 +450,17 @@ Carlo intervals. They add `simulation_rbf_paired_differences_ibs` and
 as PDF, PNG, SVG, and a plotted-value CSV. C-index contrasts use `test_cindex`:
 positive RBF-minus-comparator values favour RBF; negative IBS contrasts favour
 RBF. The original `*_ibs_auc` and `*_with_auc` files remain unchanged.
+
+The manuscript uses IBS/concordance panels composed from these saved outputs:
+
+```bash
+python figures/compose_paper_score_panels.py
+```
+
+This exports `*_ibs_uno_c_index.pdf` figures for the paper, preserving the
+clinical survival-calibration panels and model choices. It requires the saved
+standalone metric CSVs and PDFs, the original clinical three-panel PDFs,
+`pdflatex`, and Poppler; it does not refit models.
 
 ## Latent-count robustness workflow
 

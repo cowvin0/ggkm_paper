@@ -38,7 +38,7 @@ _MISSING_ESTIMATE_NOTE = (
 )
 _PRIMARY_BEST_CAPTION = """Best observed mean predictive performance in each simulation scenario
 among Poisson and negative-binomial GG-KM and spline models.
-For IPCW IBS and cure RMSE, smaller values are better, whereas for cure AUC and Uno's C-index,
+For IPCW IBS and cure RMSE, smaller values are better, whereas for Uno's C-index,
 larger values are better. Parenthesized values are Monte Carlo standard errors.
 The displayed optimum is a descriptive comparison and is not a claim of
 superiority when paired uncertainty includes zero.
@@ -47,7 +47,7 @@ Poisson, and negative binomial, respectively.
 For GG-KM fits, the selected kernel is shown in parentheses."""
 _HIGHDIM_BEST_CAPTION = """Best observed mean predictive performance in each high-dimensional simulation
 scenario. For IPCW IBS and cure RMSE, smaller values are better, whereas for
-cure AUC and Uno's C-index, larger values are better. Parenthesized values are Monte Carlo
+Uno's C-index, larger values are better. Parenthesized values are Monte Carlo
 standard errors. The comparison includes Poisson and negative-binomial GG-KM
 models, Poisson and negative-binomial spline models, the mixture-cure model,
 and the promotion-time model. Int and Rad denote Interaction and Radial
@@ -59,7 +59,7 @@ scenarios for the Poisson and negative-binomial models.
 The comparison is restricted to spline models and GG-KM models using the RBF
 kernel. Within each scenario and metric, the reference is the retained method
 with the best finite mean. For IPCW integrated Brier score and cure RMSE,
-regret is the method value minus the reference value; for cure AUC and Uno's C-index, regret is
+regret is the method value minus the reference value; for Uno's C-index, regret is
 the reference value minus the method value, so that smaller regret is better
 for all metrics. Regret uses only replication pairs for which both methods are
 finite. The worst regret identifies its scenario and reports a 95\% Monte Carlo
@@ -230,11 +230,11 @@ def render_best_table(results: Results, scenarios: Sequence[Scenario], *, primar
     caption += "\n" + _MISSING_ESTIMATE_NOTE
     label = "tab:simulation-best" if primary else "tab:highdim-best"
     lines = _begin_table(
-        caption, [label], "lllcccc", position="tbp", resize=True,
+        caption, [label], "lllccc", position="tbp", resize=True,
         size="small" if primary else None,
     )
     lines.extend([
-        _row(["True surface", "Generating law", "$n$", "Lowest mean IPCW IBS", "Lowest mean cure RMSE", "Highest mean cure AUC", "Highest mean Uno's C-index"]),
+        _row(["True surface", "Generating law", "$n$", "Lowest mean IPCW IBS", "Lowest mean cure RMSE", "Highest mean Uno's C-index"]),
         r"\hline",
     ])
     previous_surface = None
@@ -242,7 +242,7 @@ def render_best_table(results: Results, scenarios: Sequence[Scenario], *, primar
         if previous_surface is not None and scenario.method != previous_surface:
             lines.append(r"\hline")
         cells = _scenario_cells(scenario)
-        for metric in ("test_ibs", "cure_rmse", "test_auc", "test_cindex"):
+        for metric in ("test_ibs", "cure_rmse", "test_cindex"):
             candidates = []
             for method in methods:
                 mean, mcse, _ = results.summary(scenario, method, metric)
@@ -335,6 +335,8 @@ def render_regret_table(rows: Sequence[Mapping[str, Any]]) -> str:
     previous_metric = None
     for row in rows:
         metric = METRIC_ALIASES.get(row["metric"], row["metric"])
+        if metric == "test_auc":
+            continue
         if previous_metric is not None and metric != previous_metric:
             lines.append(r"\hline")
         worst = _paired_estimate(row["worst_mean"], row["worst_halfwidth"])

@@ -1,7 +1,7 @@
 \begin{table*}[tbp]
 \caption{Predictive performance in 50 paired repeated holdouts of the FOSP melanoma cohort.
-Values for the IPCW integrated Brier score (IBS), Uno's C-index, cure-discrimination area under the curve
-($\mathrm{AUC}_{\mathrm{cure}}$), and mean predicted cure fraction are means across successful
+Values for the IPCW integrated Brier score (IBS), Uno's C-index,
+and mean predicted cure fraction are means across successful
 splits, with sample split standard deviations in parentheses. Convergence is reported as the number
 of converged fits among successful fits. Runtime is the mean across successful fits with the maximum
 in parentheses. Nonfinite measurements are excluded from each summary; a dash indicates an undefined value.
@@ -11,10 +11,10 @@ with censoring weights estimated from the corresponding training split; larger v
 \label{tab:fosp-melanoma-performance}
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llcccccc}
+\begin{tabular}{llccccc}
 \hline
 Predictor & Count law & Converged & IPCW IBS &
-Uno's C-index & $\mathrm{AUC}_{\mathrm{cure}}$ & Mean cure prediction & Runtime (s) \\
+Uno's C-index & Mean cure prediction & Runtime (s) \\
 \hline
 
 Mixture cure
@@ -22,7 +22,6 @@ Mixture cure
 & 50/50
 & 0.1242 (0.0034)
 & 0.8133 (0.0070)
-& 0.8743 (0.0037)
 & 0.623 (0.008)
 & 9.02 (11.01) \\
 
@@ -31,7 +30,6 @@ Promotion time
 & 50/50
 & 0.1248 (0.0036)
 & 0.8129 (0.0074)
-& 0.8406 (0.0051)
 & 0.616 (0.008)
 & 22.02 (26.54) \\
 
@@ -42,7 +40,6 @@ Spline
 & 50/50
 & 0.1238 (0.0036)
 & 0.8117 (0.0077)
-& 0.8598 (0.0056)
 & 0.615 (0.008)
 & 236.24 (290.23) \\
 
@@ -51,7 +48,6 @@ Spline
 & 50/50
 & 0.1238 (0.0036)
 & 0.8117 (0.0078)
-& 0.8598 (0.0057)
 & 0.615 (0.008)
 & 302.95 (369.62) \\
 
@@ -62,7 +58,6 @@ GG-KM (linear)
 & 50/50
 & 0.1488 (0.0019)
 & 0.7973 (0.0077)
-& 0.7330 (0.0039)
 & 0.733 (0.004)
 & 53.72 (61.75) \\
 
@@ -71,7 +66,6 @@ GG-KM (linear)
 & 15/15
 & 0.1306 (0.0031)
 & 0.7929 (0.0073)
-& 0.8281 (0.0053)
 & 0.631 (0.007)
 & 421.53 (523.62) \\
 
@@ -80,7 +74,6 @@ GG-KM (RBF)
 & 50/50
 & 0.1261 (0.0034)
 & 0.8070 (0.0077)
-& 0.8439 (0.0040)
 & 0.592 (0.008)
 & 7370.51 (9102.26) \\
 
@@ -89,7 +82,6 @@ GG-KM (RBF)
 & 50/50
 & 0.1261 (0.0034)
 & 0.8070 (0.0077)
-& 0.8439 (0.0040)
 & 0.592 (0.008)
 & 7807.23 (9225.35) \\
 
@@ -98,7 +90,6 @@ GG-KM (Laplacian)
 & 50/50
 & 0.1229 (0.0036)
 & 0.8140 (0.0075)
-& 0.8628 (0.0036)
 & 0.597 (0.008)
 & 6706.49 (8943.07) \\
 
@@ -107,7 +98,6 @@ GG-KM (Laplacian)
 & 50/50
 & 0.1229 (0.0036)
 & 0.8139 (0.0075)
-& 0.8628 (0.0036)
 & 0.597 (0.008)
 & 10075.65 (13570.65) \\
 
@@ -116,7 +106,6 @@ GG-KM (exponential)
 & 50/50
 & 0.1240 (0.0037)
 & 0.8116 (0.0079)
-& 0.8618 (0.0039)
 & 0.600 (0.008)
 & 8822.58 (10252.23) \\
 
@@ -125,7 +114,6 @@ GG-KM (exponential)
 & 50/50
 & 0.1240 (0.0037)
 & 0.8116 (0.0079)
-& 0.8618 (0.0039)
 & 0.600 (0.008)
 & 11839.75 (15908.81) \\
 
@@ -134,7 +122,6 @@ GG-KM (Cauchy)
 & 50/50
 & 0.1245 (0.0037)
 & 0.8103 (0.0079)
-& 0.8591 (0.0038)
 & 0.599 (0.008)
 & 7964.84 (9263.27) \\
 
@@ -143,7 +130,6 @@ GG-KM (Cauchy)
 & 50/50
 & 0.1245 (0.0037)
 & 0.8103 (0.0079)
-& 0.8591 (0.0038)
 & 0.599 (0.008)
 & 12608.69 (16267.32) \\
 
@@ -152,7 +138,6 @@ GG-KM (polynomial)
 & 50/50
 & 0.1429 (0.0024)
 & 0.8101 (0.0078)
-& 0.7757 (0.0047)
 & 0.732 (0.005)
 & 689.33 (986.64) \\
 
@@ -161,7 +146,6 @@ GG-KM (polynomial)
 & 50/50
 & 0.1229 (0.0038)
 & 0.8150 (0.0074)
-& 0.8691 (0.0048)
 & 0.612 (0.008)
 & 4288.68 (5268.25) \\
 
@@ -170,7 +154,6 @@ GG-KM (wavelet)
 & 50/50
 & 0.1218 (0.0036)
 & 0.8161 (0.0074)
-& 0.8698 (0.0040)
 & 0.609 (0.008)
 & 13288.74 (15198.54) \\
 
@@ -179,7 +162,6 @@ GG-KM (wavelet)
 & 50/50
 & 0.1218 (0.0036)
 & 0.8161 (0.0074)
-& 0.8698 (0.0040)
 & 0.609 (0.008)
 & 16716.44 (21251.22) \\
 

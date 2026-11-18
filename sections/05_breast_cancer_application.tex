@@ -71,70 +71,53 @@ variation. The spline models under both Poisson and negative-binomial
 latent-count laws achieved the lowest mean IPCW integrated Brier score,
 0.0877 with split standard deviation 0.0019. The mixture-cure
 and promotion-time models both had mean IBS 0.0883. The spline models
-also attained the highest mean Uno's C-indices, 0.6937 and 0.6938. The mixture-cure
-model attained the highest mean cure AUC overall, 0.7862, followed by the
-promotion-time model at 0.7805 and the spline models at 0.7724. Among the
+also attained the highest mean Uno's C-indices, 0.6937 and 0.6938. Among the
 GG-KM specifications, the wavelet kernel had the lowest mean IBS, 0.0879,
-under both latent-count laws and the highest mean cure AUC, 0.7219 under
-Poisson and 0.7216 under negative-binomial counts. Across the 900 planned
+under both latent-count laws. Across the 900 planned
 split-model fits, 870 completed successfully and 869 satisfied the explicit
 convergence criteria.
 
 Figure~\ref{fig:breast-cancer-performance} summarizes out-of-sample survival
-calibration, prediction error, and cure discrimination. The split-averaged
+calibration, prediction error, and survival discrimination. The split-averaged
 predicted survival curves closely followed the Kaplan--Meier estimate over
 the common prediction horizon, with relatively small differences among the
 fitted methods. The spline Poisson and negative-binomial models showed the
-lowest IPCW integrated Brier scores, whereas the mixture-cure model achieved
-the highest cure-discrimination performance. The GG-KM models with the
+lowest IPCW integrated Brier scores. The GG-KM models with the
 wavelet kernel had mean prediction errors close to the spline models and
-lower than the classical cure models, and retained better cure
-discrimination than several alternative kernel specifications.
+lower than the classical cure models.
 
-\GGKMWideFigure{breast_cancer_predictive_assessment_ibs_auc.pdf}
+\GGKMWideFigure{breast_cancer_predictive_assessment_ibs_uno_c_index.pdf}
 {Predictive assessment in 50 paired repeated holdouts of the breast cancer
 cohort. Panel A compares the full-cohort Kaplan--Meier curve with
 split-averaged out-of-sample survival predictions over the common supported
 horizon. Panel B shows split-level IPCW integrated Brier scores and Panel C
-shows the corresponding cure-discrimination area under the curve
-($\mathrm{AUC}_{\mathrm{cure}}$). Each point represents one outer split, and
-lower IBS values indicate better prediction whereas larger cure AUC values
+shows the corresponding Uno's C-index. Each point represents one outer split, and
+lower IBS values indicate better prediction whereas larger C-index values
 indicate better discrimination.}
 {fig:breast-cancer-performance}
 {Three-panel predictive assessment for the breast cancer application. Panel A
 compares the Kaplan--Meier survival curve with mean out-of-sample survival
 predictions from the mixture-cure, promotion-time, spline, and selected GG-KM
 models. Panels B and C show the corresponding repeated-holdout distributions
-of IPCW integrated Brier scores and cure AUC values.}
+of IPCW integrated Brier scores and Uno's C-index values.}
 
 Figure~\ref{fig:breast-cancer-performance-ggkm-kernel} shows that kernel
 choice had a marked influence on GG-KM performance. For prediction error,
 the wavelet kernel yielded the lowest mean IBS among the GG-KM
 specifications, followed by the Cauchy kernel among the nonlinear models,
-while the RBF kernel was less favorable. Cure discrimination varied more
-substantially across kernels. The wavelet kernel produced the highest mean
-cure AUC among the GG-KM models, 0.7219 under Poisson and 0.7216 under
-negative-binomial counts, whereas the linear Poisson model showed
-discrimination close to chance, with mean cure AUC 0.5007.
+while the RBF kernel was less favorable.
 
-% The linear Poisson model was particularly
-% poor for cure discrimination, with mean AUC close to 0.5, while its
-% negative-binomial counterpart performed substantially better. For most of
-% the RBF, Laplacian, exponential, Cauchy, and wavelet specifications, however,
-% the Poisson and negative-binomial results were very similar.
-
-\GGKMWideFigure{breast_cancer_ggkm_kernel_comparison_ibs_auc.pdf}
+\GGKMWideFigure{breast_cancer_ggkm_kernel_comparison_ibs_uno_c_index.pdf}
 {Kernel-specific predictive performance of the GG-KM models in 50 paired
 repeated holdouts of the breast cancer cohort. Panel A shows the split-level
-IPCW integrated Brier score and Panel B the cure-discrimination area under
-the curve ($\mathrm{AUC}_{\mathrm{cure}}$) across the seven candidate
+IPCW integrated Brier score and Panel B Uno's C-index across the seven candidate
 kernels. Within each kernel, Poisson and negative-binomial GG-KM results are
 shown side by side, with color and hatching distinguishing the two
 latent-count laws. Individual points represent outer splits and boxplots
 summarize their distributions.}
 {fig:breast-cancer-performance-ggkm-kernel}
 {Two-panel comparison of GG-KM kernels in the breast cancer application.
-Panel A displays split-level IPCW integrated Brier scores and Panel B cure
-AUC values for the linear, RBF, Laplacian, exponential, Cauchy, polynomial,
+Panel A displays split-level IPCW integrated Brier scores and Panel B Uno's C-index
+values for the linear, RBF, Laplacian, exponential, Cauchy, polynomial,
 and wavelet kernels. Poisson and negative-binomial specifications are shown
 side by side for each kernel.}
