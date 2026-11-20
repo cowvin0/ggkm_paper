@@ -1,6 +1,6 @@
 \section{FOSP melanoma application}\label{sec:fosp-melanoma}
 
-The third empirical application considered cutaneous melanoma records from
+The second empirical application considered cutaneous melanoma records from
 the Hospital Cancer Registry of S\~ao Paulo (RHC/FOSP), Brazil. The present analysis used
 an updated registry extract from July 2026, retaining diagnoses from
 2000--2014, clinical stages I--IV, valid positive observation times, and
@@ -30,8 +30,8 @@ represented by smoothed survival-target encodings based on restricted
 mean survival time, using five-fold out-of-fold encoding for the training
 observations. Validation and test observations received mappings
 estimated exclusively from the corresponding training sample. This
-followed the training-only preprocessing principle used in the
-breast-cancer application.
+followed the training-only preprocessing principle in
+Section~\ref{sec:prediction-evaluation}.
 
 Predictive performance was assessed using 50 event-stratified paired
 outer holdouts with 70\% training and 30\% testing. All methods shared
@@ -64,7 +64,7 @@ calibration with the paired prediction-error and survival-discrimination
 distributions. The six displayed mean survival curves followed the early
 Kaplan--Meier decline and lay slightly below it later in the common
 supported horizon. The wavelet models had lower mean IBS than the
-classical and spline comparators. As in the preceding applications, overlapping repeated
+classical and spline comparators. As in the preceding application, overlapping repeated
 holdouts describe variation across training samples and do not provide
 independent-sample confidence intervals.
 

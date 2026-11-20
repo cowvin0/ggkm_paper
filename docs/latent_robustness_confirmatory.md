@@ -9,6 +9,48 @@ changing the fitted count family remains below scientifically acceptable
 limits in the declared simulation scenarios. This does not test recovery of
 the true latent count law or prove robustness for every possible count law.
 
+## Compact storage for restricted cluster quotas
+
+The default protocol uses `storage.format: compact-v1` and an **80 GiB output
+budget**. The original full format duplicated optimizer traces across all starts,
+profiles, and inner folds; with a large pilot-based allocation this can exceed
+100 GB. Compact storage changes persistence and reporting, not generated data,
+models, tuning, margins, seeds, convergence rules, or replication allocation.
+
+- Audit samples and complete audit traces are retained; diagnostics use gzip.
+- Pilot/final samples are represented by deterministic seeds and an array hash.
+  Resuming/reporting regenerates them and verifies the hash and pairing fields.
+- Pilot/final checkpoints and diagnostics are compressed. Outer-start statuses,
+  objectives, fitted parameters, boundary flags, and solver-failure counts are
+  retained. Iteration histories become summaries; inner-fold journals retain
+  start/convergence/failure counts and the selected start. Full iteration traces
+  are available for the audit, rather than duplicated for every later fit.
+- `paired_replications.csv.gz` preserves every paired value. Reports process
+  one scenario at a time rather than collecting millions of pairs in memory.
+
+Use a **new directory** after updating the code, because source hashes and the
+storage policy are frozen. Existing full-format studies are not silently
+converted or resumed with different source hashes. No old files are deleted.
+
+```bash
+python scripts/run_confirmatory_workflow.py --mode cluster --stage pilot \
+  --output-dir data/latent_robustness/confirmatory_compact
+cat data/latent_robustness/confirmatory_compact/pilot/storage_plan.json
+cat data/latent_robustness/confirmatory_compact/pilot/allocation.json
+# When allocation.json reports ready=true:
+python scripts/run_confirmatory_workflow.py --mode cluster --stage final \
+  --output-dir data/latent_robustness/confirmatory_compact
+```
+
+The storage projection uses the largest observed per-replication allocation in
+each pilot case, filesystem-block/inode allowances, reporting space, and a
+twofold safety factor. If it exceeds the frozen budget, the pilot summary exits
+nonzero and blocks final jobs. It never reduces R or relaxes margins to fit.
+This is a conservative estimate, not a guarantee of the filesystem's quota;
+other files in the account and other runs also consume space. 80 GiB is about
+86 GB, so a 100 GB account must leave the remaining space available. Check the
+new pilot projection before committing to the large final run.
+
 ## Start with the optimization audit
 
 From the repository root, with the experiment environment active:
@@ -239,7 +281,8 @@ losses can be larger. Favorable differences cannot offset a failed scenario.
 Final artifacts include:
 
 - `performance_summary.csv`: absolute performance, attempted/completed/converged counts.
-- `paired_replications.csv`: replication-level differences with analysis-set labels.
+- `paired_replications.csv.gz` in compact mode (`.csv` in full mode): every
+  replication-level difference with analysis-set labels; pandas reads either directly.
 - `paired_summary.csv`: margins, pointwise descriptive intervals, simultaneous
   bounds, retained counts, and individual assessments.
 - `margin_sensitivity.csv`: consequences of an illustrative margin grid,
@@ -248,8 +291,9 @@ Final artifacts include:
 - `confirmatory-contrasts.tex` and `conclusion.md`: reviewable tables and the verdict.
 - Separate `confirmatory_integrated_brier.{pdf,png}` and
   `confirmatory_cure_rmse.{pdf,png}` figures with shared axes between analyses.
-- `samples/`, `checkpoints/`, and `diagnostics/`: generated data, exact pairing,
-  starting values, retries, likelihood histories, and optimizer statuses.
+- `samples/` for the audit, compressed `checkpoints/` and `diagnostics/`: exact
+  pairing, sample hashes, starting values, retries, and optimizer diagnostics,
+  with the trace-retention policy described above.
 
 Before using a strong manuscript claim, review the audit and convergence
 diagnostics alongside the formal verdict. Parameter identification is a

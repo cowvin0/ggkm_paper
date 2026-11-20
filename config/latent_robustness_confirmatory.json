@@ -10,6 +10,7 @@
   "final_replications": null,
   "minimum_final_replications": 356,
   "halfwidth_margin_fraction": 0.25,
+  "storage": {"format": "compact-v1", "budget_gib": 80, "projection_factor": 2.0},
   "seeds": {"audit": 20261120, "pilot": 20261121, "final": 20261122},
   "fitting": {
     "dispersion_starts": [0.0001, 0.25, 1.0, 2.0],

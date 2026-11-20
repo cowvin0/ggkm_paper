@@ -4,7 +4,7 @@
 The generalized gamma kernel-machine promotion-time cure model extends the promotion-time
 framework by placing the latent-cause log-intensity in a reproducing-kernel Hilbert space
 while retaining a flexible generalized gamma latency and both Poisson and negative-binomial
-latent counts. The primary and secondary simulations and the melanoma, breast-cancer,
+latent counts. The primary and secondary simulations and the melanoma
 and FOSP melanoma applications evaluate this construction against simpler predictors under a shared protocol.
 Their interpretation is limited to the evaluated designs. Kernel families were compared
 within prespecified grids, although robustness to broader kernel and hyperparameter choices
@@ -22,13 +22,10 @@ close within a predictor family, although differences in reported means reached 
 0.010 in integrated Brier score and 0.043 in cure root mean squared error for the
 polynomial kernel on the periodic surface at $n=600$. The melanoma cohort produced overlapping
 score distributions in which the wavelet GG-KM models had the lowest mean integrated
-Brier score, 0.1381. The
-breast-cancer cohort showed a complementary pattern: the spline models achieved the lowest
-mean integrated Brier score, 0.0877. Among the GG-KM specifications, the wavelet kernel had
-the lowest mean integrated Brier score, 0.0879, under both latent-count laws.
+Brier score, 0.1381.
 In the FOSP melanoma cohort, wavelet GG-KM attained the lowest mean integrated
 Brier score (0.1218) and highest Uno's C-index (0.8161). Together,
-the three empirical applications reinforce the simulation message that no
+the simulations and the two empirical applications show that no
 single predictor is uniformly best and that the preferred predictor and
 kernel depend on the predictive target and data structure.
 
@@ -60,10 +57,7 @@ factorization can require cubic time; nested tuning repeats those operations acr
 inner folds. Reusing a Gram matrix within a candidate and retained eigenspace avoids unnecessary work, but
 matrices cannot be shared across folds whose preprocessing and training subjects differ. In the primary
 simulation experiment, these costs remained manageable at the sample sizes studied, with mean per-fit
-runtimes across methods ranging from 1.14 to 67.84 seconds. The richer breast-cancer application was
-substantially more computationally demanding, particularly for several nonlinear GG-KM kernels and the
-spline models, underscoring that computational burden can increase sharply with a larger and more complex
-predictor representation; these timings do not establish scalability to substantially larger cohorts.
+runtimes across methods ranging from 1.14 to 67.84 seconds. These timings do not establish scalability to substantially larger cohorts.
 Low-rank, Nystr\"om, random-feature, or inducing-point approximations could reduce the burden, although each
 changes the effective penalty and out-of-sample predictor and would require separate numerical validation.
 Sample size affected the strength of the conclusions as well as runtime: increasing the sample from 300 to
@@ -72,10 +66,8 @@ Sample size affected the strength of the conclusions as well as runtime: increas
 Censoring and the event definition further bound the interpretation. The evaluation used
 inverse-probability-of-censoring weighting with a horizon confined to the region of reliable censoring
 support, which controls bias from dependent censoring only to the extent that the censoring model is
-adequate. In the melanoma cohort, deaths from other causes were treated as censored. In the breast-cancer
-cohort, death from breast cancer was treated as the event, while observations without a recorded
-breast-cancer death were censored. The FOSP analysis used death from cancer as the event
-and censored deaths from other causes. Accordingly, all three empirical analyses are cause specific in their event
+adequate. In the melanoma cohort, deaths from other causes were treated as censored. The FOSP analysis used death from cancer as the event
+and censored deaths from other causes. Accordingly, both empirical analyses are cause specific in their event
 definition and are not competing-risks analyses. Within these latent cause-specific processes,
 $p_c(\bm{x})$ describes the probability of no disease-specific death from the modelled process; it is
 neither an all-cause survival probability nor a competing-risks cumulative incidence. The interpretation
@@ -84,7 +76,7 @@ weakly identified from cure and latency information, which cautions against inte
 dispersion as a precise measure of overdispersion. No dispersion-lower-bound contacts were recorded
 in either simulation experiment.
 
-The three empirical applications are observational, and no causal interpretation is attached to the covariate effects
+The two empirical applications are observational, and no causal interpretation is attached to the covariate effects
 or to the predicted cure fractions. The reported associations describe out-of-sample predictive behaviour under
 a fixed analysis protocol, not the effect of intervening on any covariate.
 

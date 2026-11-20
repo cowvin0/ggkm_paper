@@ -50,6 +50,14 @@ def load_protocol(path=None):
     for value in config["margins"].values():
         if value is not None and (not np.isfinite(value) or value <= 0):
             raise ValueError("Margins must be null or positive finite values")
+    storage = config.get("storage", {"format": "full"})
+    if storage.get("format") not in {"full", "compact-v1"}:
+        raise ValueError("Unknown confirmatory storage format")
+    if storage["format"] == "compact-v1" and (
+        not np.isfinite(storage.get("budget_gib", np.nan)) or storage["budget_gib"] <= 0
+        or not np.isfinite(storage.get("projection_factor", np.nan)) or storage["projection_factor"] < 1
+    ):
+        raise ValueError("Compact storage needs a positive budget_gib and projection_factor >= 1")
     fitting = config["fitting"]
     if not fitting["dispersion_starts"] or any(not np.isfinite(x) or x <= 0 for x in fitting["dispersion_starts"]):
         raise ValueError("Dispersion starts must be positive and finite")
@@ -79,10 +87,11 @@ def protocol_snapshot(config, *, audit=False):
     for key in ("study_id", "phase", "replications", "master_seed"):
         base.pop(key)
     for name in ("scripts/confirmatory_robustness_utils.py", "scripts/confirmatory_robustness_fitting.py",
-                 "scripts/confirmatory_robustness.py", "scripts/summarize_latent_robustness.py"):
+                 "scripts/confirmatory_robustness.py", "scripts/confirmatory_robustness_storage.py",
+                 "scripts/summarize_latent_robustness.py"):
         base["source_sha256"][name] = original.checksum(original.PROJECT_ROOT / name)
     frozen_config = {"fitting": config["fitting"], "audit_replications": config["audit_replications"],
-                     "audit_seed": config["seeds"]["audit"]} if audit else config
+                     "audit_seed": config["seeds"]["audit"], "storage": config.get("storage", {"format": "full"})} if audit else config
     payload = {"study": "ggkm-latent-count-confirmatory", "protocol": frozen_config, "design": base,
                "simultaneous_family_size": FAMILY_SIZE,
                "interpretation": "One-sided Bonferroni Student-t Monte Carlo bounds; finite-sample approximation. NB contains Poisson in its phi->0 limit. Parameter recovery is separate from prediction."}

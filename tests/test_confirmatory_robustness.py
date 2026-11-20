@@ -20,6 +20,7 @@ from skcure.distributions import GeneralizedGamma
 from scripts import confirmatory_robustness as runner
 from scripts import confirmatory_robustness_fitting as fitting
 from scripts import confirmatory_robustness_utils as confirm
+from scripts import confirmatory_robustness_storage as storage
 from scripts import latent_robustness_utils as original
 from scripts.experiment_utils.artifacts import atomic_write_json
 from scripts.run_confirmatory_workflow import jobs_for
@@ -28,6 +29,7 @@ from scripts.run_confirmatory_workflow import jobs_for
 @pytest.fixture
 def config():
     config = copy.deepcopy(confirm.load_protocol())
+    config["storage"] = {"format": "full"}  # Retain coverage of legacy outputs.
     config.update(margins={"integrated_brier": 0.02, "cure_rmse": 0.03},
                   margin_justification="Synthetic test tolerances, not scientific defaults",
                   audit_replications=2, pilot_replications=4, minimum_final_replications=4)
@@ -344,7 +346,9 @@ def test_margins_can_be_chosen_after_audit_but_not_after_pilot_freeze(tmp_path, 
 
 
 @pytest.fixture
-def completed_study(tmp_path, monkeypatch, config):
+def completed_study(tmp_path, monkeypatch, config, request):
+    if getattr(request, "param", "full") == "compact-v1":
+        config["storage"] = dict(format="compact-v1", budget_gib=80, projection_factor=2.)
     cases = [original.build_experiments()[index] for index in (4, 28, 40)]
     monkeypatch.setattr(original, "build_experiments", lambda: cases)
     monkeypatch.setattr(original, "CALIBRATION_SIZE", 128)
@@ -363,7 +367,11 @@ def completed_study(tmp_path, monkeypatch, config):
             diagnostic["profile"] = [{"phi": phi, "status": "ok", "converged": True, "final_loglik": -10.1}
                                      for phi in config["fitting"]["profile_dispersion"]]
         path = directory / "diagnostics" / f"{case['task_id']}_{base['replication']}_{mode}_{model}.json"
-        atomic_write_json(path, diagnostic)
+        if storage.compact(design):
+            path = path.with_suffix(".json.gz")
+            storage.write_json(path, storage.diagnostic_payload(diagnostic, design))
+        else:
+            atomic_write_json(path, diagnostic)
         row.update(diagnostic_path=str(path.relative_to(directory)), diagnostic_sha256=original.checksum(path))
         return row
 

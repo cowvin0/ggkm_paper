@@ -26,6 +26,7 @@ from evaluate.metrics import integrated_brier_score, uno_c_index_rmst
 from evaluate.simulated_data import cure_probability
 from evaluate.util_cross_validation import _make_evaluation_grid, _select_grid_parameters, fit_cure_model
 from scripts import confirmatory_robustness_utils as confirm
+from scripts import confirmatory_robustness_storage as storage
 from scripts import latent_robustness_utils as original
 from scripts import summarize_latent_robustness as exploratory
 from scripts.confirmatory_robustness_fitting import MultiStartGGKM, profile_dispersion
@@ -172,7 +173,11 @@ def fit_one(model_name, mode, case, design, context, base, directory):
                             "attempts": item.attempts_, "profile": item.profile_,
                             "selected_attempt": getattr(item, "selected_attempt_", None)} for item in journal]
     path = Path(directory) / "diagnostics" / f"case_{case['task_id']:03d}" / f"replication_{base['replication']:04d}_{mode}_{model_name}.json"
-    atomic_write_json(path, diagnostic)
+    if storage.compact(design):
+        path = path.with_suffix(".json.gz")
+        storage.write_json(path, storage.diagnostic_payload(diagnostic, design))
+    else:
+        atomic_write_json(path, diagnostic)
     row.update(diagnostic_path=str(path.relative_to(directory)), diagnostic_sha256=original.checksum(path), runtime_seconds=perf_counter() - start)
     row["start_attempts"] = sum(len(fit.attempts_) for fit in journal)
     return row
@@ -180,13 +185,25 @@ def fit_one(model_name, mode, case, design, context, base, directory):
 
 def run_replication(case, replication, design, directory, calibration):
     checkpoint, archive = replication_paths(directory, case["task_id"], replication)
+    compact = storage.compact(design)
+    if compact:
+        checkpoint = checkpoint.with_suffix(".json.gz")
     if checkpoint.exists():
-        saved = json.loads(checkpoint.read_text())
+        saved = storage.read_json(checkpoint)
         if saved.get("study_id") != design["study_id"] or saved.get("replication") != replication or saved.get("task_id") != case["task_id"]:
             raise ValueError(f"Mismatched checkpoint: {checkpoint}")
         if len(saved["rows"]) != len(confirm.variants(case)) or {(r["latency_mode"], r["model_name"]) for r in saved["rows"]} != set(confirm.variants(case)):
             raise ValueError(f"Incomplete checkpoint: {checkpoint}")
-        if saved["sample_sha256"] is not None:
+        if saved.get("sample_storage") == "regenerate" and not saved.get("preparation_failed"):
+            if not calibration:
+                calibration = storage.read_json(Path(directory) / "calibration" / f"case_{case['task_id']:03d}.json")
+            _, base, arrays = prepare_replication(case, replication, design, calibration)
+            if original.array_hash(arrays) != saved.get("sample_array_hash"):
+                raise ValueError(f"Regenerated sample differs: {checkpoint}")
+            if any(row.get(key) != base[key] for row in saved["rows"] if row["status"] == "ok"
+                   for key in exploratory.PAIR_CHECKS):
+                raise ValueError(f"Regenerated pairing differs: {checkpoint}")
+        elif saved["sample_sha256"] is not None:
             if not archive.is_file() or original.checksum(archive) != saved["sample_sha256"]:
                 raise ValueError(f"Modified sample: {archive}")
         elif not saved.get("preparation_failed"):
@@ -195,11 +212,12 @@ def run_replication(case, replication, design, directory, calibration):
             if "diagnostic_path" in row and original.checksum(Path(directory) / row["diagnostic_path"]) != row["diagnostic_sha256"]:
                 raise ValueError("Modified fit diagnostics")
         return saved["rows"]
-    preparation_failed, sample_checksum = False, None
+    preparation_failed, sample_checksum, sample_array_hash = False, None, None
+    regenerate = compact and design["stage"] != "audit"
     try:
         context, base, arrays = prepare_replication(case, replication, design, calibration)
-        atomic_write_npz(archive, **arrays)
-        sample_checksum = original.checksum(archive)
+    except OSError:
+        raise  # Infrastructure failures must not become cached scientific failures.
     except Exception as error:
         preparation_failed = True
         seeds = original.replication_seeds(case, replication, design["master_seed"], phase=design["phase"])
@@ -208,9 +226,16 @@ def run_replication(case, replication, design, directory, calibration):
                  "failure_reason": f"Preparation: {type(error).__name__}: {error}", "runtime_seconds": 0.,
                  **{metric: None for metric in original.METRICS}} for mode, model in confirm.variants(case)]
     if not preparation_failed:
+        if regenerate:
+            sample_array_hash = original.array_hash(arrays)
+        else:
+            atomic_write_npz(archive, **arrays)
+            sample_checksum = original.checksum(archive)
         rows = [fit_one(model, mode, case, design, context, base, directory) for mode, model in confirm.variants(case)]
-    atomic_write_json(checkpoint, {"study_id": design["study_id"], "task_id": case["task_id"], "replication": replication,
-                                   "rows": rows, "sample_sha256": sample_checksum, "preparation_failed": preparation_failed})
+    payload = {"study_id": design["study_id"], "task_id": case["task_id"], "replication": replication,
+               "rows": rows, "sample_sha256": sample_checksum, "preparation_failed": preparation_failed,
+               "sample_storage": "regenerate" if regenerate else "archive", "sample_array_hash": sample_array_hash}
+    (storage.write_json if compact else atomic_write_json)(checkpoint, payload)
     return rows
 
 
@@ -235,12 +260,12 @@ def run_case(case, design, directory, workers):
     print(f"Saved {path}", flush=True)
 
 
-def read_results(stage, root, config):
+def iter_results(stage, root, config):
+    """Validate one case at a time so final reporting has bounded memory."""
     design = build_design(stage, root, config)
     directory = root / stage
     if json.loads((directory / "design.json").read_text()) != json.loads(json.dumps(design)):
         raise ValueError("Saved design differs from the frozen current study")
-    frames = []
     for case in design["cases"]:
         path = directory / f"replications_case_{case['task_id']:03d}.csv"
         metadata = json.loads(path.with_suffix(".metadata.json").read_text())
@@ -280,8 +305,12 @@ def read_results(stage, root, config):
         for metric in exploratory.SECONDARY_METRICS:
             if metric not in frame:
                 frame[metric] = np.nan
-        frames.append(frame)
-    return design, pd.concat(frames, ignore_index=True)
+        yield design, frame
+
+
+def read_results(stage, root, config):
+    parts = list(iter_results(stage, root, config))
+    return parts[0][0], pd.concat([frame for _, frame in parts], ignore_index=True)
 
 
 def audit_summary(root, config, *, figures=True):
@@ -294,7 +323,7 @@ def audit_summary(root, config, *, figures=True):
     for row in frame.to_dict("records"):
         if "diagnostic_path" not in row or pd.isna(row["diagnostic_path"]):
             continue
-        diagnostic = json.loads((root / "audit" / row["diagnostic_path"]).read_text())
+        diagnostic = storage.read_json(root / "audit" / row["diagnostic_path"])
         profile = diagnostic.get("profile", [])
         if row["model_name"] == "bn" and row["latency_mode"] != "phi_fixed":
             if len(profile) != len(config["fitting"]["profile_dispersion"]) or any(point["status"] != "ok" or not point["converged"] for point in profile):
@@ -337,23 +366,66 @@ def plot_profiles(profiles, directory):
         plt.close(fig)
 
 
-def summarize(stage, root, config, *, figures=True):
-    design, frame = read_results(stage, root, config)
-    pairs = confirm.paired_values(frame)
-    summary = confirm.contrast_summary(frame, pairs, config)
+def compact_summaries(stage, root, config):
+    """Stream replication-level pairs; hold only one case's fits/pairs in RAM."""
     directory = root / stage
-    atomic_write_csv(directory / "paired_replications.csv", pairs)
+    summaries, performances, compensation, controls = [], [], [], []
+    counts = dict(attempted=0, failed=0, converged=0, primary_failed=0)
+    with storage.atomic_text(directory / "paired_replications.csv.gz") as handle:
+        header = True
+        for design, frame in iter_results(stage, root, config):
+            pairs = confirm.paired_values(frame)
+            pairs.to_csv(handle, index=False, header=header)
+            header = False
+            summaries.append(confirm.contrast_summary(frame, pairs, config))
+            performances.append(exploratory.performance_summary(frame))
+            compensation.append(exploratory.latency_compensation(pairs.loc[pairs.analysis.eq("all_finite")]))
+            controls.append(fixed_dispersion_controls(frame))
+            counts["attempted"] += len(frame)
+            counts["failed"] += int(frame.status.ne("ok").sum())
+            counts["converged"] += int(frame.converged.sum())
+            counts["primary_failed"] += int(frame.loc[frame.study_part.eq("primary") & frame.latency_mode.eq("estimated"), "status"].ne("ok").sum())
+    atomic_write_csv(directory / "latency_compensation.csv", pd.concat(compensation, ignore_index=True))
+    atomic_write_csv(directory / "fixed_dispersion_controls.csv", pd.concat(controls, ignore_index=True))
+    return design, pd.concat(summaries, ignore_index=True), pd.concat(performances, ignore_index=True), counts
+
+
+def fixed_dispersion_controls(frame):
+    return frame.loc[frame.latency_mode.eq("phi_fixed")].merge(
+        frame.loc[frame.latency_mode.eq("estimated") & frame.model_name.eq("bn")],
+        on=["task_id", "replication"], suffixes=("_fixed_phi", "_estimated_phi"), validate="one_to_one")
+
+
+def summarize(stage, root, config, *, figures=True):
+    directory = root / stage
+    compact = config.get("storage", {}).get("format") == "compact-v1"
+    if compact:
+        design, summary, performance, counts = compact_summaries(stage, root, config)
+    else:
+        design, frame = read_results(stage, root, config)
+        pairs = confirm.paired_values(frame)
+        summary = confirm.contrast_summary(frame, pairs, config)
+        performance = exploratory.performance_summary(frame)
+        counts = dict(attempted=len(frame), failed=int(frame.status.ne("ok").sum()), converged=int(frame.converged.sum()),
+                      primary_failed=int(frame.loc[frame.study_part.eq("primary") & frame.latency_mode.eq("estimated"), "status"].ne("ok").sum()))
+        atomic_write_csv(directory / "paired_replications.csv", pairs)
     atomic_write_csv(directory / "paired_summary.csv", summary)
     atomic_write_csv(directory / "margin_sensitivity.csv", confirm.margin_sensitivity(summary))
-    performance = exploratory.performance_summary(frame)
     atomic_write_csv(directory / "performance_summary.csv", performance)
     primary = summary.loc[summary.primary]
     if stage == "pilot":
         projection, report = confirm.allocation(summary, config)
         atomic_write_csv(directory / "allocation_contrasts.csv", projection)
         report.update(protocol_id=design["protocol_id"], pilot_study_id=design["study_id"])
-        if frame.loc[frame.study_part.eq("primary") & frame.latency_mode.eq("estimated"), "status"].ne("ok").any():
+        if counts["primary_failed"]:
             report.update(ready=False, problem="Primary pilot fitting failures require investigation")
+        if compact:
+            plan = storage.storage_projection(root, design, report["final_replications"], config)
+            atomic_write_json(directory / "storage_plan.json", plan)
+            report.update(precision_ready=report["ready"], storage_ready=plan["within_budget"],
+                          projected_storage_gib=plan["projected_gib"], storage_budget_gib=plan["budget_gib"])
+            if not plan["within_budget"]:
+                report.update(ready=False, storage_problem="Projected output exceeds the frozen storage budget; final jobs are blocked")
         _write_gate(directory / "allocation.json", report)
         return report
     expected = confirm.FAMILY_SIZE
@@ -374,17 +446,15 @@ def summarize(stage, root, config, *, figures=True):
               "all_finite_pass": bool(main_pass), "jointly_converged_pass": bool(sensitivity_pass),
               "sensitivity_disagreement": bool(main_pass != sensitivity_pass), "primary_comparisons": len(primary),
               "alpha": config["alpha"], "margins": config["margins"], "margin_justification": config["margin_justification"],
-              "attempted": len(frame), "failed": int(frame.status.ne("ok").sum()), "converged": int(frame.converged.sum()),
+              "attempted": counts["attempted"], "failed": counts["failed"], "converged": counts["converged"],
               "minimum_jointly_converged_fraction": float((sensitivity.valid / sensitivity.attempted_pairs).min()),
               "interpretation": "Decision concerns mean paired IBS/cure-RMSE deterioration in the 40 prespecified primary cells, including the NB-under-Poisson limiting-family control. Both all-finite and jointly-converged analyses must pass. Secondary/fixed-parameter/mixture diagnostics do not establish noninferiority. No universal robustness or count-law identification claim."}
     atomic_write_json(directory / "report.json", report)
     # Retain diagnostic compensation comparisons; they do not enter the NI family.
-    selected_pairs = pairs.loc[pairs.analysis.eq("all_finite")]
-    atomic_write_csv(directory / "latency_compensation.csv", exploratory.latency_compensation(selected_pairs))
-    controls = frame.loc[frame.latency_mode.eq("phi_fixed")].merge(
-        frame.loc[frame.latency_mode.eq("estimated") & frame.model_name.eq("bn")],
-        on=["task_id", "replication"], suffixes=("_fixed_phi", "_estimated_phi"), validate="one_to_one")
-    atomic_write_csv(directory / "fixed_dispersion_controls.csv", controls)
+    if not compact:
+        selected_pairs = pairs.loc[pairs.analysis.eq("all_finite")]
+        atomic_write_csv(directory / "latency_compensation.csv", exploratory.latency_compensation(selected_pairs))
+        atomic_write_csv(directory / "fixed_dispersion_controls.csv", fixed_dispersion_controls(frame))
     write_summary_artifacts(directory, summary, report, figures=figures)
     return report
 
