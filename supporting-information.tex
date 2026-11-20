@@ -878,24 +878,11 @@ Tables~\ref{tab:supp-highdim-uno-c-index-poisson} and \ref{tab:supp-highdim-uno-
 
 Table~\ref{tab:supp-highdim-diagnostics} aggregates the numerical diagnostics for each method over the 12 scenarios.
 \input{sections/generated/highdim-diagnostics-table}
-\section{Additional melanoma summaries}\label{sec:supp-melanoma}
-
-The melanoma analysis compares the same 18 model configurations as the primary simulation, with 50 common event-stratified holdouts and three inner tuning folds. The individual-prediction summaries below show a subset of eight configurations: linear-kernel, polynomial-kernel, and RBF GG-KM and additive splines, each under Poisson and negative-binomial count laws. Predictions are summarized only over successful outer test-set appearances. Patient means require at least one finite prediction, and within-patient sample standard deviations require at least two. These summaries do not convert censored status into a cure label and are not used for model selection.
-
-Figure~\ref{fig:supp-melanoma-cure} shows the distribution of each patient's mean predicted cure fraction and the corresponding standard deviation across test-set appearances. The distributions differ across predictor structures, while Poisson and negative-binomial variants within GG-KM are visually similar. The across-split variation is a sensitivity summary for changing training samples, not a confidence interval for an individual's cure probability.
-
-The clinical kernel grids match the primary simulation grids, including wavelet scales $A\in\{0.5,1,2,10,15,20\}$, giving twelve candidates per count law. Clinical cubic splines use three or five training-fold quantile knots with $\lambda\in\{0.1,1\}$, giving four candidates per count law. The same grids are used in the FOSP melanoma analysis, with all selection confined to the inner training folds.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\textwidth]{melanoma_individual_cure_variation.pdf}
-\caption{Descriptive individual cure-fraction predictions in the melanoma repeated-holdout analysis. Panel A shows the distribution across patients of each individual's mean out-of-sample prediction. Panel B shows the distribution of within-individual standard deviations across outer test-set appearances. Log-lin, Spline, Poly., and GG-KM denote linear-kernel GG-KM, additive splines, polynomial-kernel GG-KM, and RBF GG-KM, respectively. P denotes Poisson and NB denotes negative binomial; hatched distributions correspond to negative-binomial models.}
-\label{fig:supp-melanoma-cure}
-\end{figure}
-
 \section{Additional FOSP melanoma summaries}\label{sec:supp-fosp-melanoma}
 
-The FOSP melanoma summaries use the 7,137-patient cohort with extended follow-up. The outcome columns are \texttt{tempo\_ext} and \texttt{status\_ext}. Evaluation uses 50 paired event-stratified holdouts and three inner tuning folds. Clinical stage, topography, and histological type receive training-only, cross-validated survival-target encodings. Figure~\ref{fig:supp-fosp-melanoma-cure} presents the same eight configurations as the preceding individual-prediction summaries, using finite predictions from successful outer test-set appearances. The negative-binomial linear model has only 15 successful holdouts, providing 7,108 patient means and 6,884 sample standard deviations; all other displayed configurations provide both summaries for all 7,137 patients. Means require at least one finite prediction and sample standard deviations at least two. Across-holdout variation describes sensitivity to the training sample, not an individual confidence interval or observed cure status.
+The FOSP melanoma summaries use the 7,137-patient cohort with extended follow-up. The outcome columns are \texttt{tempo\_ext} and \texttt{status\_ext}. Evaluation uses 50 paired event-stratified holdouts and three inner tuning folds. Clinical stage, topography, and histological type receive training-only, cross-validated survival-target encodings. Figure~\ref{fig:supp-fosp-melanoma-cure} presents eight configurations: linear-kernel, polynomial-kernel, and RBF GG-KM and additive splines, each under Poisson and negative-binomial count laws, using finite predictions from successful outer test-set appearances. The negative-binomial linear model has only 15 successful holdouts, providing 7,108 patient means and 6,884 sample standard deviations; all other displayed configurations provide both summaries for all 7,137 patients. Means require at least one finite prediction and sample standard deviations at least two. Across-holdout variation describes sensitivity to the training sample, not an individual confidence interval or observed cure status.
+
+The clinical kernel grids match the primary simulation grids, including wavelet scales $A\in\{0.5,1,2,10,15,20\}$, giving twelve candidates per count law. Clinical cubic splines use three or five training-fold quantile knots with $\lambda\in\{0.1,1\}$, giving four candidates per count law. All selection is confined to the inner training folds.
 
 \begin{figure}[tbp]
 \centering
@@ -906,19 +893,19 @@ The FOSP melanoma summaries use the 7,137-patient cohort with extended follow-up
 
 \section{Reproducibility record}\label{sec:supp-reproducibility}
 
-Scripts for all three analyses and their figures and tables are available at \url{https://github.com/cowvin0/ggkm_paper}.
+Scripts for both analyses and their figures and tables are available at \url{https://github.com/cowvin0/ggkm_paper}.
 
-To reproduce all simulation, melanoma, and FOSP melanoma results, activate a Python environment with the required dependencies and make the original clinical datasets available in the project's \path{data/} directory. Run the following command from the project root on a PBS cluster:
+To reproduce all simulation and FOSP melanoma results, activate a Python environment with the required dependencies and make the original clinical dataset available in the project's \path{data/} directory. Run the following command from the project root on a PBS cluster:
 \begin{verbatim}
 python scripts/run_workflow.py --mode cluster \
-  --datasets simulation melanoma fosp-melanoma
+  --datasets simulation fosp-melanoma
 \end{verbatim}
 The workflow submits the experiment jobs and generates each dataset's figures and tables after its experiment array finishes successfully. The explicit dataset selection limits execution to the analyses reported in the article.
 
 To run the same complete workflow on a local machine, use:
 \begin{verbatim}
 python scripts/run_workflow.py --mode local \
-  --datasets simulation melanoma fosp-melanoma
+  --datasets simulation fosp-melanoma
 \end{verbatim}
 
 The analyses use deterministic random seeds and one numerical thread per worker.
@@ -926,9 +913,9 @@ The analyses use deterministic random seeds and one numerical thread per worker.
 If the experiment results are already available, regenerate only the figures and tables with:
 \begin{verbatim}
 python scripts/run_workflow.py --mode cluster --stage postprocess \
-  --datasets simulation melanoma fosp-melanoma
+  --datasets simulation fosp-melanoma
 \end{verbatim}
-Replace \texttt{cluster} with \texttt{local} to regenerate them locally. The saved CSV and NPZ results and the original clinical datasets must be available on the machine performing this step. Figures are saved in \path{figures/review/}, and tables in \path{sections/generated/}.
+Replace \texttt{cluster} with \texttt{local} to regenerate them locally. The saved CSV and NPZ results and the original clinical dataset must be available on the machine performing this step. Figures are saved in \path{figures/review/}, and tables in \path{sections/generated/}.
 
 The experiment routines save CSV results and compressed NPZ prediction and diagnostic archives used to regenerate the figures and tables. Workflow execution records are saved by default in \path{logs/workflow/}, and cluster job logs in \path{logs/pbs/}.
 \end{document}

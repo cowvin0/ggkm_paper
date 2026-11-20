@@ -1,6 +1,6 @@
 \section{FOSP melanoma application}\label{sec:fosp-melanoma}
 
-The second empirical application considered cutaneous melanoma records from
+The empirical application considered cutaneous melanoma records from
 the Hospital Cancer Registry of S\~ao Paulo (RHC/FOSP), Brazil. The present analysis used
 an updated registry extract from July 2026, retaining diagnoses from
 2000--2014, clinical stages I--IV, valid positive observation times, and
@@ -40,9 +40,10 @@ folds using IPCW integrated Brier score and the horizon rule in
 Section~\ref{sec:prediction-evaluation}. The comparison included the seven
 GG-KM kernels under Poisson and negative-binomial counts, additive
 cubic-spline models under both count laws, and the mixture-cure and
-promotion-time comparators. Kernel and spline candidates used the same
-grids as in Section~\ref{sec:melanoma}, including wavelet scales
-$A\in\{0.5,1,2,10,15,20\}$ and three or five spline knots with
+promotion-time comparators. Kernel candidates followed the grids in
+Section~\ref{sec:simulation}, including wavelet scales
+$A\in\{0.5,1,2,10,15,20\}$. Cubic-spline candidates used three or five
+training-fold quantile knots with
 $\lambda\in\{0.1,1\}$.
 
 \GGKMTable{sections/generated/fosp-melanoma-performance-table}
@@ -64,7 +65,7 @@ calibration with the paired prediction-error and survival-discrimination
 distributions. The six displayed mean survival curves followed the early
 Kaplan--Meier decline and lay slightly below it later in the common
 supported horizon. The wavelet models had lower mean IBS than the
-classical and spline comparators. As in the preceding application, overlapping repeated
+classical and spline comparators. Overlapping repeated
 holdouts describe variation across training samples and do not provide
 independent-sample confidence intervals.
 

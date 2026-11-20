@@ -4,8 +4,8 @@
 The generalized gamma kernel-machine promotion-time cure model extends the promotion-time
 framework by placing the latent-cause log-intensity in a reproducing-kernel Hilbert space
 while retaining a flexible generalized gamma latency and both Poisson and negative-binomial
-latent counts. The primary and secondary simulations and the melanoma
-and FOSP melanoma applications evaluate this construction against simpler predictors under a shared protocol.
+latent counts. The primary and secondary simulations and the
+FOSP melanoma application evaluate this construction against simpler predictors under a shared protocol.
 Their interpretation is limited to the evaluated designs. Kernel families were compared
 within prespecified grids, although robustness to broader kernel and hyperparameter choices
 remains for future work.
@@ -20,20 +20,16 @@ paid a small resolved penalty against the correctly specified linear-kernel GG-K
 the original three-surface design, Poisson and negative-binomial variants were generally
 close within a predictor family, although differences in reported means reached about
 0.010 in integrated Brier score and 0.043 in cure root mean squared error for the
-polynomial kernel on the periodic surface at $n=600$. The melanoma cohort produced overlapping
-score distributions in which the wavelet GG-KM models had the lowest mean integrated
-Brier score, 0.1381.
+polynomial kernel on the periodic surface at $n=600$.
 In the FOSP melanoma cohort, wavelet GG-KM attained the lowest mean integrated
 Brier score (0.1218) and highest Uno's C-index (0.8161). Together,
-the simulations and the two empirical applications show that no
+the simulations and the empirical application show that no
 single predictor is uniformly best and that the preferred predictor and
 kernel depend on the predictive target and data structure.
 
 Several features of the cure-model setting limit how far these results can be interpreted. Cure fractions are
 only weakly identified from right-censored data with finite follow-up, because a long plateau of censored
-survivors is consistent with a range of cure probabilities. The melanoma follow-up ends in 1977 and the
-estimated cure fractions between 0.579 and 0.637 are model-based extrapolations, not quantities read directly
-from the data. The comparison of split-averaged predicted survival with the Kaplan-Meier curve is a
+survivors is consistent with a range of cure probabilities. The comparison of split-averaged predicted survival with the Kaplan-Meier curve is a
 calibration check on the population survival function and does not identify which individuals are cured. The
 analysis therefore makes no claim to identify individual cure status.
 
@@ -66,9 +62,9 @@ Sample size affected the strength of the conclusions as well as runtime: increas
 Censoring and the event definition further bound the interpretation. The evaluation used
 inverse-probability-of-censoring weighting with a horizon confined to the region of reliable censoring
 support, which controls bias from dependent censoring only to the extent that the censoring model is
-adequate. In the melanoma cohort, deaths from other causes were treated as censored. The FOSP analysis used death from cancer as the event
-and censored deaths from other causes. Accordingly, both empirical analyses are cause specific in their event
-definition and are not competing-risks analyses. Within these latent cause-specific processes,
+adequate. The FOSP analysis used death from cancer as the event
+and censored deaths from other causes. Accordingly, the empirical analysis is cause specific in its event
+definition and is not a competing-risks analysis. Within this latent cause-specific process,
 $p_c(\bm{x})$ describes the probability of no disease-specific death from the modelled process; it is
 neither an all-cause survival probability nor a competing-risks cumulative incidence. The interpretation
 relies on the corresponding independent-censoring assumption. The negative-binomial dispersion can be
@@ -76,7 +72,7 @@ weakly identified from cure and latency information, which cautions against inte
 dispersion as a precise measure of overdispersion. No dispersion-lower-bound contacts were recorded
 in either simulation experiment.
 
-The two empirical applications are observational, and no causal interpretation is attached to the covariate effects
+The empirical application is observational, and no causal interpretation is attached to the covariate effects
 or to the predicted cure fractions. The reported associations describe out-of-sample predictive behaviour under
 a fixed analysis protocol, not the effect of intervening on any covariate.
 
